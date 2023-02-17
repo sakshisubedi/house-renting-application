@@ -15,6 +15,9 @@ app.use(bodyParser.json());
 
 app.use(morgan('combined'));
 
+let cors = require('cors')
+app.use(cors())
+
 const startServer = async () => {
     const models = await require('./models')({ $env });
     
