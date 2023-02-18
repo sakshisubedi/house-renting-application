@@ -18,14 +18,13 @@ app.use(morgan('combined'));
 const startServer = async () => {
     const models = await require('./models')({ $env });
     
-
     app.get("/test", (req, res) => {
         return res.status(200).json({
             success: true
         })
     })
     
-    app.use('/api/v1', require('./routes/v1')());
+    app.use('/api/v1', require('./routes/v1')(models));
     
     app.listen(PORT, () => {
         console.log("Server listening on", PORT);
