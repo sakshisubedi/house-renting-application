@@ -6,7 +6,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-// import AddListingPage from "./Components/AddListingPage";
+import AddListingPage from "./Components/AddListingPage";
 import EditCustomerProfilePage from "./Components/EditCustomerProfilePage";
 import EditLandlordProfilePage from "./Components/EditLandlordProfilePage";
 
@@ -28,10 +28,10 @@ function App() {
             path="/editLandlordProfilePage"
             element={<EditLandlordProfilePage />}
           />
-          {/* <Route path="/AddListingPage" element={<AddListingPage />} /> */}
+          <Route path="/AddListingPage" element={<AddListingPage />} />
         </Routes>
       </Router>
-      <div className="App">
+      {/* <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
@@ -46,7 +46,7 @@ function App() {
             Learn React
           </a>
         </header>
-      </div>
+      </div> */}
     </>
   );
 }
