@@ -1,0 +1,16 @@
+.recommendation {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 31px;
+  color: #000000;
+  margin-top: 43px;
+  text-align: center;
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  justify-content: center;
+}

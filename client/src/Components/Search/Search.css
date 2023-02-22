@@ -1,0 +1,99 @@
+.searchbox {
+  /* height: 60vh; 
+  display: flex;
+  justify-content: center;
+  margin: auto;
+   align-items: center; 
+  width: 734.93px;
+  height: 82px;
+  border-radius: 20px; */
+  /* border-radius: 20px; */
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  align-items: center;
+  width: 734.93px;
+  /* background-color: blue; */
+  height: 82px;
+  border-radius: 80px;
+}
+.textlabel {
+  /* height: 50vh; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#search-input::placeholder {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 27px;
+  display: flex;
+  align-items: flex-end;
+  text-align: left;
+
+  color: #929292;
+}
+.separator {
+  /* margin-top: 50px; */
+  /* margin: auto; */
+  /* width: 1220px; */
+  /* height: 0px; */
+
+  margin: auto;
+  /* width: 1220px; */
+  /* height: 0px; */
+  margin-top: 60px;
+
+  /* margin: auto; */
+  width: 1220px;
+  height: 0px;
+  /* align-items: center; */
+  display: flex;
+  justify-content: center;
+  border: 0.5px solid #d2d3d4;
+  /* margin-top: 60px;
+   margin: auto; 
+  width: 1220px;
+  height: 0px;
+  border: 0.5px solid #d2d3d4; */
+  /* border: 1px solid #d2d3d4; */
+}
+.find-place {
+  width: 300.12px;
+  height: 65px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 39px;
+  display: flex;
+  justify-content: center;
+  /* margin: auto; */
+  text-align: center;
+  color: black;
+  padding-top: 15px;
+  /* padding-bottom: 15px; */
+  margin-bottom: 0px;
+}
+
+input {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  align-items: center;
+  width: 734.93px;
+  display: flex;
+  height: 70px;
+  font-size: 30px;
+  border: 2px solid #d2d3d4;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
