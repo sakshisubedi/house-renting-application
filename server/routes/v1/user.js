@@ -6,4 +6,5 @@ module.exports = (models) => {
     routes.put('/', userController.updateUser(models));
     routes.get('/', userController.getUsers(models));
     routes.get('/:id', userController.getUserById(models));
+    routes.get('/public/:id', userController.getUserPublicInfoById(models));
 }
