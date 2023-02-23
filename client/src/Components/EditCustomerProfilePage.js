@@ -13,37 +13,30 @@ import {
   FormHelperText,
   ButtonGroup,
   useToast,
+  Radio,
+  RadioGroup,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
+import NavBar from "./NavBar";
 
 function EditCustomerProfilePage() {
   // need to get actual data from db
-
-  // const tempData = {
-  //   name: "Pratyush Karmakar",
-  //   desc: "temporary self intro",
-  //   email: "pkarmakar@ucsd.edu",
-  //   pronouns: "He/Him/His",
-  //   age: 24,
-  //   occupation: "student",
-  //   datePref: "1 month",
-  //   spacePref: "1bd/1ba",
-  //   housematesBool: "No",
-  //   roommatePrefs: "test prefs",
-  //   petsPref: "No",
-  // };
 
   let tempData = {
     name: "Pratyush Karmakar",
     email: "pkarmakar@ucsd.edu",
   };
 
+  const [emailPublicFlag, setEmailPublicFlag] = React.useState("false");
   const [desc, setDesc] = React.useState(tempData.desc ?? null);
   const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
   const [age, setAge] = React.useState(tempData.age ?? null);
+  const [agePublicFlag, setAgePublicFlag] = React.useState("false");
   const [occupation, setOccupation] = React.useState(
     tempData.occupation ?? null
   );
+  const [occupationPublicFlag, setOccupationPublicFlag] = React.useState("false");
   const [datePref, setDatePref] = React.useState(tempData.datePref ?? null);
   const [spacePref, setSpacePref] = React.useState(tempData.spacePref ?? null);
   const [housematesBool, setHousematesBool] = React.useState(
@@ -55,15 +48,21 @@ function EditCustomerProfilePage() {
   const [petsPref, setPetsPref] = React.useState(tempData.petsPref ?? null);
 
   const updateUserData = () => {
+    tempData.emailPublicFlag = (emailPublicFlag === "true") ?? null;
     tempData.desc = desc === "" ? null : desc;
     tempData.pronouns = pronouns === "" ? null : pronouns;
-    tempData.age = age === "" ? null : age;
+    tempData.age = age === "" ? null : parseInt(age);
+    tempData.agePublicFlag = (agePublicFlag === "true") ?? null;
     tempData.occupation = occupation === "" ? null : occupation;
-    tempData.datePref = datePref === "" ? null : datePref;
+    tempData.occupationPublicFlag = (occupationPublicFlag === "true") ?? null;
+    tempData.datePref = datePref === "" ? null : Date(datePref);
     tempData.spacePref = spacePref === "" ? null : spacePref;
-    tempData.housematesBool = housematesBool === "" ? null : housematesBool;
+    tempData.housematesBool = housematesBool === "" ? null : (housematesBool === "true");
     tempData.roommatePrefs = roommatePrefs === "" ? null : roommatePrefs;
-    tempData.petsPref = petsPref === "" ? null : petsPref;
+    tempData.petsPref = petsPref === "" ? null : (petsPref === "true");
+    console.log(tempData, "user data");
+
+    // need to transform tempData into proper DB schema format
     // SAVE TO DB
   };
 
@@ -71,8 +70,8 @@ function EditCustomerProfilePage() {
 
   return (
     <Box>
-      {/* <NavBar /> */}
-      <Box my={100} ml={200} mr={400}>
+      <NavBar />
+      <Box my={100} ml={250} mr={250}>
         <Box>
           <HStack spacing={5} mb={10}>
             <Avatar size="2xl" name={tempData.name} src={null} />
@@ -100,7 +99,7 @@ function EditCustomerProfilePage() {
                 colorScheme="blue"
                 w={100}
                 onClick={(e) => {
-                  // e.preventDefault();
+                  e.preventDefault();
                   try {
                     updateUserData();
                     toast({
@@ -123,15 +122,29 @@ function EditCustomerProfilePage() {
             <br />
             <br />
             <VStack spacing={10} mt={10}>
-              <FormControl id="email" isDisabled>
+              <FormControl id="email">
                 <HStack>
                   <FormLabel w="50%">Email</FormLabel>
-                  <Input
-                    type="email"
-                    placeholder="johndoe@gmail.com"
-                    defaultValue={tempData.email}
-                    w="50%"
-                  />
+                  <VStack w="50%" align={"left"} spacing={5}>
+                    <Input
+                      type="email"
+                      placeholder="johndoe@gmail.com"
+                      defaultValue={tempData.email}
+                      w="full"
+                      isDisabled
+                    />
+                    <RadioGroup
+                      colorScheme={"blue"}
+                      defaultValue={emailPublicFlag}
+                      onChange={setEmailPublicFlag}
+                    >
+                      <HStack spacing={10}>
+                        <Text>Make this field public :</Text>
+                        <Radio value="true">Yes</Radio>
+                        <Radio value="false">No</Radio>
+                      </HStack>
+                    </RadioGroup>
+                  </VStack>
                 </HStack>
               </FormControl>
               <FormControl id="pronouns">
@@ -155,13 +168,26 @@ function EditCustomerProfilePage() {
               <FormControl id="age">
                 <HStack>
                   <FormLabel w="50%">Age</FormLabel>
-                  <Input
-                    type="number"
-                    placeholder="Enter your age..."
-                    defaultValue={age}
-                    w="50%"
-                    onChange={(e) => setAge(e.target.value)}
-                  />
+                  <VStack w="50%" align={"left"} spacing={5}>
+                    <Input
+                      type="number"
+                      placeholder="Enter your age..."
+                      defaultValue={age}
+                      w="full"
+                      onChange={(e) => setAge(e.target.value)}
+                    />
+                    <RadioGroup
+                      colorScheme={"blue"}
+                      defaultValue={agePublicFlag}
+                      onChange={setAgePublicFlag}
+                    >
+                      <HStack spacing={10}>
+                        <Text>Make this field public :</Text>
+                        <Radio value="true">Yes</Radio>
+                        <Radio value="false">No</Radio>
+                      </HStack>
+                    </RadioGroup>
+                  </VStack>
                 </HStack>
               </FormControl>
               <FormControl id="occupation">
@@ -172,25 +198,38 @@ function EditCustomerProfilePage() {
                       E.g.: student, medical assistant, etc.
                     </FormHelperText>
                   </VStack>
-                  <Input
-                    type="text"
-                    placeholder="Enter your occupation..."
-                    defaultValue={occupation}
-                    w="50%"
-                    onChange={(e) => setOccupation(e.target.value)}
-                  />
+                  <VStack w="50%" align={"left"} spacing={5}>
+                    <Input
+                      type="text"
+                      placeholder="Enter your occupation..."
+                      defaultValue={occupation}
+                      w="full"
+                      onChange={(e) => setOccupation(e.target.value)}
+                    />
+                    <RadioGroup
+                      colorScheme={"blue"}
+                      defaultValue={occupationPublicFlag}
+                      onChange={setOccupationPublicFlag}
+                    >
+                      <HStack spacing={10}>
+                        <Text>Make this field public :</Text>
+                        <Radio value="true">Yes</Radio>
+                        <Radio value="false">No</Radio>
+                      </HStack>
+                    </RadioGroup>
+                  </VStack>
                 </HStack>
               </FormControl>
               <FormControl id="moveDate">
                 <HStack>
                   <VStack w="50%" align="left">
                     <FormLabel>Preferred Move-in Date</FormLabel>
-                    <FormHelperText>
+                    {/* <FormHelperText>
                       E.g. Two months, one year, etc.
-                    </FormHelperText>
+                    </FormHelperText> */}
                   </VStack>
                   <Input
-                    type="text"
+                    type="date"
                     placeholder="Enter your preferred move-in date..."
                     defaultValue={datePref}
                     w="50%"
@@ -225,9 +264,9 @@ function EditCustomerProfilePage() {
                     w="50%"
                     onChange={(e) => setHousematesBool(e.target.value)}
                   >
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                    <option value="No preference">No preference</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                    {/* <option value="No preference">No preference</option> */}
                   </Select>
                 </HStack>
               </FormControl>
@@ -257,9 +296,9 @@ function EditCustomerProfilePage() {
                     w="50%"
                     onChange={(e) => setPetsPref(e.target.value)}
                   >
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                    <option value="No preference">No preference</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                    {/* <option value="No preference">No preference</option> */}
                   </Select>
                 </HStack>
               </FormControl>

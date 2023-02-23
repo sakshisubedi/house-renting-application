@@ -8,7 +8,6 @@ import {
   Textarea,
   HStack,
   Heading,
-  Select,
   FormHelperText,
   ButtonGroup,
   useToast,
@@ -16,6 +15,7 @@ import {
   Radio,
 } from "@chakra-ui/react";
 import React from "react";
+import NavBar from "./NavBar";
 // import axios from "axios";
 
 function AddListingPage() {
@@ -44,6 +44,7 @@ function AddListingPage() {
     newListing.desc = desc;
     console.log("new listing = ", newListing);
 
+    // need to transform tempData into proper DB schema format
     // SAVE TO DB
 
     // axios
@@ -57,7 +58,7 @@ function AddListingPage() {
 
   return (
     <Box>
-      {/* <NavBar /> */}
+      <NavBar />
       <Box my={100} ml={200} mr={200}>
         <Box>
           <Heading>Add New Listing</Heading>
@@ -95,12 +96,12 @@ function AddListingPage() {
             <VStack spacing={10} mt={10}>
               <FormControl id="name" isRequired>
                 <HStack>
-                  <FormLabel w="50%">Name</FormLabel>
+                  <FormLabel w="20%">Name</FormLabel>
                   <Input
                     type="text"
                     placeholder="Listing Name..."
                     defaultValue={name}
-                    w="50%"
+                    w="80%"
                     onChange={(e) => setName(e.target.value)}
                   />
                 </HStack>
@@ -179,7 +180,7 @@ function AddListingPage() {
                       />
                     </HStack>
                   </FormControl>
-                  <FormControl id="bedrooms">
+                  <FormControl id="bedrooms" isRequired>
                     <HStack>
                       <FormLabel w="50%">Bedrooms</FormLabel>
                       <Input
@@ -191,7 +192,7 @@ function AddListingPage() {
                       />
                     </HStack>
                   </FormControl>
-                  <FormControl id="bathrooms">
+                  <FormControl id="bathrooms" isRequired>
                     <HStack>
                       <FormLabel w="50%">Bathrooms</FormLabel>
                       <Input
@@ -203,7 +204,7 @@ function AddListingPage() {
                       />
                     </HStack>
                   </FormControl>
-                  <FormControl id="area">
+                  <FormControl id="area" isRequired>
                     <HStack>
                       <VStack w={"50%"} align={"left"}>
                         <FormLabel>Area</FormLabel>
@@ -235,13 +236,13 @@ function AddListingPage() {
                   </FormControl>
                 </VStack>
               </Box>
-              <FormControl id="description">
+              <FormControl id="description" isRequired>
                 <FormLabel w={"100%"} fontSize={"3xl"}>
                   Listing Description
                 </FormLabel>
                 <Textarea
                   h="200"
-                  mt={2}
+                  mt={5}
                   p={5}
                   border="2px"
                   borderColor="gray.300"

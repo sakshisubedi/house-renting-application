@@ -18,23 +18,10 @@ import {
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import React from "react";
+import NavBar from "./NavBar";
 
 function EditLandlordProfilePage() {
   // need to get actual data from db
-
-  // const tempData = {
-  //   name: "Pratyush Karmakar",
-  //   desc: "temporary self intro",
-  //   email: "pkarmakar@ucsd.edu",
-  //   pronouns: "He/Him/His",
-  //   age: 24,
-  //   occupation: "student",
-  //   datePref: "1 month",
-  //   spacePref: "1bd/1ba",
-  //   housematesBool: "No",
-  //   roommatePrefs: "test prefs",
-  //   petsPref: "No",
-  // };
 
   let tempData = {
     name: "Pratyush Karmakar",
@@ -43,10 +30,17 @@ function EditLandlordProfilePage() {
 
   const [desc, setDesc] = React.useState(tempData.desc ?? null);
   const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
+  const [age, setAge] = React.useState(tempData.age ?? null);
+  const [phone, setPhone] = React.useState(tempData.phone ?? null);
 
   const updateUserData = () => {
     tempData.desc = desc === "" ? null : desc;
     tempData.pronouns = pronouns === "" ? null : pronouns;
+    tempData.age = age === "" ? null : parseInt(age);
+    tempData.phone = phone === "" ? null : phone;
+    console.log(tempData, "landlord data");
+
+    // need to transform tempData into proper DB schema format
     // SAVE TO DB
   };
 
@@ -54,15 +48,14 @@ function EditLandlordProfilePage() {
 
   return (
     <Box>
-      {/* <NavBar /> */}
-      <Box my={100} ml={200} mr={400}>
+      <NavBar />
+      <Box my={100} ml={250} mr={250}>
         <Box>
           <HStack spacing={5} mb={10}>
             <Avatar size="2xl" name={tempData.name} src={null} />
             <VStack spacing={5} align="left" pl={50} w="100%">
               <Flex>
                 <Heading mr={5}>{tempData.name}</Heading>
-                {/* <Input mr={5} defaultValue={tempData.name ?? null} placeholder="Enter First and Last Name here..."  /> */}
                 <CheckCircleIcon boxSize={7} color={"blue.500"} />
               </Flex>
               <Textarea
@@ -86,7 +79,7 @@ function EditLandlordProfilePage() {
                 colorScheme="blue"
                 w={100}
                 onClick={(e) => {
-                  // e.preventDefault();
+                  e.preventDefault();
                   try {
                     updateUserData();
                     toast({
@@ -109,7 +102,7 @@ function EditLandlordProfilePage() {
             <br />
             <br />
             <VStack spacing={10} mt={10}>
-              <FormControl id="email" isDisabled>
+              <FormControl id="email">
                 <HStack>
                   <FormLabel w="50%">Email</FormLabel>
                   <Input
@@ -117,6 +110,7 @@ function EditLandlordProfilePage() {
                     placeholder="johndoe@gmail.com"
                     defaultValue={tempData.email}
                     w="50%"
+                    isDisabled
                   />
                 </HStack>
               </FormControl>
@@ -138,6 +132,30 @@ function EditLandlordProfilePage() {
                   </Select>
                 </HStack>
               </FormControl>
+              <FormControl id="age">
+                <HStack>
+                  <FormLabel w={"50%"}>Age</FormLabel>
+                  <Input
+                      type="number"
+                      placeholder="Enter your age..."
+                      defaultValue={age}
+                      w="50%"
+                      onChange={(e) => setAge(e.target.value)}
+                    />
+                </HStack>
+              </FormControl>
+              <FormControl id="phone">
+                <HStack>
+                  <FormLabel w={"50%"}>Phone Number</FormLabel>
+                  <Input
+                      type="text"
+                      placeholder="Enter your phone no..."
+                      defaultValue={phone}
+                      w="50%"
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                </HStack>
+              </FormControl>
             </VStack>
           </form>
           <Box mt={10}>
@@ -150,7 +168,7 @@ function EditLandlordProfilePage() {
                 colorScheme="blue"
                 w={100}
                 onClick={() => {
-                  // Navogate to add listing Page
+                  // Navigate to add listing Page
                 }}
               >
                 Add Listing
