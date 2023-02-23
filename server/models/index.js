@@ -33,7 +33,7 @@ module.exports = async ({$env}) => {
             listing,
             user,
             wishlist
-        };
+        }
         // populate db
         // loadDummyData(model);
         return model;
