@@ -3,6 +3,7 @@ const commentSchema = require("./comment");
 const landlordSchema = require("./landlord");
 const likeSchema = require("./like");
 const listingSchema = require("./listing");
+const loadDummyData = require("./script");
 const userSchema = require("./user");
 const wishlistSchema = require("./wishlist");
 
@@ -25,7 +26,7 @@ module.exports = async ({$env}) => {
         const listing = connection.model('Listing', listingSchema);
         const user = connection.model('User', userSchema);
         const wishlist = connection.model('Wishlist', wishlistSchema);
-        return {
+        const model = {
             comment,
             landlord,
             like,
@@ -33,6 +34,9 @@ module.exports = async ({$env}) => {
             user,
             wishlist
         };
+        // populate db
+        // loadDummyData(model);
+        return model;
     } catch (error) {
         console.log(error);
         // close connection

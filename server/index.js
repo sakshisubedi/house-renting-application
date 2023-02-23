@@ -27,7 +27,6 @@ const startServer = async () => {
         })
     })
     
-    app.use('/api/v1', require('./routes/v1')());
     app.use('/api/v1', require('./routes/v1')(models));
     
     app.listen(PORT, () => {
