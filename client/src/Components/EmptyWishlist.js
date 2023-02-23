@@ -14,7 +14,7 @@ function EmptyWishlist() {
             direction={{ base: 'column-reverse', md: 'row' }}
         >
             <VStack justify="center" spacing={10}>
-                <Image width='300px' objectFit='cover' src={emptyList} alt="wishilist" />
+                <Image width='300px' objectFit='cover' src={emptyList} alt="wishlist" />
                 <Text fontSize="2xl" fontWeight="bold">Oops... It’s empty in here</Text>
                 <Button
                     variant="solid"
