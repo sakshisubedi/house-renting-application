@@ -9,6 +9,7 @@ import {
 import AddListingPage from "./Components/AddListingPage";
 import EditCustomerProfilePage from "./Components/EditCustomerProfilePage";
 import EditLandlordProfilePage from "./Components/EditLandlordProfilePage";
+import WishlistPage from "./Components/WishlistPage";
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
             element={<EditLandlordProfilePage />}
           />
           <Route path="/AddListingPage" element={<AddListingPage />} />
+          <Route
+            path="/wishlistPage"
+            element={<WishlistPage />}
+          />
         </Routes>
       </Router>
       {/* <div className="App">
