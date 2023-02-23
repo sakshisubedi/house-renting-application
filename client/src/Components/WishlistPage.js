@@ -36,7 +36,7 @@ function WishlistPage() {
     let tempListing = {
         img: house1,
         name: "Listing 1",
-        address: "4067 Miramar St, La Jolla, CA 92092",
+        address: "Unit 1202, 4067 Miramar St, La Jolla, CA 92092",
         bedrooms: 3,
         bathrooms: 2,
         rent: '1900',
@@ -54,7 +54,7 @@ function WishlistPage() {
                     {/* empty listing page */}
                     {/* <EmptyWishlist></EmptyWishlist> */}
                     <VStack align="left" spacing={30}>
-                        <Heading>Your Wishilist</Heading>
+                        <Heading>Your Wishlist</Heading>
                         <SimpleGrid columns={3} spacing={10}>
                             <ListingCard src={tempListing}> </ListingCard>
                         </SimpleGrid>
