@@ -3,8 +3,10 @@ const userController = require("../../controllers/user")
 
 module.exports = (models) => {
     routes.post('/', userController.createUser(models));
-    routes.put('/', userController.updateUser(models));
+    routes.put('/:id', userController.updateUser(models));
     routes.get('/', userController.getUsers(models));
-    routes.get('/:id', userController.getUserById(models));
+    routes.get('/:id', userController.getUserAllInfoById(models));
     routes.get('/public/:id', userController.getUserPublicInfoById(models));
+    routes.get('/profilepic/:id', userController.getUserProfilePicById(models));
+    return routes;
 }
