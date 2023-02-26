@@ -14,8 +14,10 @@
     "framer-motion": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.7.1",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
+    "tailwindcss": "^3.2.7",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -30,7 +32,7 @@
       "react-app/jest"
     ],
     "rules": {
-      "no-unused-vars":"off"
+      "no-unused-vars": "off"
     }
   },
   "browserslist": {

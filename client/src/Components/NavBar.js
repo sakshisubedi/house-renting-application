@@ -11,7 +11,15 @@ import logoImg from '../img/logo.jpg'
 import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
 
+import { Link } from '@chakra-ui/react'
+
+// Setting isLoggedIn Status
+import { useAuth } from "../Components/auth/context/hookIndex"
+
 const NavBar = ({ profileURL }) => {
+    const { authInfo, handleLogout } = useAuth();
+    const { isLoggedIn } = authInfo;
+
     return (
         <Box>
             <Flex
@@ -31,12 +39,12 @@ const NavBar = ({ profileURL }) => {
                         onClick={(e) => {
                             e.preventDefault();
                             // route to landing page
+                            window.location.href = '/';
                         }}
                     />
 
 
                 </Flex>
-
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
                     <IconButton
                         height='20px'
@@ -45,9 +53,9 @@ const NavBar = ({ profileURL }) => {
                         onClick={(e) => {
                             e.preventDefault();
                             // route to landing page
+                            window.location.href = '/';
                         }}
                     />
-
 
                 </Flex>
 
@@ -71,6 +79,7 @@ const NavBar = ({ profileURL }) => {
                         onClick={(e) => {
                             // route to profile page
                             e.preventDefault();
+                            window.location.href = '/auth/signin';
                         }}
                     />
                 </HStack>
