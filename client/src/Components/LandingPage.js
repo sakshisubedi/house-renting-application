@@ -8,7 +8,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import React from "react";
-import ListingCard from "./ListingCard";
+import ListingCard1 from "./ListingCard1";
 import house1 from "../img/house1.jpg";
 import NavBar from "./NavBar";
 import SearchBar from "./SearchBar";
@@ -67,11 +67,11 @@ function LandingPage() {
           {/* <EmptyWishlist></EmptyWishlist> */}
           <VStack align="left" spacing={30}>
             <SimpleGrid columns={3} spacing={10}>
-              <ListingCard src={tempListing}> </ListingCard>
-              <ListingCard src={tempListing}> </ListingCard>
-              <ListingCard src={tempListing}> </ListingCard>
-              <ListingCard src={tempListing}> </ListingCard>
-              <ListingCard src={tempListing}></ListingCard>
+              <ListingCard1 src={tempListing}> </ListingCard1>
+              <ListingCard1 src={tempListing}> </ListingCard1>
+              <ListingCard1 src={tempListing}> </ListingCard1>
+              <ListingCard1 src={tempListing}> </ListingCard1>
+              <ListingCard1 src={tempListing}></ListingCard1>
             </SimpleGrid>
           </VStack>
         </Center>

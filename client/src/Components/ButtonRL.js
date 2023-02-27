@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Flex, Button } from "@chakra-ui/react";
+import { Flex, Button, Box } from "@chakra-ui/react";
 
 export default function Buttons() {
   const [activeButton, setActiveButton] = useState(1);
@@ -28,7 +28,7 @@ export default function Buttons() {
         className={`options ${activeButton === 1 ? "options-active" : ""}`}
         onClick={() => handleButtonClick(1)}
       >
-        Rent
+        <Box fontFamily="Inter">Rent</Box>
       </Button>
       <Button
         fontFamily="Inter"
@@ -42,7 +42,7 @@ export default function Buttons() {
         className={`options ${activeButton === 2 ? "options-active" : ""}`}
         onClick={() => handleButtonClick(2)}
       >
-        Lease
+        <Box fontFamily="Inter">Lease</Box>
       </Button>
     </Flex>
   );

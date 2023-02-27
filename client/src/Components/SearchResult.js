@@ -2,7 +2,7 @@ import { Box, Heading, VStack, SimpleGrid } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import React from "react";
 import FilterRow from "./FilterRow";
-import ListingCard from "./ListingCard";
+import ListingCard1 from "./ListingCard1";
 import house1 from "../img/house1.jpg";
 
 function SearchResult() {
@@ -36,13 +36,13 @@ function SearchResult() {
       <Box margin="auto" pt={5} pl={10}>
         <VStack align="left" spacing={30}>
           <SimpleGrid columns={{ base: 1, md: 4 }} spacing={10} mt={10} mx={10}>
-            <ListingCard src={tempListing}> </ListingCard>
-            <ListingCard src={tempListing}> </ListingCard>
-            <ListingCard src={tempListing}> </ListingCard>
-            <ListingCard src={tempListing}> </ListingCard>
-            <ListingCard src={tempListing}> </ListingCard>
-            <ListingCard src={tempListing}> </ListingCard>
-            <ListingCard src={tempListing}></ListingCard>
+            <ListingCard1 src={tempListing}> </ListingCard1>
+            <ListingCard1 src={tempListing}> </ListingCard1>
+            <ListingCard1 src={tempListing}> </ListingCard1>
+            <ListingCard1 src={tempListing}> </ListingCard1>
+            <ListingCard1 src={tempListing}> </ListingCard1>
+            <ListingCard1 src={tempListing}> </ListingCard1>
+            <ListingCard1 src={tempListing}></ListingCard1>
           </SimpleGrid>
         </VStack>
       </Box>
