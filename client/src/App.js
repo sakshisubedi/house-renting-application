@@ -1,15 +1,23 @@
-import logo from "./logo.svg";
 import "./App.css";
-import LandingPage from "./Pages/LandingPage/LandingPage";
-import SearchPage from "./Pages/LandingPage/SearchPage";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Redirect,
+} from "react-router-dom";
+
+import LandingPage from "./Components/LandingPage";
+// import LandingPage1 from "./Components/LandingPage1";
+import SearchResult from "./Components/SearchResult";
 
 function App() {
   return (
     <>
+      {/* <LandingPage /> */}
       <Router>
         <Routes>
           <Route path="/LandingPage" element={<LandingPage />} />
-          <Route path="/SearchPage" element={<SearchPage />} />
+          <Route path="/SearchResult" element={<SearchResult />} />
         </Routes>
       </Router>
     </>
