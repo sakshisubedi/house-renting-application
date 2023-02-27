@@ -72,16 +72,27 @@ const NavBar = ({ profileURL }) => {
                             e.preventDefault();
                         }}
                     />
-                    <IconButton
-                        borderRadius='full'
-                        boxSize='50px'
-                        icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
-                        onClick={(e) => {
-                            // route to profile page
-                            e.preventDefault();
-                            window.location.href = '/auth/signin';
-                        }}
-                    />
+                    {/* Double click the profile icon to logout */}
+                    {isLoggedIn ? (
+                        <IconButton
+                            borderRadius='full'
+                            boxSize='50px'
+                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
+                            onClick={handleLogout}
+                        />
+                    ) : (
+                        <IconButton
+                            borderRadius='full'
+                            boxSize='50px'
+                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
+                            onClick={(e) => {
+                                // route to profile page
+                                e.preventDefault();
+                                window.location.href = '/auth/signin';
+                            }}
+                        />
+                    )}
+                    
                 </HStack>
             </Flex>
 
