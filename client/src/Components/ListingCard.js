@@ -32,8 +32,6 @@ const ListingCard = ({ src }) => {
                     </Box>
                 </HStack>
 
-
-
                 <Flex justifyContent="space-between" alignContent="center">
                     <Box
                         fontWeight='bold'
@@ -41,7 +39,8 @@ const ListingCard = ({ src }) => {
                         noOfLines={1}
                         fontSize='3xl'
                     >
-                        <LinkOverlay href='#'>
+                        <LinkOverlay href='#'> 
+                        {/* route to detailed listing page */}
                             {src.name}
                         </LinkOverlay>
 

@@ -29,7 +29,9 @@ function App() {
             path="/editLandlordProfilePage"
             element={<EditLandlordProfilePage />}
           />
-          <Route path="/AddListingPage" element={<AddListingPage />} />
+          <Route 
+            path="/AddListingPage" 
+            element={<AddListingPage />} />
           <Route
             path="/wishlistPage"
             element={<WishlistPage />}
