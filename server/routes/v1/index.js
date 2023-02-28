@@ -7,5 +7,7 @@ module.exports = (models) => {
     routes.use('/login', require('./login')(models));
     routes.use('/listing', require('./listing')(models));
     routes.use('/user', require('./user')(models));
+    routes.use('/landlord', require('./landlord')(models));
+    routes.use('/wishlist', require('./wishlist')(models));
     return routes;
 }
