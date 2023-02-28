@@ -6,14 +6,19 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import AddListingPage from "./Components/AddListingPage";
+
 import EditCustomerProfilePage from "./Components/EditCustomerProfilePage";
 import EditLandlordProfilePage from "./Components/EditLandlordProfilePage";
+import LandingPage from "./Components/LandingPage";
 import WishlistPage from "./Components/WishlistPage";
+import SearchResult from "./Components/SearchResult";
+import IndividualListingPage from "./Components/IndividualListingPage";
+import AddListingPage from "./Components/AddListingPage";
 
 function App() {
   return (
     <>
+      {/* <LandingPage /> */}
       <Router>
         <Routes>
           <Route path="/landing" element={<LandingPage />} />
