@@ -14,13 +14,8 @@ const listingSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    rating: {
-        type: Number,
-        min: 0,
-        max: 5
-    },
     landlordId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'Landlord',
         required: true
     },

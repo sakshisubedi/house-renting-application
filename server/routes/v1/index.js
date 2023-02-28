@@ -5,5 +5,7 @@ const routes = require('express').Router({mergeParams: true});
  */
 module.exports = (models) => {
     routes.use('/login', require('./login')(models));
+    routes.use('/listing', require('./listing')(models));
+    routes.use('/user', require('./user')(models));
     return routes;
 }
