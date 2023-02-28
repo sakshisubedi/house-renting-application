@@ -11,9 +11,12 @@ import {
     HStack
 } from "@chakra-ui/react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import heart from '../img/Union.svg'
 
 const ListingCard = ({ src }) => {
+    const navigate = useNavigate();
+
     return (
         <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
             <Image objectFit='fill' w="100%" src={src.img} alt="card image" />
@@ -39,7 +42,9 @@ const ListingCard = ({ src }) => {
                         noOfLines={1}
                         fontSize='3xl'
                     >
-                        <LinkOverlay href='#'> 
+                        <LinkOverlay onClick={(e) => {
+                            navigate("/individualListingPage");
+                        }}> 
                         {/* route to detailed listing page */}
                             {src.name}
                         </LinkOverlay>

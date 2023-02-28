@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Input, IconButton, HStack, Image } from "@chakra-ui/react";
 import search from "../img/search.jpg";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchBar() {
+  const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleInputChange = (event) => {
@@ -47,7 +50,10 @@ export default function SearchBar() {
           icon={
             <Image width="50px" objectFit="cover" src={search} alt="logo" />
           }
-          onClick={handleSearchSubmit}
+          // onClick={handleSearchSubmit}
+          onClick={(e) => {
+            navigate("/searchResult");
+        }}
         />
       </HStack>
     </>

@@ -60,6 +60,9 @@ const NavBar = ({ profileURL }) => {
                     <IconButton
                         height='30px'
                         icon={<Image width='40px' objectFit='cover' src={emptyHeart} alt="wishilist" />}
+                        onClick={(e) => {
+                            navigate("/wishlistPage");
+                        }}
                     />
                     <IconButton
                         borderRadius='full'

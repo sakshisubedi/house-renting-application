@@ -21,8 +21,8 @@ function App() {
       {/* <LandingPage /> */}
       <Router>
         <Routes>
-          <Route path="/LandingPage" element={<LandingPage />} />
-          <Route path="/SearchResult" element={<SearchResult />} />
+          <Route path="/landingPage" element={<LandingPage />} />
+          <Route path="/searchResult" element={<SearchResult />} />
 
           {/* Need to link to Landing Page */}
           {/* <Route
