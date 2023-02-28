@@ -16,24 +16,25 @@ function App() {
     <>
       <Router>
         <Routes>
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/search" element={<SearchResult />} />
+
           {/* Need to link to Landing Page */}
           {/* <Route
             path="/"
             element={<LandingPage />}
           /> */}
           <Route
-            path="/editCustomerProfilePage"
+            path="/customer/me"
             element={<EditCustomerProfilePage />}
           />
           <Route
-            path="/editLandlordProfilePage"
+            path="/landlord/me"
             element={<EditLandlordProfilePage />}
           />
-          <Route path="/AddListingPage" element={<AddListingPage />} />
-          <Route
-            path="/wishlistPage"
-            element={<WishlistPage />}
-          />
+          <Route path="/listing" element={<AddListingPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/listing/me" element={<IndividualListingPage />} />
         </Routes>
       </Router>
       {/* <div className="App">
