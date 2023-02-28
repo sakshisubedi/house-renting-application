@@ -15,6 +15,8 @@ import {
   Radio,
 } from "@chakra-ui/react";
 import React from "react";
+import { createListing } from "../services/listingApis";
+
 import NavBar from "./NavBar";
 // import axios from "axios";
 
@@ -56,6 +58,40 @@ function AddListingPage() {
     //   });
   };
 
+
+  const addListing = async () => {
+    const newListing = {
+      name: name,
+      address: address,
+      rent: parseInt(price),
+      landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
+      description: desc,
+      media: [],
+      bedrooms: parseInt(bedrooms),
+      bathrooms: parseInt(bathrooms),
+      squareFeet: parseInt(area),
+      hasPet: pets ? (pets === "true") : false,
+      postalCode: zipcode
+    }
+    
+    console.log("new listing = ", newListing);
+
+    const response = await createListing(newListing);
+    if(response?.error) {
+      toast({
+        title: "Failed",
+        description: response?.error,
+        status: "error",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Successfully added listing",
+        status: "success",
+      });
+    }
+  }
+
   return (
     <Box>
       <NavBar />
@@ -68,7 +104,8 @@ function AddListingPage() {
             onSubmit={(e) => {
               e.preventDefault();
               try {
-                updateListingData();
+                // updateListingData();
+                addListing();
                 toast({
                   title: "Success",
                   description: "Changes Saved",
