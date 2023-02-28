@@ -10,6 +10,7 @@ import AddListingPage from "./Components/AddListingPage";
 import EditCustomerProfilePage from "./Components/EditCustomerProfilePage";
 import EditLandlordProfilePage from "./Components/EditLandlordProfilePage";
 import WishlistPage from "./Components/WishlistPage";
+import IndividualListingPage from "./Components/IndividualListingPage";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             path="/wishlistPage"
             element={<WishlistPage />}
           />
+          <Route path="/individualListingPage" element={<IndividualListingPage />} />
         </Routes>
       </Router>
       {/* <div className="App">
