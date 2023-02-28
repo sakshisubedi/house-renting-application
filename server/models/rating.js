@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-// Wishlist Collection Schema
-const wishlistSchema = new mongoose.Schema({
+// Rating Collection Schema
+const ratingSchema = new mongoose.Schema({
     listingId: {
         type: mongoose.Schema.ObjectId,
         ref: 'Listing',
@@ -12,10 +12,16 @@ const wishlistSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0
+    },
     timestamp: {
         type: Date,
         default: Date.now
     }
 });
 
-module.exports = wishlistSchema;
+module.exports = ratingSchema;
