@@ -10,8 +10,12 @@ import React from "react";
 import logoImg from '../img/logo.jpg'
 import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
-
+// Setting isLoggedIn Status
+import { useAuth } from "../Components/auth/context/hookIndex"
 const NavBar = ({ profileURL }) => {
+    const { authInfo, handleLogout } = useAuth();
+    const { isLoggedIn } = authInfo;
+
     return (
         <Box>
             <Flex
@@ -31,6 +35,7 @@ const NavBar = ({ profileURL }) => {
                         onClick={(e) => {
                             e.preventDefault();
                             // route to landing page
+                            window.location.href = '/landing';
                         }}
                     />
 
@@ -45,6 +50,7 @@ const NavBar = ({ profileURL }) => {
                         onClick={(e) => {
                             e.preventDefault();
                             // route to landing page
+                            window.location.href = '/landing';
                         }}
                     />
 
@@ -64,15 +70,26 @@ const NavBar = ({ profileURL }) => {
                             e.preventDefault();
                         }}
                     />
-                    <IconButton
-                        borderRadius='full'
-                        boxSize='50px'
-                        icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
-                        onClick={(e) => {
-                            // route to profile page
-                            e.preventDefault();
-                        }}
-                    />
+                    {/* Double click the profile icon to logout */}
+                    {isLoggedIn ? (
+                        <IconButton
+                            borderRadius='full'
+                            boxSize='50px'
+                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
+                            onClick={handleLogout}
+                        />
+                    ) : (
+                        <IconButton
+                            borderRadius='full'
+                            boxSize='50px'
+                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
+                            onClick={(e) => {
+                                // route to profile page
+                                e.preventDefault();
+                                window.location.href = '/auth/signin';
+                            }}
+                        />
+                    )}
                 </HStack>
             </Flex>
 
