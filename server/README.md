@@ -9,7 +9,7 @@ Example: To get a user's info with id 123456789, make a GET request to `localhos
 ## Routes
 Base route: `/api/v1`
 
-### User(Tenant) API
+### __User(Tenant)__ API
 - **createUser**: POST `/user`
     - Creates a new user and saves it to database.
 - **updateUser**: PUT `/user/:id`
@@ -27,13 +27,30 @@ Base route: `/api/v1`
     - PARAMS: id
     - Gets the profile picture of the user that corresponds to the given user id.
 
-### Landlord API
+### __Landlord API__
+- **createLandlord**: POST `/landlord`
+    - Creates a new landlord and saves it to database.
+- **updateUser**: PUT `/landlord/:id`
+    - PARAMS: id
+    - Update landlord information for a given landlord id.
+- **getLandlordInfoById**: GET `/landlord/:id`
+    - PARAMS: id
+    - Gets the landlord that corresponds to the given landlord id.
+- **getProfilePicById**: GET `/landlord/profilepic/:id`
+    - PARAMS: id
+    - Gets the profile picture of the landlord that corresponds to the given landlord id.
 
+### __Wishlist API__
+- **createWishlistItem**: POST `/wishlist`
+    - Creates a new wishlist item and saves it to database.
+- **getWishlistByUserId**: GET `/wishlist/:id`
+    - PARAMS: id
+    - Gets all wishlist items corresponding to the given user id.
+- **deleteWishlistItem**: DELETE `/wishlist/:id`
+    - PARAMS: id
+    - Deletes the wishlist item that corresponds to the given wishlist id.
 
-### Wishlist API
-
-
-### Listing API
+### __Listing API__
 - **createListing**: POST `/listing/`
     - Creates a new listing and saves it to database.
 - **updateListing**: PUT `/listing/:id`
@@ -51,9 +68,9 @@ Base route: `/api/v1`
     - PARAMS: id
     - Deletes the listing that corresponds to the given listing id.
 
-### Comment API
+### __Comment API__
 
 
-### Like API
+### __Like API__
 
 
