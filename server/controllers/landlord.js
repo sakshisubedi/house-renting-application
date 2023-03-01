@@ -39,24 +39,6 @@ const updateLandlord = (models) => {
     }
 }
 
-// Get all landlords
-const getLandlords = (models) => {
-    return async (req, res, next) => {
-        try {
-            return res.status(200).json({
-                success: true,
-                message: 'success',
-                data: await models.landlord.find().select({ __v: 0, password: 0 })
-            })
-        } catch (error) {
-            return res.status(500).json({
-                success: false,
-                error: error.message
-            })
-        }
-    }
-}
-
 const getLandlordInfoById = (models) => {
     return async (req, res, next) => {
         try {
@@ -86,9 +68,7 @@ const getLandlordProfilePicById = (models) => {
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.user.findById(req.params.id).select({ __v: 0, name: 0, email: 0, 
-                    password: 0, isVerified: 0, pronoun: 0, age: 0, phoneNo: 0, introduction: 0
-                })
+                data: await models.landlord.findById(req.params.id).select({ profilePicture: 1 })
             })
         } catch (error) {
             return res.status(500).json({
@@ -102,7 +82,6 @@ const getLandlordProfilePicById = (models) => {
 module.exports = {
     createLandlord,
     updateLandlord,
-    getLandlords,
     getLandlordInfoById,
     getLandlordProfilePicById
 }
