@@ -4,7 +4,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Redirect,
+  Navigate
 } from "react-router-dom";
 
 import EditCustomerProfilePage from "./Components/EditCustomerProfilePage";
@@ -39,7 +39,8 @@ function App() {
           />
           <Route path="/listing" element={<AddListingPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/listing/me" element={<IndividualListingPage />} />
+          <Route path="/listing/:id" element={<IndividualListingPage />} />
+          <Route path='*' element={<Navigate to='/landing' />} />
         </Routes>
       </Router>
       {/* <div className="App">
