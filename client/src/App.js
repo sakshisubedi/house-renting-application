@@ -14,6 +14,11 @@ import WishlistPage from "./Components/WishlistPage";
 import SearchResult from "./Components/SearchResult";
 import IndividualListingPage from "./Components/IndividualListingPage";
 import AddListingPage from "./Components/AddListingPage";
+import ConfirmPassword from "./Components/auth/ConfirmPassword";
+import EmailVerification from "./Components/auth/EmailVerification";
+import ForgetPassword from "./Components/auth/ForgetPassword";
+import Signin from "./Components/auth/Signin";
+import Signup from "./Components/auth/Signup";
 
 function App() {
   return (
@@ -41,6 +46,13 @@ function App() {
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/listing/:id" element={<IndividualListingPage />} />
           <Route path='*' element={<Navigate to='/landing' />} />
+
+          {/* Authentication part */}
+          <Route path="/auth/signin" element={<Signin />} />
+          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/verification" element={<EmailVerification />} />
+          <Route path="/auth/forget-password" element={<ForgetPassword />} />
+          <Route path="/auth/reset-password" element={<ConfirmPassword />} />
         </Routes>
       </Router>
       {/* <div className="App">
