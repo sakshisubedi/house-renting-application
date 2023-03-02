@@ -4,49 +4,52 @@ import React from "react";
 import FilterRow from "./FilterRow";
 import ListingCard1 from "./ListingCard1";
 import house1 from "../img/house1.jpg";
+import { getListingsByRating } from "../services/listingApis";
 
-function SearchResult() {
-  let tempData = {
-    name: "xyz",
-    profile: "https://i.stack.imgur.com/l60Hf.png",
-  };
+export default class SearchResult extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      recommendedListings: null
+    }
+  }
 
-  let tempListing = {
-    img: house1,
-    name: "Listing 1",
-    address: "4067 Miramar St, La Jolla, CA 92092",
-    bedrooms: 3,
-    bathrooms: 2,
-    rent: "1900",
-    reviewCount: 34,
-    rating: 3.3,
-    squareFeet: 1200,
-  };
+  async componentDidMount() {
+    const recommendedListings = await getListingsByRating();
+    this.setState({
+      recommendedListings
+    });
+    console.log(recommendedListings, this.props?.history);
+  }
 
-  return (
-    <Box>
-      <NavBar profileURL={tempData.profile}></NavBar>
-      <Box ml={5} mt={5}>
-        <Heading pl={10} pt={5} textAlign="left">
-          Showing results for “Location”...
-        </Heading>
-        <FilterRow></FilterRow>
+  
+
+  render() {
+    return (
+      <Box>
+        <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
+        <Box ml={5} mt={5}>
+          <Heading pl={10} pt={5} textAlign="left">
+            Showing results for “Location”...
+          </Heading>
+          <FilterRow></FilterRow>
+        </Box>
+        <Box margin="auto" pt={5} pl={10}>
+          <VStack align="left" spacing={30}>
+            <SimpleGrid columns={{ base: 1, md: 4 }} spacing={10} mt={10} mx={10}>
+              {
+                this.state.recommendedListings?.data.map((listing, idx) => (
+                  <ListingCard1 key={idx} src={{...listing, img: house1}}> </ListingCard1>
+                ))
+              }
+            </SimpleGrid>
+          </VStack>
+        </Box>
       </Box>
-
-      <Box margin="auto" pt={5} pl={10}>
-        <VStack align="left" spacing={30}>
-          <SimpleGrid columns={{ base: 1, md: 4 }} spacing={10} mt={10} mx={10}>
-            <ListingCard1 src={tempListing}> </ListingCard1>
-            <ListingCard1 src={tempListing}> </ListingCard1>
-            <ListingCard1 src={tempListing}> </ListingCard1>
-            <ListingCard1 src={tempListing}> </ListingCard1>
-            <ListingCard1 src={tempListing}> </ListingCard1>
-            <ListingCard1 src={tempListing}> </ListingCard1>
-            <ListingCard1 src={tempListing}></ListingCard1>
-          </SimpleGrid>
-        </VStack>
-      </Box>
-    </Box>
-  );
+      );
+  }
 }
-export default SearchResult;
+
+
+
+      

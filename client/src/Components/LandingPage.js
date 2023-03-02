@@ -7,77 +7,74 @@ import {
   Divider,
   Flex,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ListingCard1 from "./ListingCard1";
 import house1 from "../img/house1.jpg";
 import NavBar from "./NavBar";
 import SearchBar from "./SearchBar";
 import ButtonRL from "./ButtonRL";
+import { getListingsByRating } from "../services/listingApis";
 
-function LandingPage() {
-  // need to get actual data from db
+export default class LandingPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      recommendedListings: null
+    }
+  }
 
-  let tempData = {
-    name: "xyz",
-    profile: "https://i.stack.imgur.com/l60Hf.png",
-  };
+  async componentDidMount() {
+    const recommendedListings = await getListingsByRating();
+    this.setState({
+      recommendedListings
+    });
+    console.log(recommendedListings, this.props?.history);
+  }
 
-  let tempListing = {
-    img: house1,
-    name: "Listing 1",
-    address: "4067 Miramar St, La Jolla, CA 92092",
-    bedrooms: 3,
-    bathrooms: 2,
-    rent: "1900",
-    reviewCount: 34,
-    rating: 3.3,
-    squareFeet: 1200,
-  };
+  
 
-  return (
-    <Box>
-      {/* <NavBar /> */}
-      <NavBar profileURL={tempData.profile}></NavBar>
-      <Box my={20}>
-        <Center>
-          <Flex py={10}>
-            <VStack>
-              <Heading mb={10}>Find a place with...</Heading>
-              <SearchBar />
-            </VStack>
-          </Flex>
-        </Center>
-      </Box>
-      {/* <Divider align="center" width="90%" />*/}
-      <VStack>
-        <Divider
-          my={5}
-          borderWidth="1.5px"
-          mx="auto"
-          width="90%"
-          borderColor="darkgray"
-        />
-        <Heading size="lg">Recommendations</Heading>
-        <ButtonRL />
-      </VStack>
-
-      <Box my={50} ml={200} mr={200}>
-        <Center>
-          {/* empty listing page */}
-          {/* <EmptyWishlist></EmptyWishlist> */}
-          <VStack align="left" spacing={30}>
-            <SimpleGrid columns={3} spacing={10}>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}></ListingCard1>
-            </SimpleGrid>
+  render() {
+    return (
+        <Box>
+          <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
+          <Box my={20}>
+            <Center>
+              <Flex py={10}>
+                <VStack>
+                  <Heading mb={10}>Find a place with...</Heading>
+                  <SearchBar />
+                </VStack>
+              </Flex>
+            </Center>
+          </Box>
+          <VStack>
+            <Divider
+              my={5}
+              borderWidth="1.5px"
+              mx="auto"
+              width="90%"
+              borderColor="darkgray"
+            />
+            <Heading size="lg">Recommendations</Heading>
+            <ButtonRL />
           </VStack>
-        </Center>
-      </Box>
-    </Box>
-  );
+    
+          <Box my={50} ml={200} mr={200}>
+            <Center>
+              {/* empty listing page */}
+              {/* <EmptyWishlist></EmptyWishlist> */}
+              <VStack align="left" spacing={30}>
+                <SimpleGrid columns={3} spacing={10}>
+                  {
+                    this.state.recommendedListings?.data.map((listing, idx) => (
+                      <ListingCard1 key={idx} src={{...listing, img: house1}}> </ListingCard1>
+                    ))
+                  }
+                </SimpleGrid>
+              </VStack>
+            </Center>
+          </Box>
+        </Box>
+      );
+  }
 }
-
-export default LandingPage;

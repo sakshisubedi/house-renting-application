@@ -4,7 +4,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Redirect,
+  Navigate
 } from "react-router-dom";
 
 import EditCustomerProfilePage from "./Components/EditCustomerProfilePage";
@@ -21,8 +21,8 @@ function App() {
       {/* <LandingPage /> */}
       <Router>
         <Routes>
-          <Route path="/landingPage" element={<LandingPage />} />
-          <Route path="/searchResult" element={<SearchResult />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/search" element={<SearchResult />} />
 
           {/* Need to link to Landing Page */}
           {/* <Route
@@ -30,23 +30,17 @@ function App() {
             element={<LandingPage />}
           /> */}
           <Route
-            path="/editCustomerProfilePage"
+            path="/customer/me"
             element={<EditCustomerProfilePage />}
           />
           <Route
-            path="/editLandlordProfilePage"
+            path="/landlord/me"
             element={<EditLandlordProfilePage />}
           />
-          <Route 
-            path="/AddListingPage" 
-            element={<AddListingPage />} />
-          <Route
-            path="/wishlistPage"
-            element={<WishlistPage />}
-          />
-          <Route path="/AddListingPage" element={<AddListingPage />} />
-          <Route path="/wishlistPage" element={<WishlistPage />} />
-          <Route path="/individualListingPage" element={<IndividualListingPage />} />
+          <Route path="/listing" element={<AddListingPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/listing/:id" element={<IndividualListingPage />} />
+          <Route path='*' element={<Navigate to='/landing' />} />
         </Routes>
       </Router>
       {/* <div className="App">
