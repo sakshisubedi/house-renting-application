@@ -193,7 +193,7 @@ function IndividualListingPage() {
   const toast = useToast();
 
   const location = useLocation();
-  tempData = location.state;
+  tempData = location.state ?? tempData;
 
   let avgRating = 4.2; // NEED TO GET CORRECT VALUE
 
