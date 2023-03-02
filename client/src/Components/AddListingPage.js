@@ -102,7 +102,7 @@ function AddListingPage() {
         <Box>
           <form
             onSubmit={(e) => {
-              e.preventDefault();
+              // e.preventDefault();
               try {
                 // updateListingData();
                 addListing();
