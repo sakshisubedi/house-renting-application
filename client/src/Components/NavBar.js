@@ -34,8 +34,7 @@ const NavBar = ({ profileURL }) => {
                         width='50px'
                         icon={<Image width='50px' objectFit='cover' src={logoImg} alt="logo" />}
                         onClick={(e) => {
-                            e.preventDefault();
-                            // route to landing page
+                            window.location.href = '/landing';
                         }}
                     />
 
@@ -48,8 +47,7 @@ const NavBar = ({ profileURL }) => {
                         width='120px'
                         icon={<Image width='120px' objectFit='cover' src={logoTxt} alt="logo" />}
                         onClick={(e) => {
-                            e.preventDefault();
-                            // route to landing page
+                            window.location.href = '/landing';
                         }}
                     />
 
@@ -65,7 +63,7 @@ const NavBar = ({ profileURL }) => {
                         height='30px'
                         icon={<Image width='40px' objectFit='cover' src={emptyHeart} alt="wishilist" />}
                         onClick={(e) => {
-                            navigate("/wishlistPage");
+                            window.location.href = '/wishlist';
                         }}
                     />
                     {/* Double click the profile icon to logout */}
@@ -83,7 +81,6 @@ const NavBar = ({ profileURL }) => {
                             icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
                             onClick={(e) => {
                                 // route to profile page
-                                e.preventDefault();
                                 window.location.href = '/auth/signin';
                             }}
                         />

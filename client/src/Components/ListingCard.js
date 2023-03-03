@@ -13,9 +13,16 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import heart from '../img/Union.svg'
+import emptyHeart from '../img/emptyHeartButton.svg'
 
 const ListingCard = ({ src }) => {
+    const [like, setLike] = React.useState("true");
+
     const navigate = useNavigate();
+
+    const handleClick = () => {
+        setLike(current => !current);
+      };
 
     return (
         <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
@@ -52,10 +59,11 @@ const ListingCard = ({ src }) => {
                     </Box>
                     <IconButton
                         bg="#FFFFFF"
-                        icon={<Image src={heart} boxSize={30} alt="heart" />}
+                        icon={<Image src={like ? heart : emptyHeart} boxSize={30} alt="heart" />}
                         onClick={(e) => {
                             // cancel wishlist
                             e.preventDefault();
+                            handleClick();
                         }}
                     />
                 </Flex>

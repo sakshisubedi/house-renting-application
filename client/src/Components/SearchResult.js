@@ -50,6 +50,3 @@ export default class SearchResult extends React.Component {
   }
 }
 
-
-
-      

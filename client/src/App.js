@@ -28,12 +28,6 @@ function App() {
         <Routes>
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/search" element={<SearchResult />} />
-
-          {/* Need to link to Landing Page */}
-          {/* <Route
-            path="/"
-            element={<LandingPage />}
-          /> */}
           <Route
             path="/customer/me"
             element={<EditCustomerProfilePage />}
