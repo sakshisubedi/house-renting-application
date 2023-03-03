@@ -27,8 +27,8 @@ import {
 } from "@chakra-ui/icons";
 import React from "react";
 import NavBar from "./NavBar";
-import favIcon from "../img/fullHeart.jpg";
-import emptyHeart from "../img/heart.jpg"; // NEED TO GET CORRECT EMPTY HEART IMAGE
+import favIcon from "../img/Union.svg";
+import emptyHeart from "../img/emptyHeartButton.svg";
 import { useLocation } from "react-router-dom";
 import { BiHide } from "react-icons/bi";
 import StarRatings from 'react-star-ratings';
