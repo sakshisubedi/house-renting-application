@@ -19,7 +19,9 @@ import {
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import React from "react";
 import NavBar from "./NavBar";
-
+import LandlordViewCard from "./LandlordViewCard";
+import house1 from "../img/house1.jpg";
+import ListingCard from "./ListingCard";
 function EditLandlordProfilePage() {
   // need to get actual data from db
 
@@ -27,7 +29,20 @@ function EditLandlordProfilePage() {
     name: "Pratyush Karmakar",
     email: "pkarmakar@ucsd.edu",
   };
-
+  let tempListing = {
+    img: house1,
+    name: "Palm Harbor",
+    address: "4067 Miramar St, La Jolla, CA 92092",
+    rent: "1900",
+    reviewCount: 34,
+    rating: 3.3,
+    // parameters...
+    bedrooms: 3,
+    bathrooms: 2,
+    squareFeet: 1200,
+    petFriendly: "allowed",
+    postalCode: 920092,
+  };
   const [desc, setDesc] = React.useState(tempData.desc ?? null);
   const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
   const [age, setAge] = React.useState(tempData.age ?? null);
@@ -136,24 +151,24 @@ function EditLandlordProfilePage() {
                 <HStack>
                   <FormLabel w={"50%"}>Age</FormLabel>
                   <Input
-                      type="number"
-                      placeholder="Enter your age..."
-                      defaultValue={age}
-                      w="50%"
-                      onChange={(e) => setAge(e.target.value)}
-                    />
+                    type="number"
+                    placeholder="Enter your age..."
+                    defaultValue={age}
+                    w="50%"
+                    onChange={(e) => setAge(e.target.value)}
+                  />
                 </HStack>
               </FormControl>
               <FormControl id="phone">
                 <HStack>
                   <FormLabel w={"50%"}>Phone Number</FormLabel>
                   <Input
-                      type="text"
-                      placeholder="Enter your phone no..."
-                      defaultValue={phone}
-                      w="50%"
-                      onChange={(e) => setPhone(e.target.value)}
-                    />
+                    type="text"
+                    placeholder="Enter your phone no..."
+                    defaultValue={phone}
+                    w="50%"
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
                 </HStack>
               </FormControl>
             </VStack>
@@ -174,7 +189,13 @@ function EditLandlordProfilePage() {
                 Add Listing
               </Button>
             </Flex>
-            <Box mt={5}>{/* All listings go here */}</Box>
+            <Box mt={10}>
+              {/* <LandlordViewCard></LandlordViewCard> */}
+              <LandlordViewCard ard src={tempListing}>
+                {" "}
+              </LandlordViewCard>
+              {/* All listings go here */}
+            </Box>
           </Box>
         </Box>
       </Box>

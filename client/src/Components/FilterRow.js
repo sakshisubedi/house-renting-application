@@ -30,7 +30,7 @@ function FilterRow() {
             placeholder="Location"
             h="100%"
             border="none"
-            fontSize="25px"
+            fontSize="27px"
             outline="none"
             px={4}
           />
@@ -39,20 +39,20 @@ function FilterRow() {
         <Menu>
           <MenuButton
             as={Box}
-            w="200px"
+            w="150px"
             h="83px"
             borderRadius="10px"
             bg="#eaebef"
             border="1px solid #eaebef"
-            fontSize="25px"
-            px={4}
+            fontSize="27px"
+            px={10}
           >
             <HStack
               justifyContent="space-evenly"
               textAlign="center"
               lineHeight="83px"
             >
-              <Box mr={2}>Price</Box>
+              <Box>Price</Box>
               <Icon as={FaChevronDown} fontSize="sm" />
             </HStack>
           </MenuButton>
@@ -67,13 +67,13 @@ function FilterRow() {
         <Menu>
           <MenuButton
             as={Box}
-            w="200px"
+            w="150px"
             h="83px"
             borderRadius="10px"
             bg="#eaebef"
             border="1px solid #eaebef"
-            fontSize="25px"
-            px={4}
+            fontSize="27px"
+            px={10}
           >
             <HStack
               justifyContent="space-evenly"
@@ -95,13 +95,13 @@ function FilterRow() {
         <Menu>
           <MenuButton
             as={Box}
-            w="200px"
+            w="150px"
             h="83px"
             borderRadius="10px"
             bg="#eaebef"
             border="1px solid #eaebef"
-            fontSize="25px"
-            px={4}
+            fontSize="27px"
+            px={10}
           >
             <HStack
               justifyContent="space-evenly"
@@ -123,13 +123,13 @@ function FilterRow() {
         <Menu>
           <MenuButton
             as={Box}
-            w="200px"
+            w="150px"
             h="83px"
             borderRadius="10px"
             bg="#eaebef"
             border="1px solid #eaebef"
-            fontSize="25px"
-            px={4}
+            fontSize="27px"
+            px={10}
           >
             <HStack
               justifyContent="space-evenly"
@@ -151,13 +151,13 @@ function FilterRow() {
         <Menu>
           <MenuButton
             as={Box}
-            w="200px"
+            w="150px"
             h="83px"
             borderRadius="10px"
             bg="#eaebef"
             border="1px solid #eaebef"
-            fontSize="25px"
-            px={4}
+            fontSize="27px"
+            px={10}
           >
             <HStack
               justifyContent="space-evenly"

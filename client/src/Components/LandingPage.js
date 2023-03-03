@@ -8,7 +8,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import React from "react";
-import ListingCard1 from "./ListingCard1";
+import ListingCard from "./ListingCard";
 import house1 from "../img/house1.jpg";
 import NavBar from "./NavBar";
 import SearchBar from "./SearchBar";
@@ -38,9 +38,9 @@ function LandingPage() {
     <Box>
       {/* <NavBar /> */}
       <NavBar profileURL={tempData.profile}></NavBar>
-      <Box my={20}>
+      <Box my={10}>
         <Center>
-          <Flex py={10}>
+          <Flex py={5}>
             <VStack>
               <Heading mb={10}>Find a place with...</Heading>
               <SearchBar />
@@ -51,7 +51,7 @@ function LandingPage() {
       {/* <Divider align="center" width="90%" />*/}
       <VStack>
         <Divider
-          my={5}
+          my={2}
           borderWidth="1.5px"
           mx="auto"
           width="90%"
@@ -67,11 +67,11 @@ function LandingPage() {
           {/* <EmptyWishlist></EmptyWishlist> */}
           <VStack align="left" spacing={30}>
             <SimpleGrid columns={3} spacing={10}>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}> </ListingCard1>
-              <ListingCard1 src={tempListing}></ListingCard1>
+              <ListingCard src={tempListing}> </ListingCard>
+              <ListingCard src={tempListing}> </ListingCard>
+              <ListingCard src={tempListing}> </ListingCard>
+              <ListingCard src={tempListing}> </ListingCard>
+              <ListingCard src={tempListing}></ListingCard>
             </SimpleGrid>
           </VStack>
         </Center>
