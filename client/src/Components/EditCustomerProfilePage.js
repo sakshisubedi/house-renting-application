@@ -99,7 +99,7 @@ function EditCustomerProfilePage() {
                 colorScheme="blue"
                 w={100}
                 onClick={(e) => {
-                  e.preventDefault();
+                  // e.preventDefault();
                   try {
                     updateUserData();
                     toast({

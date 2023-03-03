@@ -11,9 +11,11 @@ import { useNavigate } from "react-router-dom";
 import logoImg from '../img/logo.jpg'
 import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
-
+// Setting isLoggedIn Status
+import { useAuth } from "../Components/auth/context/hookIndex"
 const NavBar = ({ profileURL }) => {
-    const navigate = useNavigate();
+    const { authInfo, handleLogout } = useAuth();
+    const { isLoggedIn } = authInfo;
 
     return (
         <Box>
@@ -31,8 +33,9 @@ const NavBar = ({ profileURL }) => {
                     <IconButton
                         width='50px'
                         icon={<Image width='50px' objectFit='cover' src={logoImg} alt="logo" />}
-                        onClick={() => {
-                            navigate("/landingPage");
+                        onClick={(e) => {
+                            e.preventDefault();
+                            // route to landing page
                         }}
                     />
 
@@ -45,7 +48,8 @@ const NavBar = ({ profileURL }) => {
                         width='120px'
                         icon={<Image width='120px' objectFit='cover' src={logoTxt} alt="logo" />}
                         onClick={(e) => {
-                            navigate("/landingPage");
+                            e.preventDefault();
+                            // route to landing page
                         }}
                     />
 
@@ -64,14 +68,26 @@ const NavBar = ({ profileURL }) => {
                             navigate("/wishlistPage");
                         }}
                     />
-                    <IconButton
-                        borderRadius='full'
-                        boxSize='50px'
-                        icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
-                        onClick={(e) => {
-                            navigate("/editCustomerProfilePage");
-                        }}
-                    />
+                    {/* Double click the profile icon to logout */}
+                    {isLoggedIn ? (
+                        <IconButton
+                            borderRadius='full'
+                            boxSize='50px'
+                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
+                            onClick={handleLogout}
+                        />
+                    ) : (
+                        <IconButton
+                            borderRadius='full'
+                            boxSize='50px'
+                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
+                            onClick={(e) => {
+                                // route to profile page
+                                e.preventDefault();
+                                window.location.href = '/auth/signin';
+                            }}
+                        />
+                    )}
                 </HStack>
             </Flex>
 
