@@ -114,7 +114,7 @@ function SearchResult() {
 
       <Box margin="auto" pt={3} pl={10}>
         <VStack align="left" spacing={30}>
-          <SimpleGrid columns={{ base: 1, md: 4 }} spacing={10} mt={10} mx={10}>
+          <SimpleGrid columns={{ base: 1, md: 4 }} spacing={10} mt={10} mx={4}>
             {displayedResults.map((result, index) => (
               <ListingCard src={result} key={index}></ListingCard>
             ))}
