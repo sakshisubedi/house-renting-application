@@ -233,7 +233,6 @@ const getListingBySearchParameter = (models) => {
     }
 }
 
-
 module.exports = {
     createListing,
     updateListing,

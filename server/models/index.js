@@ -28,7 +28,7 @@ module.exports = async ({$env}) => {
         const rating = connection.model('Rating', ratingSchema);
         const user = connection.model('User', userSchema);
         const wishlist = connection.model('Wishlist', wishlistSchema);
-        
+
         const model = {
             comment,
             landlord,
