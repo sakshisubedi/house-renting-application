@@ -19,6 +19,7 @@ import EmailVerification from "./Components/auth/EmailVerification";
 import ForgetPassword from "./Components/auth/ForgetPassword";
 import Signin from "./Components/auth/Signin";
 import Signup from "./Components/auth/Signup";
+import InterestedPeopleList from "./Components/InterestedPeopleList";
 
 function App() {
   return (
