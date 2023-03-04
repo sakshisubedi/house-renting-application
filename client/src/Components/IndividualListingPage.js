@@ -25,22 +25,19 @@ import {
   PhoneIcon,
   StarIcon,
 } from "@chakra-ui/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import favIcon from "../img/fullHeart.jpg";
 import emptyHeart from "../img/heart.jpg"; // NEED TO GET CORRECT EMPTY HEART IMAGE
 import { useLocation } from "react-router-dom";
 import { BiHide } from "react-icons/bi";
 import StarRatings from 'react-star-ratings';
+import { getListingById } from "../services/listingApis";
+import { getAverageRatingByListingId } from "../services/ratingApis";
+import { getLandlordInfoById } from "../services/landlordApis";
 
 function IndividualListingPage() {
   // need to get actual data from PASSED PARAMS IN STATE or API CALLS
-
-  let landlordData = {
-    name: "Pratyush Karmakar",
-    email: "pkarmakar@ucsd.edu",
-    phoneNo: "123-456-7890",
-  };
 
   let wishlistedPeople = [
     {
@@ -165,25 +162,12 @@ function IndividualListingPage() {
     },
   ];
 
-  let tempData = {
-    name: "Palm Harbor",
-    address: "2699 Green Valley, La Jolla, CA",
-    rent: 2000,
-    rating: 4.5,
-    landlordId: null,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    media: null,
-    bedrooms: 1,
-    bathrooms: 1,
-    squareFeet: 1000,
-    hasPet: true,
-    postalCode: "92092",
-    timestamp: Date(),
-  };
-
-  const [isWishlisted, setIsWishlisted] = React.useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
-  const [currentRating, setCurrentRating] = React.useState(0); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
+  const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
+  const [currentRating, setCurrentRating] = useState(0); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
+  const [listingInfo, setListingInfo] = useState(null);
+  const [averageRating, setAverageRating] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+  const [landlordInfo, setLandlordInfo] = useState(null);
 
   const changeCurrentRating = (value) => {
     setCurrentRating(value);
@@ -193,19 +177,48 @@ function IndividualListingPage() {
   const toast = useToast();
 
   const location = useLocation();
-  tempData = location.state ?? tempData;
 
-  let avgRating = 4.2; // NEED TO GET CORRECT VALUE
+  useEffect(() => {
+    const listingId = location.pathname.split("/").pop();
+
+    async function getListing() {
+      const response = await getListingById(listingId);
+      if(response?.data) {
+        setListingInfo(response.data);
+        getLandlordInfo(response.data.landlordId);
+      }
+    }
+    
+    async function getAverageRating() {
+      const response = await getAverageRatingByListingId(listingId);
+      console.log(response);
+      if(response?.data && response.data.length>0) {
+        setAverageRating(response.data[0].averageRating);
+        setReviewCount(response.data[0].reviewCount);
+      }
+    }
+
+    async function getLandlordInfo(landlordId) {
+      const response = await getLandlordInfoById(landlordId);
+      if(response?.data) {
+        setLandlordInfo(response.data);
+      }
+    }
+
+    getListing();
+    getAverageRating();
+  }, [location])
 
   return (
-    <Box>
+    listingInfo && landlordInfo && (
+      <Box>
       <NavBar />
       <Box my={50} ml={150} mr={150}>
         <HStack spacing={5}>
           <Box>
             <VStack spacing={5} align={"left"}>
-              <Heading size={"2xl"}>{tempData.name}</Heading>
-              <Text fontSize={"xl"}>{tempData.address}</Text>
+              <Heading size={"2xl"}>{listingInfo.name}</Heading>
+              <Text fontSize={"xl"}>{listingInfo.address}</Text>
               <HStack>
                 <Box fontSize={"xl"}>Rent Price :</Box>
                 <Box
@@ -214,7 +227,7 @@ function IndividualListingPage() {
                   letterSpacing="wide"
                   fontSize="2xl"
                 >
-                  ${tempData.rent}
+                  ${listingInfo.rent}
                   <Box
                     as="span"
                     color="#3062D5"
@@ -233,10 +246,10 @@ function IndividualListingPage() {
               <HStack spacing={2}>
                 <StarIcon color={"#F6E05E"} boxSize={"30px"} />
                 <Text fontWeight={"bold"} fontSize={"3xl"}>
-                  {avgRating}
+                  {averageRating}
                 </Text>
                 {/* NEED TO GET CORRECT VALUE HERE */}
-                <Text>(120 reviews)</Text>
+                <Text>({reviewCount} reviews)</Text>
               </HStack>
               <IconButton
                 bg={"white"}
@@ -286,30 +299,30 @@ function IndividualListingPage() {
               >
                 <VStack spacing={2} w={"25%"}>
                   <Text>Bedrooms</Text>
-                  <Text fontWeight={"bold"}>{tempData.bedrooms}</Text>
+                  <Text fontWeight={"bold"}>{listingInfo.bedrooms}</Text>
                 </VStack>
                 {/* <Spacer /> */}
                 <VStack spacing={2} w={"25%"}>
                   <Text>Bathrooms</Text>
-                  <Text fontWeight={"bold"}>{tempData.bathrooms}</Text>
+                  <Text fontWeight={"bold"}>{listingInfo.bathrooms}</Text>
                 </VStack>
                 {/* <Spacer /> */}
                 <VStack spacing={2} w={"25%"}>
                   <Text>Area</Text>
-                  <Text fontWeight={"bold"}>{tempData.squareFeet}</Text>
+                  <Text fontWeight={"bold"}>{listingInfo.squareFeet}</Text>
                 </VStack>
                 {/* <Spacer /> */}
                 <VStack spacing={2} w={"25%"}>
                   <Text>Pets</Text>
                   <Text fontWeight={"bold"}>
-                    {tempData.hasPet ? "Yes" : "No"}
+                    {listingInfo.hasPet ? "Yes" : "No"}
                   </Text>
                 </VStack>
               </HStack>
               <Heading my={5} size={"lg"}>
                 Overview
               </Heading>
-              <Text>{tempData.description}</Text>
+              <Text>{listingInfo.description}</Text>
               <HStack spacing={5}>
                 <Heading my={5} size={"lg"}>
                   Add a Star Rating
@@ -386,18 +399,18 @@ function IndividualListingPage() {
             >
               <VStack spacing={5}>
                 <HStack spacing={10} w={"full"}>
-                  <Avatar name={landlordData.name} />
+                  <Avatar name={landlordInfo.name} />
                   <Text fontWeight={"bold"} align={"right"} noOfLines={1}>
-                    {landlordData.name}
+                    {landlordInfo.name}
                   </Text>
                 </HStack>
                 <HStack spacing={10} w={"full"}>
                   <EmailIcon />
-                  <Text noOfLines={1}>{landlordData.email}</Text>
+                  <Text noOfLines={1}>{landlordInfo.email}</Text>
                 </HStack>
                 <HStack spacing={10} w={"full"}>
                   <PhoneIcon />
-                  <Text noOfLines={1}>{landlordData.phoneNo}</Text>
+                  <Text noOfLines={1}>{landlordInfo.phoneNo}</Text>
                 </HStack>
               </VStack>
             </Box>
@@ -482,6 +495,7 @@ function IndividualListingPage() {
         </HStack>
       </Box>
     </Box>
+    )
   );
 }
 
