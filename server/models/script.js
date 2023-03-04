@@ -34,7 +34,6 @@ async function loadDummyData(models) {
         name: "Palm Harbor",
         address: "2699 Green Valley, La Jolla, CA",
         rent: 2000,
-        rating: 4.5,
         landlordId: landlordResponse._id, //mongoose.Types.ObjectId("63f10620bd3c661e18934201"),
         description: "The kitchen overlooks the Dinette that leads into the family room",
         media: [],
@@ -74,6 +73,13 @@ async function loadDummyData(models) {
         userId: userResponse._id,
     })
     const likeResponse = await like.save();
+
+    const rating = new models.rating({
+        listingId: listingResponse._id,
+        userId: userResponse._id,
+        rating: 4
+    })
+    const ratingResponse = await rating.save();
 }
 
 module.exports = loadDummyData;

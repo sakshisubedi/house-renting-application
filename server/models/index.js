@@ -3,6 +3,7 @@ const commentSchema = require("./comment");
 const landlordSchema = require("./landlord");
 const likeSchema = require("./like");
 const listingSchema = require("./listing");
+const ratingSchema = require("./rating");
 const loadDummyData = require("./script");
 const userSchema = require("./user");
 const wishlistSchema = require("./wishlist");
@@ -24,13 +25,16 @@ module.exports = async ({$env}) => {
         const landlord = connection.model('Landlord', landlordSchema);
         const like = connection.model('Like', likeSchema);
         const listing = connection.model('Listing', listingSchema);
+        const rating = connection.model('Rating', ratingSchema);
         const user = connection.model('User', userSchema);
         const wishlist = connection.model('Wishlist', wishlistSchema);
+        
         const model = {
             comment,
             landlord,
             like,
             listing,
+            rating,
             user,
             wishlist
         }
