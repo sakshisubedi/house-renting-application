@@ -158,7 +158,34 @@ function FilterRow() {
           </MenuList>
         </Menu> */}
 
-        { /*Baths */}
+        {/*Baths */}
+        {/*Baths*/}
+        {/* <Menu>
+          <MenuButton
+            as={Box}
+            w="150px"
+            h="83px"
+            borderRadius="10px"
+            bg="#eaebef"
+            border="1px solid #eaebef"
+            fontSize="27px"
+            px={10}
+          >
+            <HStack
+              justifyContent="space-evenly"
+              textAlign="center"
+              lineHeight="83px"
+            >
+              <Box mr={1}>Baths</Box>
+              <Icon as={FaChevronDown} fontSize="sm" />
+            </HStack>
+          </MenuButton>
+          <MenuList>
+            <MenuItem value="banana">1 bathroom</MenuItem>
+            <MenuItem value="orange">2 bathrooms</MenuItem>
+            <MenuItem value="strawberry">3 Bathrooms</MenuItem>
+          </MenuList>
+        </Menu> */}
         <Select
           placeholder="Bathrooms"
           h="83px"
