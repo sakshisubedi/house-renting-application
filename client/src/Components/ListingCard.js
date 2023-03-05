@@ -11,48 +11,62 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import React from "react";
-import heart from "../img/Union.svg";
+import { useNavigate } from "react-router-dom";
+import heart from '../img/Union.svg'
+import emptyHeart from '../img/emptyHeartButton.svg'
 
 const ListingCard = ({ src }) => {
-  return (
-    <LinkBox maxW="sm" borderWidth="1px" borderRadius={20} overflow="hidden">
-      <Image objectFit="fill" w="100%" src={src.img} alt="card image" />
-      <Box p="4">
-        <HStack>
-          <Box
-            color="#3062D5"
-            fontWeight="bold"
-            letterSpacing="wide"
-            fontSize="xl"
-          >
-            ${src.rent}
-            <Box as="span" color="#3062D5" fontWeight="semibold" fontSize="sm">
-              /month
-            </Box>
-          </Box>
-        </HStack>
+    const [like, setLike] = React.useState("true");
 
-        <Flex justifyContent="space-between" alignContent="center">
-          <Box
-            fontWeight="bold"
-            lineHeight="tight"
-            noOfLines={1}
-            fontSize="3xl"
-          >
-            <LinkOverlay href="#">
-              {/* route to detailed listing page */}
-              {src.name}
-            </LinkOverlay>
-          </Box>
-          <IconButton
-            bg="#FFFFFF"
-            icon={<Image src={heart} boxSize={30} alt="heart" />}
-            onClick={(e) => {
-              // cancel wishlist
-              e.preventDefault();
-            }}
-          />
-        </Flex>
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        setLike(current => !current);
+      };
+
+    return (
+        <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
+            <Image objectFit='fill' w="100%" src={src.img} alt="card image" />
+            <Box p='4'>
+                <HStack>
+                    <Box
+                        color='#3062D5'
+                        fontWeight='bold'
+                        letterSpacing='wide'
+                        fontSize='xl'
+                    >
+                        ${src.rent}
+                        <Box as='span' color='#3062D5' fontWeight='semibold' fontSize='sm'>
+                            /month
+                        </Box>
+                    </Box>
+                </HStack>
+
+                <Flex justifyContent="space-between" alignContent="center">
+                    <Box
+                        fontWeight='bold'
+                        lineHeight='tight'
+                        noOfLines={1}
+                        fontSize='3xl'
+                    >
+                        <LinkOverlay onClick={(e) => {
+                            navigate("/individualListingPage");
+                        }}> 
+                        {/* route to detailed listing page */}
+                            {src.name}
+                        </LinkOverlay>
+
+                    </Box>
+                    <IconButton
+                        bg="#FFFFFF"
+                        icon={<Image src={like ? heart : emptyHeart} boxSize={30} alt="heart" />}
+                        onClick={(e) => {
+                            // cancel wishlist
+                            e.preventDefault();
+                            handleClick();
+                        }}
+                    />
+                </Flex>
 
         <Box color="#505050" lineHeight="tight" noOfLines={1}>
           {src.address}
