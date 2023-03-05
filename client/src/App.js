@@ -19,6 +19,7 @@ import EmailVerification from "./Components/auth/EmailVerification";
 import ForgetPassword from "./Components/auth/ForgetPassword";
 import Signin from "./Components/auth/Signin";
 import Signup from "./Components/auth/Signup";
+import InterestedPeopleList from "./Components/InterestedPeopleList";
 
 function App() {
   return (
@@ -28,12 +29,6 @@ function App() {
         <Routes>
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/search" element={<SearchResult />} />
-
-          {/* Need to link to Landing Page */}
-          {/* <Route
-            path="/"
-            element={<LandingPage />}
-          /> */}
           <Route
             path="/customer/me"
             element={<EditCustomerProfilePage />}

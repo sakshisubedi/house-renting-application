@@ -11,9 +11,19 @@ import {
     HStack
 } from "@chakra-ui/react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import heart from '../img/Union.svg'
+import emptyHeart from '../img/emptyHeartButton.svg'
 
 const ListingCard = ({ src }) => {
+    const [like, setLike] = React.useState("true");
+
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        setLike(current => !current);
+      };
+
     return (
         <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
             <Image objectFit='fill' w="100%" src={src.img} alt="card image" />
@@ -32,8 +42,6 @@ const ListingCard = ({ src }) => {
                     </Box>
                 </HStack>
 
-
-
                 <Flex justifyContent="space-between" alignContent="center">
                     <Box
                         fontWeight='bold'
@@ -41,17 +49,21 @@ const ListingCard = ({ src }) => {
                         noOfLines={1}
                         fontSize='3xl'
                     >
-                        <LinkOverlay href='#'>
+                        <LinkOverlay onClick={(e) => {
+                            navigate("/individualListingPage");
+                        }}> 
+                        {/* route to detailed listing page */}
                             {src.name}
                         </LinkOverlay>
 
                     </Box>
                     <IconButton
                         bg="#FFFFFF"
-                        icon={<Image src={heart} boxSize={30} alt="heart" />}
+                        icon={<Image src={like ? heart : emptyHeart} boxSize={30} alt="heart" />}
                         onClick={(e) => {
                             // cancel wishlist
                             e.preventDefault();
+                            handleClick();
                         }}
                     />
                 </Flex>
