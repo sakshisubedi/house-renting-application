@@ -14,7 +14,7 @@ export default function Buttons() {
       align="center"
       width="200px"
       margin="auto"
-      py={10}
+      py={5}
     >
       <Button
         fontFamily="Inter"
