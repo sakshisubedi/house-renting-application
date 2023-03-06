@@ -167,7 +167,7 @@ function IndividualListingPage() {
     },
   ];
 
-  let tempData = {
+  let listingData = {
     name: "Palm Harbor",
     address: "2699 Green Valley, La Jolla, CA",
     rent: 2000,
@@ -195,7 +195,7 @@ function IndividualListingPage() {
   const toast = useToast();
 
   const location = useLocation();
-  tempData = location.state ?? tempData;
+  listingData = location.state.listing ?? listingData;
 
   let avgRating = 4.2; // NEED TO GET CORRECT VALUE
 
@@ -206,8 +206,8 @@ function IndividualListingPage() {
         <HStack spacing={5}>
           <Box>
             <VStack spacing={5} align={"left"}>
-              <Heading size={"2xl"}>{tempData.name}</Heading>
-              <Text fontSize={"xl"}>{tempData.address}</Text>
+              <Heading size={"2xl"}>{listingData.name}</Heading>
+              <Text fontSize={"xl"}>{listingData.address}</Text>
               <HStack>
                 <Box fontSize={"xl"}>Rent Price :</Box>
                 <Box
@@ -216,7 +216,7 @@ function IndividualListingPage() {
                   letterSpacing="wide"
                   fontSize="2xl"
                 >
-                  ${tempData.rent}
+                  ${listingData.rent}
                   <Box
                     as="span"
                     color="#3062D5"
@@ -269,9 +269,9 @@ function IndividualListingPage() {
         >
           {/* IMAGES */}
           {/* <HStack p={1} spacing={5}>
-            <Image rounded={"2xl"} src={tempData.img ?? null} />
+            <Image rounded={"2xl"} src={listingData.img ?? null} />
             <Spacer/>
-            <Image rounded={"2xl"} src={tempData.img ?? null} />
+            <Image rounded={"2xl"} src={listingData.img ?? null} />
           </HStack> */}
         </Box>
         <HStack spacing={5} align={"top"}>
@@ -288,30 +288,30 @@ function IndividualListingPage() {
               >
                 <VStack spacing={2} w={"25%"}>
                   <Text>Bedrooms</Text>
-                  <Text fontWeight={"bold"}>{tempData.bedrooms}</Text>
+                  <Text fontWeight={"bold"}>{listingData.bedrooms}</Text>
                 </VStack>
                 {/* <Spacer /> */}
                 <VStack spacing={2} w={"25%"}>
                   <Text>Bathrooms</Text>
-                  <Text fontWeight={"bold"}>{tempData.bathrooms}</Text>
+                  <Text fontWeight={"bold"}>{listingData.bathrooms}</Text>
                 </VStack>
                 {/* <Spacer /> */}
                 <VStack spacing={2} w={"25%"}>
                   <Text>Area</Text>
-                  <Text fontWeight={"bold"}>{tempData.squareFeet}</Text>
+                  <Text fontWeight={"bold"}>{listingData.squareFeet}</Text>
                 </VStack>
                 {/* <Spacer /> */}
                 <VStack spacing={2} w={"25%"}>
                   <Text>Pets</Text>
                   <Text fontWeight={"bold"}>
-                    {tempData.hasPet ? "Yes" : "No"}
+                    {listingData.hasPet ? "Yes" : "No"}
                   </Text>
                 </VStack>
               </HStack>
               <Heading my={5} size={"lg"}>
                 Overview
               </Heading>
-              <Text>{tempData.description}</Text>
+              <Text>{listingData.description}</Text>
               <HStack spacing={5}>
                 <Heading my={5} size={"lg"}>
                   Add a Star Rating
