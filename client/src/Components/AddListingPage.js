@@ -16,9 +16,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { createListing } from "../services/listingApis";
-
 import NavBar from "./NavBar";
-// import axios from "axios";
 
 function AddListingPage() {
   const toast = useToast();
@@ -32,32 +30,6 @@ function AddListingPage() {
   const [area, setArea] = React.useState();
   const [pets, setPets] = React.useState();
   const [desc, setDesc] = React.useState();
-
-  const updateListingData = () => {
-    const newListing = {};
-    newListing.name = name;
-    newListing.price = parseInt(price);
-    newListing.address = address;
-    newListing.zipcode = parseInt(zipcode);
-    newListing.bedrooms = bedrooms ? parseInt(bedrooms) : undefined;
-    newListing.bathrooms = bathrooms ? parseInt(bathrooms) : undefined;
-    newListing.area = area ? parseInt(area) : undefined;
-    newListing.pets = pets ? (pets === "true") : undefined;
-    newListing.desc = desc;
-    console.log("new listing = ", newListing);
-
-    // need to transform tempData into proper DB schema format
-    // SAVE TO DB
-
-    // axios
-    //   .post("http://localhost:4000/api/v1/listing", newListing, {
-    //     method: "POST",
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //   });
-  };
-
 
   const addListing = async () => {
     const newListing = {
@@ -82,12 +54,14 @@ function AddListingPage() {
         title: "Failed",
         description: response?.error,
         status: "error",
+        position: "top-right"
       });
     } else {
       toast({
         title: "Success",
         description: "Successfully added listing",
         status: "success",
+        position: "top-right"
       });
     }
   }
@@ -104,18 +78,19 @@ function AddListingPage() {
             onSubmit={(e) => {
               // e.preventDefault();
               try {
-                // updateListingData();
                 addListing();
                 toast({
                   title: "Success",
                   description: "Changes Saved",
                   status: "success",
+                  position: "top-right"
                 });
               } catch (error) {
                 toast({
                   title: "Failed",
                   description: error,
                   status: "error",
+                  position: "top-right"
                 });
               }
             }}
