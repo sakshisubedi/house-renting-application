@@ -13,8 +13,8 @@ export const isValidEmail = (email) => {
 };
 
 const validateUserInfo = ({ email, password }) => {
-  if (!email.trim()) return { ok: false, error: "Email is missing!" };
-  if (!isValidEmail(email)) return { ok: false, error: "Invalid email!" };
+  if (!email.data.trim()) return { ok: false, error: "Email is missing!" };
+  if (!isValidEmail(email.data)) return { ok: false, error: "Invalid email!" };
 
   if (!password.trim()) return { ok: false, error: "Password is missing!" };
   if (password.length < 8)
@@ -25,7 +25,10 @@ const validateUserInfo = ({ email, password }) => {
 
 export default function Signin() {
   const [userInfo, setUserInfo] = useState({
-    email: "",
+    email: {
+      isPublic: false,
+      data: ""
+    },
     password: "",
   });
 
@@ -36,7 +39,17 @@ export default function Signin() {
 
   const handleChange = ({ target }) => {
     const { value, name } = target;
-    setUserInfo({ ...userInfo, [name]: value });
+    if (name === "email") {
+      setUserInfo({
+        ...userInfo,
+        email: {
+          ...userInfo.email,
+          data: value
+        },
+      });
+    } else {
+      setUserInfo({ ...userInfo, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -48,8 +61,7 @@ export default function Signin() {
   };
 
   useEffect(() => {
-    // we want to move our user to somewhere else
-    if (isLoggedIn) navigate("/");
+    if (isLoggedIn) navigate("/landing");
   }, [isLoggedIn]);
 
   return (
@@ -63,7 +75,7 @@ export default function Signin() {
               LOGIN
             </h1>
             <FormInput
-              value={userInfo.email}
+              value={userInfo.email.data}
               onChange={handleChange}
               label="Email *"
               placeholder="Enter Email"

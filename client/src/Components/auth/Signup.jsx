@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "./auth"
+import { newUser } from "./auth"
 import { useAuth, useNotification } from "./context/hookIndex";
 import CustomLink from "./CustomLink";
 import FormInput from "./FormInput";
@@ -19,8 +19,8 @@ const validateUserInfo = ({ name, email, password }) => {
   if (!name.trim()) return { ok: false, error: "Name is missing!" };
   if (!isValidName.test(name)) return { ok: false, error: "Invalid name!" };
 
-  if (!email.trim()) return { ok: false, error: "Email is missing!" };
-  if (!isValidEmail(email)) return { ok: false, error: "Invalid email!" };
+  if (!email.data.trim()) return { ok: false, error: "Email is missing!" };
+  if (!isValidEmail(email.data)) return { ok: false, error: "Invalid email!" };
 
   if (!password.trim()) return { ok: false, error: "Password is missing!" };
   if (password.length < 8)
@@ -32,7 +32,10 @@ const validateUserInfo = ({ name, email, password }) => {
 export default function Signup() {
   const [userInfo, setUserInfo] = useState({
     name: "",
-    email: "",
+    email: {
+      isPublic: false,
+      data: ""
+    },
     password: "",
   });
 
@@ -44,7 +47,17 @@ export default function Signup() {
 
   const handleChange = ({ target }) => {
     const { value, name } = target;
-    setUserInfo({ ...userInfo, [name]: value });
+    if (name === "email") {
+      setUserInfo({
+        ...userInfo,
+        email: {
+          ...userInfo.email,
+          data: value
+        },
+      });
+    } else {
+      setUserInfo({ ...userInfo, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -53,7 +66,7 @@ export default function Signup() {
 
     if (!ok) return updateNotification("error", error);
 
-    const response = await createUser(userInfo);
+    const response = await newUser(userInfo);
     if (response.error) return console.log(response.error);
 
     navigate("/auth/verification", {
@@ -63,7 +76,6 @@ export default function Signup() {
   };
 
   useEffect(() => {
-    // we want to move our user to somewhere else
     if (isLoggedIn) navigate("/");
   }, [isLoggedIn]);
 
@@ -85,7 +97,7 @@ export default function Signup() {
               name="name"
             />
             <FormInput
-              value={email}
+              value={email.data}
               onChange={handleChange}
               label="Email *"
               placeholder="Enter Email"
