@@ -13,7 +13,7 @@ import { FaChevronDown } from "react-icons/fa";
 
 import React, { useState } from "react";
 
-function FilterRow() {
+function FilterRow(props) {
   let tempData = {
     name: "xyz",
     email: "xyz@gmail.com",
@@ -29,6 +29,12 @@ function FilterRow() {
   const [beds, setBeds] = React.useState(tempData.pronouns ?? null);
   const [baths, setBaths] = React.useState(tempData.pronouns ?? null);
   const [more, setMore] = React.useState(tempData.pronouns ?? null);
+
+  const handleInputChange = async (event) => {
+    props.search(event.target.value);
+  };
+
+
   return (
     <Box my={10}>
       {/* <Flex pl={10} pt={5}> */}
@@ -50,6 +56,7 @@ function FilterRow() {
             fontSize="27px"
             outline="none"
             px={4}
+            onChange={handleInputChange}
           />
         </Box>
         {/*Price */}
