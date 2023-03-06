@@ -79,7 +79,7 @@ export async function getListingRating(landlordId) {
 
 export async function getListingBySearchParameter(postalCode) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/listing/search?postalCode=${postalCode}`);
+        const { data } = await axios.get(`api/v1/listing/search?postalCode=${postalCode}`);
         return data;
     } catch (error) {
         return {
