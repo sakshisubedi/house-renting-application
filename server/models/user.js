@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt')
 
 // User Collection Schema
 const userSchema = new mongoose.Schema({
@@ -20,6 +21,11 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    isVerified: {
+        type: Boolean,
+        required: true,
+        default: false
     },
     pronoun: {
         type: String,
@@ -64,5 +70,19 @@ const userSchema = new mongoose.Schema({
         default: null
     }
 }, { timestamps: true });
+
+// password security
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+
+    next();
+});
+
+userSchema.methods.comparePassword = async function (password) {
+    const result = await bcrypt.compare(password, this.password);
+    return result;
+};
 
 module.exports = userSchema;
