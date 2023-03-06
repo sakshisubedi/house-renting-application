@@ -40,6 +40,20 @@ function EditLandlordProfilePage() {
     __v: 0,
   };
 
+  let tempListing = {
+    img: house1,
+    name: "Palm Harbor",
+    address: "4067 Miramar St, La Jolla, CA 92092",
+    rent: "1900",
+    reviewCount: 34,
+    rating: 3.3,
+    // parameters...
+    bedrooms: 3,
+    bathrooms: 2,
+    squareFeet: 1200,
+    petFriendly: "allowed",
+    postalCode: 920092,
+  };
   const [desc, setDesc] = React.useState(landlordData.introduction ?? null);
   const [pronouns, setPronouns] = React.useState(landlordData.pronoun ?? null);
   const [age, setAge] = React.useState(landlordData.age ?? null);
