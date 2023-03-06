@@ -20,7 +20,9 @@ import { CheckCircleIcon } from "@chakra-ui/icons";
 import { updateLandlord } from "../services/landlordApis";
 import React from "react";
 import NavBar from "./NavBar";
-
+import LandlordViewCard from "./LandlordViewCard";
+import house1 from "../img/house1.jpg";
+import ListingCard from "./ListingCard";
 function EditLandlordProfilePage() {
   // need to get actual data from db
 
@@ -39,7 +41,6 @@ function EditLandlordProfilePage() {
     updatedAt: "2023-03-06T21:09:13.377Z",
     __v: 0,
   };
-
   let tempListing = {
     img: house1,
     name: "Palm Harbor",
@@ -179,24 +180,24 @@ function EditLandlordProfilePage() {
                 <HStack>
                   <FormLabel w={"50%"}>Age</FormLabel>
                   <Input
-                      type="number"
-                      placeholder="Enter your age..."
-                      defaultValue={age}
-                      w="50%"
-                      onChange={(e) => setAge(e.target.value)}
-                    />
+                    type="number"
+                    placeholder="Enter your age..."
+                    defaultValue={age}
+                    w="50%"
+                    onChange={(e) => setAge(e.target.value)}
+                  />
                 </HStack>
               </FormControl>
               <FormControl id="phone">
                 <HStack>
                   <FormLabel w={"50%"}>Phone Number</FormLabel>
                   <Input
-                      type="text"
-                      placeholder="Enter your phone no..."
-                      defaultValue={phone}
-                      w="50%"
-                      onChange={(e) => setPhone(e.target.value)}
-                    />
+                    type="text"
+                    placeholder="Enter your phone no..."
+                    defaultValue={phone}
+                    w="50%"
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
                 </HStack>
               </FormControl>
             </VStack>
@@ -217,7 +218,13 @@ function EditLandlordProfilePage() {
                 Add Listing
               </Button>
             </Flex>
-            <Box mt={5}>{/* All listings go here */}</Box>
+            <Box mt={10}>
+              {/* <LandlordViewCard></LandlordViewCard> */}
+              <LandlordViewCard ard src={tempListing}>
+                {" "}
+              </LandlordViewCard>
+              {/* All listings go here */}
+            </Box>
           </Box>
         </Box>
       </Box>

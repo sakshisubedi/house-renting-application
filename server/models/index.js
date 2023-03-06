@@ -6,6 +6,8 @@ const listingSchema = require("./listing");
 const loadDummyData = require("./script");
 const userSchema = require("./user");
 const wishlistSchema = require("./wishlist");
+const emailVerificationTokenSchema = require("./emailVerificationToken")
+const passwordResetTokenSchema = require("./passwordResetToken")
 
 module.exports = async ({$env}) => {
     let connection;
@@ -26,13 +28,17 @@ module.exports = async ({$env}) => {
         const listing = connection.model('Listing', listingSchema);
         const user = connection.model('User', userSchema);
         const wishlist = connection.model('Wishlist', wishlistSchema);
+        const emailVerificationToken = connection.model('emailVerificationToken', emailVerificationTokenSchema)
+        const passwordResetToken = connection.model('passwordResetToken', passwordResetTokenSchema)
         const model = {
             comment,
             landlord,
             like,
             listing,
             user,
-            wishlist
+            wishlist,
+            emailVerificationToken,
+            passwordResetToken
         }
         // populate db
         // loadDummyData(model);

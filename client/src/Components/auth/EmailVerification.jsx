@@ -77,7 +77,6 @@ export default function EmailVerification() {
       return updateNotification("error", "invalid OTP");
     }
 
-    // submit otp
     const {
       error,
       message,
@@ -98,8 +97,8 @@ export default function EmailVerification() {
   }, [activeOtpIndex]);
 
   useEffect(() => {
-    if (!user) navigate("/not-found");
-    if (isLoggedIn && isVerified) navigate("/");
+    if (!user) navigate('/landing');
+    if (isLoggedIn && isVerified) navigate('/landing');
   }, [user, isLoggedIn, isVerified]);
 
   return (
