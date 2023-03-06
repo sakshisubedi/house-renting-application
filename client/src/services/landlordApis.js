@@ -1,10 +1,8 @@
 import axios from "axios";
-import env from "../environment";
-const BASE_URL = env.BASE_URL;
 
 export async function createLandlord(landlord) {
     try {
-        const { data } = await axios.post(`${BASE_URL}/api/v1/landlord`, landlord);
+        const { data } = await axios.post(`api/v1/landlord`, landlord);
         return data;
     } catch (error) {
         return {
@@ -15,7 +13,7 @@ export async function createLandlord(landlord) {
 
 export async function updateLandlord(landlord, landlordId) {
     try {
-        const { data } = await axios.put(`${BASE_URL}/api/v1/landlord/${landlordId}`, landlord);
+        const { data } = await axios.put(`api/v1/landlord/${landlordId}`, landlord);
         return data;
     } catch (error) {
         return {
@@ -26,7 +24,7 @@ export async function updateLandlord(landlord, landlordId) {
 
 export async function getLandlordInfoById(landlordId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/landlord/${landlordId}`);
+        const { data } = await axios.get(`api/v1/landlord/${landlordId}`);
         return data;
     } catch (error) {
         return {
@@ -37,7 +35,7 @@ export async function getLandlordInfoById(landlordId) {
 
 export async function getLandlordProfilePicById(landlordId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/landlord/profilepic/${landlordId}`);
+        const { data } = await axios.get(`api/v1/landlord/profilepic/${landlordId}`);
         return data;
     } catch (error) {
         return {

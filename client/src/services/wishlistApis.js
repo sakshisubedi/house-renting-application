@@ -1,10 +1,8 @@
 import axios from "axios";
-import env from "../environment";
-const BASE_URL = env.BASE_URL;
 
 export async function createWishlistItem(wishlistItem) {
     try {
-        const { data } = await axios.post(`${BASE_URL}/api/v1/wishlist`, wishlistItem);
+        const { data } = await axios.post(`api/v1/wishlist`, wishlistItem);
         return data;
     } catch (error) {
         return {
@@ -15,7 +13,7 @@ export async function createWishlistItem(wishlistItem) {
 
 export async function getWishlistByUserId(userId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/${userId}}`);
+        const { data } = await axios.get(`api/v1/wishlist/${userId}}`);
         return data;
     } catch (error) {
         return {
@@ -26,7 +24,7 @@ export async function getWishlistByUserId(userId) {
 
 export async function deleteWishlistItem(wishlistId) {
     try {
-        const { data } = await axios.delete(`${BASE_URL}/api/v1/wishlist/${wishlistId}`);
+        const { data } = await axios.delete(`api/v1/wishlist/${wishlistId}`);
         return data;
     } catch (error) {
         return {

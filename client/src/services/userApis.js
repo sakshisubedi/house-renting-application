@@ -1,10 +1,8 @@
 import axios from "axios";
-import env from "../environment";
-const BASE_URL = env.BASE_URL;
 
 export async function createUser(user) {
     try {
-        const { data } = await axios.post(`${BASE_URL}/api/v1/user`, user);
+        const { data } = await axios.post(`api/v1/user`, user);
         return data;
     } catch (error) {
         return {
@@ -15,7 +13,7 @@ export async function createUser(user) {
 
 export async function updateUser(user, userId) {
     try {
-        const { data } = await axios.put(`${BASE_URL}/api/v1/user/${userId}`, user);
+        const { data } = await axios.put(`api/v1/user/${userId}`, user);
         return data;
     } catch (error) {
         return {
@@ -26,7 +24,7 @@ export async function updateUser(user, userId) {
 
 export async function getUsers() {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/user`);
+        const { data } = await axios.get(`api/v1/user`);
         return data;
     } catch (error) {
         return {
@@ -37,7 +35,7 @@ export async function getUsers() {
 
 export async function getUserAllInfoById(userId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/user/${userId}`);
+        const { data } = await axios.get(`api/v1/user/${userId}`);
         return data;
     } catch (error) {
         return {
@@ -48,7 +46,7 @@ export async function getUserAllInfoById(userId) {
 
 export async function getUserPublicInfoById(userId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/user/public/${userId}`);
+        const { data } = await axios.get(`api/v1/user/public/${userId}`);
         return data;
     } catch (error) {
         return {
@@ -59,7 +57,7 @@ export async function getUserPublicInfoById(userId) {
 
 export async function getUserProfilePicById(userId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/user/profilepic/${userId}`);
+        const { data } = await axios.get(`api/v1/user/profilepic/${userId}`);
         return data;
     } catch (error) {
         return {
