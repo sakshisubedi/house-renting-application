@@ -27,14 +27,16 @@ import {
 } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
-import favIcon from "../img/fullHeart.jpg";
-import emptyHeart from "../img/heart.jpg"; // NEED TO GET CORRECT EMPTY HEART IMAGE
+import favIcon from "../img/Union.svg";
+import emptyHeart from "../img/emptyHeartButton.svg";
 import { useLocation } from "react-router-dom";
 import { BiHide } from "react-icons/bi";
 import StarRatings from 'react-star-ratings';
 import { getListingById } from "../services/listingApis";
 import { getAverageRatingByListingId } from "../services/ratingApis";
 import { getLandlordInfoById } from "../services/landlordApis";
+import InterestedPeopleList from "./InterestedPeopleList";
+import DetailedProfile from "./DetailedProfile";
 
 function IndividualListingPage() {
   // need to get actual data from PASSED PARAMS IN STATE or API CALLS
@@ -461,16 +463,7 @@ function IndividualListingPage() {
                         </HStack>
                       </VStack>
                       <Spacer />
-                      <Button
-                        colorScheme={"blue"}
-                        variant={"outline"}
-                        size={"xs"}
-                        onClick={() => {
-                          // OPEN POPUP/MODAL WITH PROFILE OF THIS USER
-                        }}
-                      >
-                        View
-                      </Button>
+                      <DetailedProfile p={person}></DetailedProfile>
                     </HStack>
                     <Divider borderWidth={"2px"} />
                   </Box>
@@ -479,15 +472,7 @@ function IndividualListingPage() {
               <Divider borderWidth={"3px"} />
               <Flex mt={2}>
                 <Spacer />
-                <Button
-                  colorScheme={"blue"}
-                  variant={"link"}
-                  onClick={() => {
-                    // OPEN POPUP/MODAL WITH ALL WISHLISTED USERS FOR THIS LISTING
-                  }}
-                >
-                  View All
-                </Button>
+                <InterestedPeopleList />
                 <Spacer />
               </Flex>
             </Box>

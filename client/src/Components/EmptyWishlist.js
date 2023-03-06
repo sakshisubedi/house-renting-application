@@ -6,9 +6,12 @@ import {
     Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import emptyList from '../img/emptyList.jpg'
 
-function EmptyWishlist() {
+const EmptyWishlist = () => {
+    const navigate = useNavigate();
+
     return (
         <Flex
             direction={{ base: 'column-reverse', md: 'row' }}
@@ -22,7 +25,7 @@ function EmptyWishlist() {
                     w={175}
                     mt={5}
                     onClick={() => {
-                        // Route to landing page
+                        navigate("/landingPage");
                     }}
                 >
                     Find Listings
