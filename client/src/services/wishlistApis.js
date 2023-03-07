@@ -15,7 +15,7 @@ export async function createWishlistItem(wishlistItem) {
 
 export async function getWishlistByUserId(userId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/${userId}}`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/${userId}`);
         return data;
     } catch (error) {
         return {

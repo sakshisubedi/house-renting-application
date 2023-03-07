@@ -12,22 +12,23 @@ import house1 from '../img/house1.jpg';
 import NavBar from "./NavBar";
 import EmptyWishlist from "./EmptyWishlist";
 import { getWishlistByUserId } from '../services/wishlistApis';
+import { getListingById } from "../services/listingApis";
 
 function WishlistPage() {
     // need to get actual data from db
 
     const tempData = {
-      name: "Jin Huangfu",
-      desc: "hi",
-      email: "jhuangfu@ucsd.edu",
-      pronouns: "She/Her/Hers",
-      age: 23,
-      occupation: "student",
-      datePref: "4 month",
-      spacePref: "1bd/1ba",
-      housematesBool: "No",
-      roommatePrefs: "prefs",
-      petsPref: "Yes",
+        name: "Jin Huangfu",
+        desc: "hi",
+        email: "jhuangfu@ucsd.edu",
+        pronouns: "She/Her/Hers",
+        age: 23,
+        occupation: "student",
+        datePref: "4 month",
+        spacePref: "1bd/1ba",
+        housematesBool: "No",
+        roommatePrefs: "prefs",
+        petsPref: "Yes",
     };
 
     // let tempListing = {
@@ -44,7 +45,7 @@ function WishlistPage() {
 
     // const toast = useToast();
 
-    let userData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+    let userData = {
         email: {
             isPublic: true,
             data: "abottrill2@unesco.org",
@@ -57,7 +58,7 @@ function WishlistPage() {
             isPublic: true,
             data: "Compensation Analyst",
         },
-        _id: "6406a03278cf68a5f9f4dd6e",
+        _id: "6406a03278cf68a5f9f4dd6f",
         name: "Ashton Bottrill",
         isVerified: true,
         pronoun: "He/Him",
@@ -69,59 +70,76 @@ function WishlistPage() {
         updatedAt: "2023-03-01T22:56:00.991Z",
     };
 
-    let wishlistData = [
-        {
-            img: house1,
-            name: "Listing 1",
-            address: "Unit 1202, 4067 Miramar St, La Jolla, CA 92092",
-            bedrooms: 3,
-            bathrooms: 2,
-            rent: '1900',
-            reviewCount: 34,
-            rating: 3.3,
-            squareFeet: 1200,
-        },
-        {
-            img: house1,
-            name: "Listing 2",
-            address: "7545 Charmant Dr, San Diego, CA 92122",
-            bedrooms: 2,
-            bathrooms: 1,
-            rent: '1500',
-            reviewCount: 7,
-            rating: 4.5,
-            squareFeet: 500,
-        }
-    ];
+    // let wishlistData = [
+    //     {
+    //         img: house1,
+    //         name: "Listing 1",
+    //         address: "Unit 1202, 4067 Miramar St, La Jolla, CA 92092",
+    //         bedrooms: 3,
+    //         bathrooms: 2,
+    //         rent: '1900',
+    //         reviewCount: 34,
+    //         rating: 3.3,
+    //         squareFeet: 1200,
+    //     },
+    //     {
+    //         img: house1,
+    //         name: "Listing 2",
+    //         address: "7545 Charmant Dr, San Diego, CA 92122",
+    //         bedrooms: 2,
+    //         bathrooms: 1,
+    //         rent: '1500',
+    //         reviewCount: 7,
+    //         rating: 4.5,
+    //         squareFeet: 500,
+    //     }
+    // ];
+
+    const [wishlistedListings, setwishlistedListings] = React.useState([]);
 
     const getUserWishlist = async () => {
         const response = await getWishlistByUserId(userData._id);
-        if (response?.error) {
-            wishlistData = 0;
-        } else {
-            wishlistData = response;
+        var listings = [];
+        if (!response?.error) { // traverse listing id to get listing data
+            for (const listingId of response.data) {
+                const listingDetail = await getListingById(listingId._id);
+                if (response?.error) { continue; }
+                else {
+                    listings.push(listingDetail.data);
+                }
+            }
         }
+        setwishlistedListings(listings);
     };
 
-    getUserWishlist();
+    // const wishlistData = getUserWishlist();
+    console.log(wishlistedListings);
+    // (async () => {
+    //     const wishlistData = console.log(await getUserWishlist())
+    // })()
 
     return (
         <Box>
             {/* <NavBar /> */}
             <NavBar profileURL={tempData.profile}></NavBar>
             <Box my={50} ml={200} mr={200}>
-                <Center >
-                    {wishlistData == 0 ? 
-                        (<EmptyWishlist></EmptyWishlist>)
-                        :
+                {wishlistedListings.length == 0 ?
+                    (
+                        <Center>
+                            <EmptyWishlist></EmptyWishlist>
+                        </Center>
+                    )
+                    :
+                    (
                         <VStack align="left" spacing={30}>
                             <Heading>Your Wishlist</Heading>
-                            <SimpleGrid columns={3} spacing={10}>
-                                {wishlistData.map( (listing, ind) => (<ListingCard src={listing}> </ListingCard>))}
-                            </SimpleGrid>
-                        </VStack>}
-                </Center>
-
+                            <Center>
+                                <SimpleGrid columns={3} spacing={10}>
+                                    {/* {wishlistData.map( (listing) => (<ListingCard src={listing}> </ListingCard>))} */}
+                                </SimpleGrid>
+                            </Center>
+                        </VStack>
+                    )}
             </Box>
         </Box>
     );
