@@ -4,6 +4,7 @@ import { useNotification } from "./context/hookIndex";
 import CustomLink from "./CustomLink";
 import FormInput from "./FormInput";
 import Submit from "./Submit";
+import NavBar from "../NavBar"
 
 export const isValidEmail = (email) => {
   const isValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -34,25 +35,29 @@ export default function ForgetPassword() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
-        <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
-          <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
-            Please Enter Your Email
-          </h1>
-          <FormInput
-            onChange={handleChange}
-            value={email.data}
-            label="Email *"
-            placeholder="Enter Email"
-            name="email"
-          />
-          <Submit value="Send Link" />
+    <div>
+      <NavBar />
 
-          <div className="flex justify-between">
-            <CustomLink to="/auth/signin">Sign in</CustomLink>
-            <CustomLink to="/auth/signup">Sign up</CustomLink>
-          </div>
-        </form>
+      <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
+          <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
+            <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
+              Please Enter Your Email
+            </h1>
+            <FormInput
+              onChange={handleChange}
+              value={email.data}
+              label="Email *"
+              placeholder="Enter Email"
+              name="email"
+            />
+            <Submit value="Send Link" />
+
+            <div className="flex justify-between">
+              <CustomLink to="/auth/signin">Sign in</CustomLink>
+              <CustomLink to="/auth/signup">Sign up</CustomLink>
+            </div>
+          </form>
+      </div>
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import axios from "axios";
+import env from "../environment";
+const BASE_URL = env.BASE_URL;
 
 export async function createListing(listing) {
     try {
-        const { data } = await axios.post(`api/v1/listing`, listing);
+        const { data } = await axios.post(`${BASE_URL}/api/v1/listing`, listing);
         return data;
     } catch (error) {
         return {
@@ -13,7 +15,7 @@ export async function createListing(listing) {
 
 export async function getListingsByRating() {
     try {
-        const { data } = await axios.get(`api/v1/listing/recommendation`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/listing/recommendation`);
         return data;
     } catch (error) {
         return {
@@ -24,7 +26,7 @@ export async function getListingsByRating() {
 
 export async function deleteListing(listingId) {
     try {
-        const { data } = await axios.delete(`api/v1/listing/${listingId}`);
+        const { data } = await axios.delete(`${BASE_URL}/api/v1/listing/${listingId}`);
         return data;
     } catch (error) {
         return {
@@ -35,7 +37,7 @@ export async function deleteListing(listingId) {
 
 export async function updateListing(listing, listingId) {
     try {
-        const { data } = await axios.put(`api/v1/listing/${listingId}`, listing);
+        const { data } = await axios.put(`${BASE_URL}/api/v1/listing/${listingId}`, listing);
         return data;
     } catch (error) {
         return {
@@ -46,7 +48,7 @@ export async function updateListing(listing, listingId) {
 
 export async function getListingById(listingId) {
     try {
-        const { data } = await axios.get(`api/v1/listing/${listingId}`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/listing/${listingId}`);
         return data;
     } catch (error) {
         return {
@@ -57,7 +59,7 @@ export async function getListingById(listingId) {
 
 export async function getListingByLandlordId(landlordId) {
     try {
-        const { data } = await axios.get(`api/v1/listing/landlord/${landlordId}`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/listing/landlord/${landlordId}`);
         return data;
     } catch (error) {
         return {
@@ -68,7 +70,7 @@ export async function getListingByLandlordId(landlordId) {
 
 export async function getListingRating(landlordId) {
     try {
-        const { data } = await axios.get(`api/v1/listing/landlord/${landlordId}/rating`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/listing/landlord/${landlordId}/rating`);
         return data;
     } catch (error) {
         return {
@@ -79,7 +81,7 @@ export async function getListingRating(landlordId) {
 
 export async function getListingBySearchParameter(postalCode) {
     try {
-        const { data } = await axios.get(`api/v1/listing/search?postalCode=${postalCode}`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/listing/search?postalCode=${postalCode}`);
         return data;
     } catch (error) {
         return {

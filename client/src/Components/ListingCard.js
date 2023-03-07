@@ -51,7 +51,7 @@ const ListingCard = ({ src }) => {
                     >
                         <LinkOverlay onClick={(e) => {
                             // navigate("/listing/me");
-                            navigate("/listing/me", { state: { listing: src } });
+                            navigate("/me", { state: { listing: src } });
                         }}> 
                         {/* route to detailed listing page */}
                             {src.name}
