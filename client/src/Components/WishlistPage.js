@@ -58,7 +58,7 @@ function WishlistPage() {
             isPublic: true,
             data: "Compensation Analyst",
         },
-        _id: "6406a03278cf68a5f9f4dd6f",
+        _id: "6406a03278cf68a5f9f4dd6e",
         name: "Ashton Bottrill",
         isVerified: true,
         pronoun: "He/Him",
@@ -110,6 +110,7 @@ function WishlistPage() {
             }
         }
         setwishlistedListings(listings);
+        console.log(listings);
     };
 
     // const wishlistData = getUserWishlist();
