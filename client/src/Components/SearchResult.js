@@ -105,41 +105,75 @@ function SearchResult() {
   return (
     <Box>
       <NavBar profileURL={tempData.profile}></NavBar>
-      <Box ml={5} mt={5}>
-        <Heading pl={10} pt={5} textAlign="left">
+      <Box>
+        <Heading
+          // margin="auto"
+          ml={8}
+          mt={5}
+          pl={10}
+          pt={5}
+          pr={5}
+          textAlign="left"
+        >
           Showing results for “Location”...
         </Heading>
-        <FilterRow></FilterRow>
+        <Flex
+          justifyContent="space-between"
+          alignItems="flex-start"
+          pl={10}
+          pr={5}
+          pt={5}
+          ml={8}
+        >
+          <FilterRow></FilterRow>
+          {/* <Button>Sort by</Button> */}
+        </Flex>
+        {/* <FilterRow></FilterRow> */}
       </Box>
 
-      <Box margin="auto" pt={3} pl={10}>
-        <VStack align="left" spacing={30}>
-          <SimpleGrid columns={{ base: 1, md: 4 }} spacing={10} mt={10} mx={4}>
+      <Box pt={3} pl={10}>
+        <VStack
+          // align="left"
+          spacing={30}
+          justifyContent="space-between"
+          alignItems="flex-start"
+          margin="auto"
+          ml={8}
+        >
+          <SimpleGrid
+            columns={{ base: 1, md: 4 }}
+            spacing={10}
+            mt={2}
+            // align="left"
+            // mx={4}
+            // margin="auto"
+          >
             {displayedResults.map((result, index) => (
               <ListingCard src={result} key={index}></ListingCard>
             ))}
           </SimpleGrid>
-          <Flex justifyContent={"center"} margin="auto" mt={10}>
-            <Box mt={10}>
-              {/* Display the pagination buttons */}
-              {Array.from(
-                { length: Math.ceil(results.length / resultsPerPage) },
-                (_, i) => i + 1
-              ).map((pageNumber) => (
-                <Button
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  mr={2}
-                  colorScheme={currentPage === pageNumber ? "blue" : "gray"}
-                  size="sm"
-                >
-                  {pageNumber}
-                </Button>
-              ))}
-            </Box>
-          </Flex>
-          <Box m={10}></Box>
+          {/**pagination */}
         </VStack>
+        <Flex justifyContent={"center"} margin="auto" mt={10}>
+          <Box mt={10}>
+            {/* Display the pagination buttons */}
+            {Array.from(
+              { length: Math.ceil(results.length / resultsPerPage) },
+              (_, i) => i + 1
+            ).map((pageNumber) => (
+              <Button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+                mr={2}
+                colorScheme={currentPage === pageNumber ? "blue" : "gray"}
+                size="sm"
+              >
+                {pageNumber}
+              </Button>
+            ))}
+          </Box>
+        </Flex>
+        <Box m={10}></Box>
       </Box>
     </Box>
   );

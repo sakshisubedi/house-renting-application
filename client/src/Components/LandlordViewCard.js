@@ -37,7 +37,7 @@ const LandlordViewCard = ({ src }) => {
       >
         <Flex alignItems="center">
           {/*Image on Listing Card */}
-          <Box w="20%" h="10%" borderRadius={15} pr={4}>
+          <Box w="20%" h="20%" borderRadius={15} pr={4}>
             <Image w="100%" src={src.img} alt="card image" borderRadius={15} />
           </Box>
           <Box w="80%" h="10%">
@@ -92,6 +92,7 @@ const LandlordViewCard = ({ src }) => {
                     icon={
                       <Image
                         width="100%"
+                        // h="80%"
                         objectFit="cover"
                         src={edit}
                         alt="logo"
@@ -107,8 +108,9 @@ const LandlordViewCard = ({ src }) => {
                     width="5px"
                     icon={
                       <Image
-                        width="100%"
-                        objectFit="cover"
+                        width="75%"
+                        h="85%"
+                        objectFit="fill"
                         src={delete1}
                         alt="logo"
                       />
@@ -134,18 +136,18 @@ const LandlordViewCard = ({ src }) => {
                 w="80%"
                 mr={20}
               >
-                <SimpleGrid columns={5} spacing={1} w="100%">
-                  <Box>BedRooms</Box>
+                <SimpleGrid columns={4} spacing={1} w="100%">
+                  <Box text-transform="lowercase">BedRooms</Box>
                   <Box>Bathrooms</Box>
                   <Box>SquareFeet</Box>
                   <Box>Pets</Box>
-                  <Box>Parameter 5</Box>
+                  {/* <Box>Parameter 5</Box> */}
 
                   <Text>{src.bedrooms} beds</Text>
                   <Text>{src.bathrooms} baths</Text>
                   <Text>{src.squareFeet} sqft</Text>
                   <Text>{src.petFriendly}</Text>
-                  <Text> Value</Text>
+                  {/* <Text> Value</Text> */}
                 </SimpleGrid>
               </Box>
               <Box mt={7} w="8%">

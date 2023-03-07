@@ -30,16 +30,14 @@ function FilterRow() {
   const [baths, setBaths] = React.useState(tempData.pronouns ?? null);
   const [more, setMore] = React.useState(tempData.pronouns ?? null);
   return (
-    <Box my={10}>
-      {/* <Flex pl={10} pt={5}> */}
-      <HStack spacing="20px" margin="auto" m={10}>
+    <Box my={5}>
+      <HStack spacing="20px">
         <Box
           w="630px"
-          h="83px"
+          h="75px"
           border="1px solid darkgray"
           borderRadius="15px"
           // ml={10}
-          m={0}
         >
           <Input
             id="search-input"
@@ -82,47 +80,56 @@ function FilterRow() {
         </Menu> */}
         <Select
           placeholder="Price"
-          h="83px"
+          h="75px"
           defaultValue={price}
           fontSize="25px"
           border="1px solid #eaebef"
-          w="max-content"
+          // w="max-content"
+          width="180px"
           borderRadius="10px"
           onChange={(e) => setPrice(e.target.value)}
           bg="#eaebef"
         >
-          <option value="2000+">2000+</option>
-          <option value="1000-2000">1000-2000</option>
-          <option value="700-1000">700-1000</option>
+          <option value="1000+">&lt;1000</option>
+          <option value="2000">&lt;2000</option>
+          <option value="3000">&lt;3000</option>
+          <option value="4000">&lt;4000</option>
+          <option value="5000">&lt;5000</option>
         </Select>
 
         {/*Ratings*/}
         <Select
           placeholder="Rating"
-          h="83px"
+          h="75px"
           defaultValue={rating}
           fontSize="25px"
           border="1px solid #eaebef"
-          w="max-content"
-          // width="150px"
+          // w="max-content"
+          // minw={"120px"}
+          // width="20%"
+          width="180px"
           borderRadius="10px"
           onChange={(e) => setRating(e.target.value)}
           bg="#eaebef"
         >
-          <option value="Top Rated">Top Rated</option>
-          <option value="Average">Average</option>
-          <option value="Below-Average">Below-Average</option>
+          <option value="5">5</option>
+          <option value="4">4</option>
+          <option value="3">3</option>
+          <option value="2">2</option>
+          <option value="1">1</option>
         </Select>
 
         {/*Beds*/}
         <Select
           placeholder="Beds"
-          h="83px"
+          h="75px"
           defaultValue={beds}
           fontSize="25px"
-          border="1px solid #eaebef"
-          w="max-content"
           width="180px"
+          border="1px solid #eaebef"
+          // w="max-content"
+          // minw={"120px"}
+          // width="180px"
           borderRadius="10px"
           onChange={(e) => setBeds(e.target.value)}
           bg="#eaebef"
@@ -187,11 +194,13 @@ function FilterRow() {
         </Menu> */}
         <Select
           placeholder="Bathrooms"
-          h="83px"
+          h="75px"
           // defaultValue={baths}
           fontSize="25px"
           border="1px solid #eaebef"
-          w="max-content"
+          // w="max-content"
+          width="180px"
+          // minw={"120px"}
           borderRadius="10px"
           onChange={(e) => setBaths(e.target.value)}
           bg="#eaebef"
@@ -204,22 +213,23 @@ function FilterRow() {
         {/*More*/}
 
         <Select
-          placeholder="More"
-          h="83px"
+          placeholder="Pet-Friendly"
+          h="75px"
           defaultValue={more}
           fontSize="25px"
           border="1px solid #eaebef"
-          w="max-content"
+          // w="max-content"
+          width="180px"
+          // minw={"120px"}
           borderRadius="10px"
           onChange={(e) => setMore(e.target.value)}
           bg="#eaebef"
         >
-          <option value="pet friendly">pet friendly</option>
-          <option value="furnished">furnished</option>
-          <option value="Parking">Parking</option>
+          <option value="yes">yes</option>
+          <option value="no">no</option>
+          {/* <option value="furnished">furnished</option> */}
+          {/* <option value="Parking">Parking</option> */}
         </Select>
-
-        {/* </Flex> */}
       </HStack>
     </Box>
   );

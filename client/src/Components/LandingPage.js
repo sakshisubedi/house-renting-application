@@ -6,8 +6,9 @@ import {
   SimpleGrid,
   Divider,
   Flex,
+  Button,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import ListingCard from "./ListingCard";
 import house1 from "../img/house1.jpg";
 import NavBar from "./NavBar";
@@ -16,6 +17,8 @@ import ButtonRL from "./ButtonRL";
 
 function LandingPage() {
   // need to get actual data from db
+  const resultsPerPage = 6; // Define the number of results to display per page
+  const [currentPage, setCurrentPage] = useState(1); // Initialize the current page to 1
 
   let tempData = {
     name: "xyz",
@@ -32,6 +35,18 @@ function LandingPage() {
     reviewCount: 34,
     rating: 3.3,
     squareFeet: 1200,
+  };
+  const lastIndex = currentPage * resultsPerPage;
+  const firstIndex = lastIndex - resultsPerPage;
+  // Create an array of mock data for the results
+  const results = new Array(10).fill(tempListing);
+
+  // Slice the results array based on the current page
+  const displayedResults = results.slice(firstIndex, lastIndex);
+
+  // Define a function to handle the user's click on the pagination buttons
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -67,14 +82,36 @@ function LandingPage() {
           {/* <EmptyWishlist></EmptyWishlist> */}
           <VStack align="left" spacing={30}>
             <SimpleGrid columns={3} spacing={10}>
+              {/* <ListingCard src={tempListing}> </ListingCard>
               <ListingCard src={tempListing}> </ListingCard>
               <ListingCard src={tempListing}> </ListingCard>
               <ListingCard src={tempListing}> </ListingCard>
-              <ListingCard src={tempListing}> </ListingCard>
-              <ListingCard src={tempListing}></ListingCard>
+              <ListingCard src={tempListing}></ListingCard> */}
+              {displayedResults.map((result, index) => (
+                <ListingCard src={result} key={index}></ListingCard>
+              ))}
             </SimpleGrid>
           </VStack>
         </Center>
+        <Flex justifyContent={"center"} margin="auto" mt={10}>
+          <Box mt={10}>
+            {/* Display the pagination buttons */}
+            {Array.from(
+              { length: Math.ceil(results.length / resultsPerPage) },
+              (_, i) => i + 1
+            ).map((pageNumber) => (
+              <Button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+                mr={2}
+                colorScheme={currentPage === pageNumber ? "blue" : "gray"}
+                size="sm"
+              >
+                {pageNumber}
+              </Button>
+            ))}
+          </Box>
+        </Flex>
       </Box>
     </Box>
   );
