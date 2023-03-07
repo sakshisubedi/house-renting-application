@@ -41,7 +41,7 @@ const updateListing = (models) => {
 }
 
 // get all listings
-const getListing = (models) => {
+const getListings = (models) => {
     return async (req, res, next) => {
         try {
             return res.status(200).json({
@@ -241,7 +241,7 @@ const getListingBySearchParameter = (models) => {
 module.exports = {
     createListing,
     updateListing,
-    getListing,
+    getListings,
     getListingById,
     getListingByLandlordId,
     deleteListing,

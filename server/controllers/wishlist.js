@@ -59,7 +59,7 @@ const getInterestedPeopleByListingId = (models) => {
     }
 }
 
-
+// Checks if a specified user id and listing id pair exist in the database, returns a boolean
 const getIsWishlistedByUser = (models) => {
     return async (req, res, next) => {
         try {
