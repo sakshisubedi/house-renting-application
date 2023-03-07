@@ -78,13 +78,12 @@ const ListingCard = ({ src }) => {
         <Box
           color="gray.500"
           fontWeight="semibold"
-          letterSpacing="wide"
           fontSize="xs"
           textTransform="uppercase"
           ml="2"
           p={3}
         >
-          <SimpleGrid columns={3} spacing={5}>
+          <SimpleGrid columns={3} spacing={3}>
             <Text>{src.bedrooms} beds</Text>
             <Text>{src.bathrooms} baths</Text>
             <Text>{src.squareFeet} sqft</Text>
