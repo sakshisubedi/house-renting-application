@@ -22,7 +22,6 @@ const startServer = async () => {
     const models = await require('./models')({ $env });
 
     // serving static files
-    console.log("build-path", path.join(__dirname, '../build'));
     
     app.get("/test", (req, res) => {
         return res.status(200).json({
@@ -32,10 +31,16 @@ const startServer = async () => {
     
     app.use('/api/v1', require('./routes/v1')(models));
 
-    app.use(express.static(path.join(__dirname, '../build')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../build'))
-    })
+    if (process.env.NODE_ENV === "production") {
+        app.use(express.static(path.resolve(__dirname, '../client', 'build')));
+        app.get("*", (req, res) => {
+            res.sendFile(path.resolve(__dirname, '../client', 'build', 'index.html'),function (err) {
+                if(err) {
+                    res.status(500).send(err)
+                }
+            });
+        })
+    }
     
     app.listen(PORT, () => {
         console.log("Server listening on", PORT);

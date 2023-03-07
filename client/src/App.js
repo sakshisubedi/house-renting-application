@@ -25,7 +25,7 @@ function App() {
   return (
     <>
       {/* <LandingPage /> */}
-      <Router>
+      <Router basename='/'>
         <Routes>
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/search" element={<SearchResult />} />
