@@ -1,8 +1,10 @@
 import axios from "axios";
+import env from "../environment";
+const BASE_URL = env.BASE_URL;
 
 export async function addComment(comment) {
     try {
-        const { data } = await axios.post(`api/v1/comment`, comment);
+        const { data } = await axios.post(`${BASE_URL}/api/v1/comment`, comment);
         return data;
     } catch (error) {
         return {
@@ -13,7 +15,7 @@ export async function addComment(comment) {
 
 export async function deleteComment(commentId) {
     try {
-        const { data } = await axios.delete(`api/v1/comment/${commentId}`);
+        const { data } = await axios.delete(`${BASE_URL}/api/v1/comment/${commentId}`);
         return data;
     } catch (error) {
         return {
@@ -24,7 +26,7 @@ export async function deleteComment(commentId) {
 
 export async function getCommentsByListingId(listingId) {
     try {
-        const { data } = await axios.get(`api/v1/comment/${listingId}`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/comment/${listingId}`);
         return data;
     } catch (error) {
         return {
