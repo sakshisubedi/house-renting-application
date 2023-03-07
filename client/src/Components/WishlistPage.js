@@ -99,10 +99,12 @@ function WishlistPage() {
 
     const getUserWishlist = async () => {
         const response = await getWishlistByUserId(userData._id);
+        // console.log(response);
         var listings = [];
         if (!response?.error) { // traverse listing id to get listing data
             for (const listingId of response.data) {
                 const listingDetail = await getListingById(listingId._id);
+                console.log(listingDetail);
                 if (response?.error) { continue; }
                 else {
                     listings.push(listingDetail.data);
@@ -110,11 +112,11 @@ function WishlistPage() {
             }
         }
         setwishlistedListings(listings);
-        console.log(listings);
+        // console.log(listings);
     };
 
     // const wishlistData = getUserWishlist();
-    console.log(wishlistedListings);
+    // console.log(wishlistedListings);
     // (async () => {
     //     const wishlistData = console.log(await getUserWishlist())
     // })()
