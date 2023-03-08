@@ -19,19 +19,17 @@ function FilterRow(props) {
     email: "xyz@gmail.com",
   };
   // const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
-  const [selectedPriceOption, setSelectedPriceOption] = useState(null);
-  const handlePriceOptionSelect = (value) => {
-    setSelectedPriceOption(value);
-  };
 
-  const [price, setPrice] = React.useState(tempData.pronouns ?? null);
-  const [rating, setRating] = React.useState(tempData.pronouns ?? null);
-  const [beds, setBeds] = React.useState(tempData.pronouns ?? null);
-  const [baths, setBaths] = React.useState(tempData.pronouns ?? null);
-  const [more, setMore] = React.useState(tempData.pronouns ?? null);
+  const [postalCode, setPostalCode] = React.useState("");
+  const [rentPrice, setRentPrice] = React.useState("");
+  const [rating, setRating] = React.useState("");
+  const [beds, setBeds] = React.useState("");
+  const [baths, setBaths] = React.useState("");
+  const [petPref, setPetPref] = React.useState("");
 
   const handleInputChange = async (event) => {
-    props.search(event.target.value);
+    setPostalCode(event.target.value);
+    props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
   };
 
 
@@ -59,7 +57,7 @@ function FilterRow(props) {
             onChange={handleInputChange}
           />
         </Box>
-        {/*Price */}
+        {/*rentPrice */}
         {/* <Menu>
           <MenuButton
             as={Box}
@@ -75,7 +73,7 @@ function FilterRow(props) {
               textAlign="center"
               lineHeight="83px"
             >
-              <Box>Price</Box>
+              <Box>rentPrice</Box>
               <Icon as={FaChevronDown} fontSize="sm" />
             </HStack>
           </MenuButton>
@@ -88,19 +86,24 @@ function FilterRow(props) {
           </MenuList>
         </Menu> */}
         <Select
-          placeholder="Price"
+          placeholder="Rent"
           h="83px"
-          defaultValue={price}
+          defaultValue={rentPrice}
           fontSize="25px"
           border="1px solid #eaebef"
           w="max-content"
           borderRadius="10px"
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) => {
+            setRentPrice(e.target.value);
+            props.search(postalCode, e.target.value, rating, beds, baths, petPref);
+          }}
           bg="#eaebef"
         >
-          <option value="2000+">2000+</option>
-          <option value="1000-2000">1000-2000</option>
-          <option value="700-1000">700-1000</option>
+          <option value="<1000">&lt;1000</option>
+          <option value="<2000">&lt;2000</option>
+          <option value="<3000">&lt;3000</option>
+          <option value="<4000">&lt;4000</option>
+          <option value="<5000">&lt;5000</option>
         </Select>
 
         {/*Ratings*/}
@@ -113,12 +116,17 @@ function FilterRow(props) {
           w="max-content"
           // width="150px"
           borderRadius="10px"
-          onChange={(e) => setRating(e.target.value)}
+          onChange={(e) => {
+            setRating(e.target.value === "" ? null : e.target.value);
+            props.search(postalCode, rentPrice, e.target.value, beds, baths, petPref);
+          }}
           bg="#eaebef"
         >
-          <option value="Top Rated">Top Rated</option>
-          <option value="Average">Average</option>
-          <option value="Below-Average">Below-Average</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
         </Select>
 
         {/*Beds*/}
@@ -131,12 +139,16 @@ function FilterRow(props) {
           w="max-content"
           width="180px"
           borderRadius="10px"
-          onChange={(e) => setBeds(e.target.value)}
+          onChange={(e) => {
+            setBeds(e.target.value === "" ? null : e.target.value);
+            props.search(postalCode, rentPrice, rating, e.target.value, baths, petPref);
+
+          }}
           bg="#eaebef"
         >
-          <option value="1 Bed">1 Bed</option>
-          <option value="2 Bed">2 Bed</option>
-          <option value="3 Bed">3 Bed</option>
+          <option value="1">1 Bed</option>
+          <option value="2">2 Bed</option>
+          <option value="3">3 Bed</option>
         </Select>
         {/* <Menu>
           <MenuButton
@@ -201,30 +213,35 @@ function FilterRow(props) {
           border="1px solid #eaebef"
           w="max-content"
           borderRadius="10px"
-          onChange={(e) => setBaths(e.target.value)}
+          onChange={(e) => {
+            setBaths(e.target.value === "" ? null : e.target.value); 
+            props.search(postalCode, rentPrice, rating, beds, e.target.value, petPref);
+          }}
           bg="#eaebef"
         >
-          <option value="1 Bathroom">1 Bathroom</option>
-          <option value="2 Bathroom">2 Bathroom</option>
-          <option value="3 Bathroom">3 Bathroom</option>
+          <option value="1">1 Bathroom</option>
+          <option value="2">2 Bathroom</option>
+          <option value="3">3 Bathroom</option>
         </Select>
 
         {/*More*/}
 
         <Select
-          placeholder="More"
+          placeholder="Pet Preferences"
           h="83px"
-          defaultValue={more}
+          defaultValue={petPref}
           fontSize="25px"
           border="1px solid #eaebef"
           w="max-content"
           borderRadius="10px"
-          onChange={(e) => setMore(e.target.value)}
+          onChange={(e) => {
+            setPetPref(e.target.value === "" ? null : e.target.value);
+            props.search(postalCode, rentPrice, rating, beds, baths, e.target.value);
+          }}
           bg="#eaebef"
         >
-          <option value="pet friendly">pet friendly</option>
-          <option value="furnished">furnished</option>
-          <option value="Parking">Parking</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
         </Select>
 
         {/* </Flex> */}
