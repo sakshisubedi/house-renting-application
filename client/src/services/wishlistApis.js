@@ -24,6 +24,28 @@ export async function getWishlistByUserId(userId) {
     }
 }
 
+export async function getInterestedPeopleByListingId(listingId) {
+    try {
+        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/interested/${listingId}`);
+        return data;
+    } catch (error) {
+        return {
+            error: error.message || error
+        }
+    }
+}
+
+export async function getIsWishlistedByUser(userId, listingId) {
+    try {
+        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/user/${userId}/listing/${listingId}`);
+        return data;
+    } catch (error) {
+        return {
+            error: error.message || error
+        }
+    }
+}
+
 export async function deleteWishlistItem(wishlistId) {
     try {
         const { data } = await axios.delete(`${BASE_URL}/api/v1/wishlist/${wishlistId}`);
