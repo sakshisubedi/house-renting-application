@@ -9,65 +9,117 @@ import {
   LinkOverlay,
   IconButton,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import heart from '../img/Union.svg'
 import emptyHeart from '../img/emptyHeartButton.svg'
+import house from '../img/house1.jpg'
+import { getIsWishlistedByUser, createWishlistItem, deleteWishlistItem } from '../services/wishlistApis';
+import { useEffect, useState } from "react";
 
-const ListingCard = ({ src }) => {
-    const [like, setLike] = React.useState("true");
+const ListingCard = ({ userId, src }) => {
 
-    const navigate = useNavigate();
+  let wishlistItem = {
+    listingId: src._id,
+    userId: userId,
+  };
 
-    const handleClick = () => {
-        setLike(current => !current);
-      };
+  const [like, setLike] = useState(false);
+  const [wishlistId, setWishListId] = useState("");
 
-    return (
-        <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
-            <Image objectFit='fill' w="100%" src={src.img} alt="card image" />
-            <Box p='4'>
-                <HStack>
-                    <Box
-                        color='#3062D5'
-                        fontWeight='bold'
-                        letterSpacing='wide'
-                        fontSize='xl'
-                    >
-                        ${src.rent}
-                        <Box as='span' color='#3062D5' fontWeight='semibold' fontSize='sm'>
-                            /month
-                        </Box>
-                    </Box>
-                </HStack>
+  const getLiked = async () => {
+    const response = await getIsWishlistedByUser(userId, src._id);
+    if (!response?.error) { // traverse listing id to get listing data
+      if (response.data == false) {
+        setLike(false);
+      } else {
+        setLike(true);
+        setWishListId(response.data._id);
+      }
+    }
+  }
 
-                <Flex justifyContent="space-between" alignContent="center">
-                    <Box
-                        fontWeight='bold'
-                        lineHeight='tight'
-                        noOfLines={1}
-                        fontSize='3xl'
-                    >
-                        <LinkOverlay onClick={(e) => {
-                            // navigate("/listing/me");
-                            navigate("/me", { state: { listing: src } });
-                        }}> 
-                        {/* route to detailed listing page */}
-                            {src.name}
-                        </LinkOverlay>
+  useEffect(() => {
+    getLiked();
+  }, []);
 
-                    </Box>
-                    <IconButton
-                        bg="#FFFFFF"
-                        icon={<Image src={like ? heart : emptyHeart} boxSize={30} alt="heart" />}
-                        onClick={(e) => {
-                            // cancel wishlist
-                            e.preventDefault();
-                            handleClick();
-                        }}
-                    />
-                </Flex>
+  const navigate = useNavigate();
+
+  const toast = useToast();
+
+  const handleClick = () => {
+    setLike(current => !current);
+    if (like) {
+      try {
+        deleteWishlistItem(wishlistId);
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    } else {
+      try {
+        createWishlistItem(wishlistItem)
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    }
+  };
+
+  return (
+    <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
+      <Image objectFit='fill' w="100%" src={house} alt="card image" />
+      <Box p='4'>
+        <HStack>
+          <Box
+            color='#3062D5'
+            fontWeight='bold'
+            letterSpacing='wide'
+            fontSize='xl'
+          >
+            ${src.rent}
+            <Box as='span' color='#3062D5' fontWeight='semibold' fontSize='sm'>
+              /month
+            </Box>
+          </Box>
+        </HStack>
+
+        <Flex justifyContent="space-between" alignContent="center">
+          <Box
+            fontWeight='bold'
+            lineHeight='tight'
+            noOfLines={1}
+            fontSize='3xl'
+          >
+            <LinkOverlay onClick={(e) => {
+              // navigate("/listing/me");
+              navigate("/me", { state: { listing: src } });
+            }}>
+              {/* route to detailed listing page */}
+              {src.name}
+            </LinkOverlay>
+
+          </Box>
+          <IconButton
+            bg="#FFFFFF"
+            icon={<Image src={like ? heart : emptyHeart} boxSize={30} alt="heart" />}
+            onClick={(e) => {
+              // cancel wishlist
+              e.preventDefault();
+              handleClick();
+            }}
+          />
+        </Flex>
 
         <Box color="#505050" lineHeight="tight" noOfLines={1}>
           {src.address}

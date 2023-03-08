@@ -13,6 +13,8 @@ import NavBar from "./NavBar";
 import EmptyWishlist from "./EmptyWishlist";
 import { getWishlistByUserId } from '../services/wishlistApis';
 import { getListingById } from "../services/listingApis";
+import { useEffect, useState } from "react";
+// import { useLocation } from "react-router-dom";
 
 function WishlistPage() {
     // need to get actual data from db
@@ -95,16 +97,14 @@ function WishlistPage() {
     //     }
     // ];
 
-    const [wishlistedListings, setwishlistedListings] = React.useState([]);
+    const [wishlistedListings, setwishlistedListings] = useState([]);
 
     const getUserWishlist = async () => {
         const response = await getWishlistByUserId(userData._id);
-        // console.log(response);
         var listings = [];
         if (!response?.error) { // traverse listing id to get listing data
             for (const listingId of response.data) {
-                const listingDetail = await getListingById(listingId._id);
-                console.log(listingDetail);
+                const listingDetail = await getListingById(listingId.listingId);
                 if (response?.error) { continue; }
                 else {
                     listings.push(listingDetail.data);
@@ -112,14 +112,12 @@ function WishlistPage() {
             }
         }
         setwishlistedListings(listings);
-        // console.log(listings);
-    };
+    }
 
-    // const wishlistData = getUserWishlist();
-    // console.log(wishlistedListings);
-    // (async () => {
-    //     const wishlistData = console.log(await getUserWishlist())
-    // })()
+    useEffect(() => {
+        getUserWishlist();
+    }, []);
+
 
     return (
         <Box>
@@ -138,7 +136,7 @@ function WishlistPage() {
                             <Heading>Your Wishlist</Heading>
                             <Center>
                                 <SimpleGrid columns={3} spacing={10}>
-                                    {/* {wishlistData.map( (listing) => (<ListingCard src={listing}> </ListingCard>))} */}
+                                    {wishlistedListings.map( (listing) => (<ListingCard userId = {userData._id} src={listing}> </ListingCard>))}
                                 </SimpleGrid>
                             </Center>
                         </VStack>
