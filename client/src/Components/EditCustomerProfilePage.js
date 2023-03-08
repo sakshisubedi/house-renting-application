@@ -51,7 +51,7 @@ function EditCustomerProfilePage() {
 
   const location = useLocation();
   userData = location.state.userInfo;
-  console.log(userData)
+  // console.log(userData)
   // const [userData, setUserData] = React.useState(tempUserData);
 
   const [email, setEmail] = React.useState(userData.email.data);

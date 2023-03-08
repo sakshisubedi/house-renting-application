@@ -37,8 +37,14 @@ import { addRating, getAverageRatingByListingId, getRatingByUserId, updateRating
 import { getLandlordInfoById } from "../services/landlordApis";
 import InterestedPeopleList from "./InterestedPeopleList";
 import DetailedProfile from "./DetailedProfile";
+import { useAuth } from "../Components/auth/context/hookIndex"
 
 function IndividualListingPage() {
+
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
+  const userId = authInfo.profile ? authInfo.profile.id : "640669c85943eac949e1f7a8"; // ELSE DUMMY USER ID
+
   // need to get actual data from PASSED PARAMS IN STATE or API CALLS
 
   let wishlistedPeople = [
@@ -171,37 +177,11 @@ function IndividualListingPage() {
   const [reviewCount, setReviewCount] = useState(0);
   const [landlordInfo, setLandlordInfo] = useState(null);
 
-  const changeCurrentRating = async (value) => {
-    if (!currentRating) {
-      // create new rating
-      const rating = {
-        userId: "640656792b0fe156679a8bc2", // NEED TO ADD CURRENT USER ID
-        listingId: listingId,
-        rating: value
-      };
-      console.log("req", rating)
-      const response = await addRating(rating);
-      if (response?.data) {
-        setCurrentRating(response.data)
-      }
-    } else {
-      // update rating
-      const rating = {
-        rating: value
-      };
-      const response = await updateRating(currentRating._id, rating);
-      if (response?.data) {
-        setCurrentRating(response.data)
-      }
-    }
-  };
-
   const toast = useToast();
 
   const location = useLocation();
-  let listingId;
   useEffect(() => {
-    listingId = location.pathname.split("/").pop();
+    let listingId = location.pathname.split("/").pop();
 
     async function getListing() {
       const response = await getListingById(listingId);
@@ -227,7 +207,7 @@ function IndividualListingPage() {
     }
 
     async function getCurrentRating() {
-      const response = await getRatingByUserId("640656792b0fe156679a8bc2", listingId); // NEED TO ENTER CURRENT USER ID
+      const response = await getRatingByUserId(userId, listingId);
       if(response?.data && response.data.length>0) {
         setCurrentRating(response.data[0]);
       }
@@ -237,6 +217,32 @@ function IndividualListingPage() {
     getAverageRating();
     getCurrentRating();
   }, [location])
+
+  const changeCurrentRating = async (value) => {
+    if (!currentRating) {
+      // create new rating
+      // console.log("here", location.pathname.split("/").pop())
+      const rating = {
+        userId: userId, // NEED TO ADD CURRENT USER ID
+        listingId: location.pathname.split("/").pop(),
+        rating: value
+      };
+      // console.log("req", rating)
+      const response = await addRating(rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    } else {
+      // update rating
+      const rating = {
+        rating: value
+      };
+      const response = await updateRating(currentRating._id, rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    }
+  };
 
   return (
     listingInfo && landlordInfo && (
