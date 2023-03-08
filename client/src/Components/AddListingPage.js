@@ -33,31 +33,26 @@ function AddListingPage() {
   const [pets, setPets] = React.useState();
   const [desc, setDesc] = React.useState();
 
-  const updateListingData = () => {
-    const newListing = {};
-    newListing.name = name;
-    newListing.price = parseInt(price);
-    newListing.address = address;
-    newListing.zipcode = parseInt(zipcode);
-    newListing.bedrooms = bedrooms ? parseInt(bedrooms) : undefined;
-    newListing.bathrooms = bathrooms ? parseInt(bathrooms) : undefined;
-    newListing.area = area ? parseInt(area) : undefined;
-    newListing.pets = pets ? (pets === "true") : undefined;
-    newListing.desc = desc;
-    console.log("new listing = ", newListing);
+  const [media, setMedia] = React.useState([]);
+  const [selectedImages, setSelectedImages] = React.useState([]);
 
-    // need to transform tempData into proper DB schema format
-    // SAVE TO DB
-
-    // axios
-    //   .post("http://localhost:4000/api/v1/listing", newListing, {
-    //     method: "POST",
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //   });
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files.length > 0) {
+      let images = [];
+      for (let i = 0; i < event.target.files.length; i++) {
+        let img = event.target.files[i];
+        let reader = new FileReader();
+        reader.readAsDataURL(img);
+        reader.onload = () => {
+          images.push(reader.result);
+          setSelectedImages(images);
+        };
+      }
+    }
   };
-
+  const uploadImages = () => {
+    setMedia(selectedImages);
+  };
 
   const addListing = async () => {
     const newListing = {
@@ -70,27 +65,29 @@ function AddListingPage() {
       bedrooms: parseInt(bedrooms),
       bathrooms: parseInt(bathrooms),
       squareFeet: parseInt(area),
-      hasPet: pets ? (pets === "true") : false,
-      postalCode: zipcode
-    }
-    
+      hasPet: pets ? pets === "true" : false,
+      postalCode: zipcode,
+    };
+
     console.log("new listing = ", newListing);
 
     const response = await createListing(newListing);
-    if(response?.error) {
+    if (response?.error) {
       toast({
         title: "Failed",
         description: response?.error,
         status: "error",
+        position: "top-right",
       });
     } else {
       toast({
         title: "Success",
         description: "Successfully added listing",
         status: "success",
+        position: "top-right",
       });
     }
-  }
+  };
 
   return (
     <Box>
@@ -110,12 +107,14 @@ function AddListingPage() {
                   title: "Success",
                   description: "Changes Saved",
                   status: "success",
+                  position: "top-right",
                 });
               } catch (error) {
                 toast({
                   title: "Failed",
                   description: error,
                   status: "error",
+                  position: "top-right",
                 });
               }
             }}
@@ -153,6 +152,17 @@ function AddListingPage() {
                   borderRadius={"2xl"}
                 >
                   {/* IMAGES */}
+                  <Box textAlign="left" my={6} mx={6}>
+                    <Heading size="lg" mb="4">
+                      Select Image(s)
+                    </Heading>
+                    <input
+                      type="file"
+                      name="myImage"
+                      onChange={onImageChange}
+                      multiple
+                    />
+                  </Box>
                 </Box>
                 <Button
                   variant="solid"
@@ -160,9 +170,7 @@ function AddListingPage() {
                   w={200}
                   mt={5}
                   float={"right"}
-                  onClick={() => {
-                    // Uploading images workflow?
-                  }}
+                  onClick={uploadImages}
                 >
                   Upload Images/Videos
                 </Button>
