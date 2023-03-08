@@ -50,7 +50,8 @@ const ListingCard = ({ src }) => {
                         fontSize='3xl'
                     >
                         <LinkOverlay onClick={(e) => {
-                            navigate("/individualListingPage");
+                            // navigate("/listing/me");
+                            navigate("/me", { state: { listing: src } });
                         }}> 
                         {/* route to detailed listing page */}
                             {src.name}

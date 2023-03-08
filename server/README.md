@@ -46,31 +46,57 @@ Base route: `/api/v1`
 - **getWishlistByUserId**: GET `/wishlist/:id`
     - PARAMS: id
     - Gets all wishlist items corresponding to the given user id.
+- **getInterestedPeopleByListingId**: GET `/wishlist/interested/:id`
+    - PARAMS: id
+    - Gets all wishlist items corresponding to the given listing id, i.e. the list of people interested in a listing.
+- **getIsWishlistedByUser**: GET `/wishlist/user/:userId/listing/:listingId`
+    - PARAMS: userId, listingId
+    - Checks if there exists a document in the database with the specified userId, listingId pair.
+    - Returns a boolean.
 - **deleteWishlistItem**: DELETE `/wishlist/:id`
     - PARAMS: id
     - Deletes the wishlist item that corresponds to the given wishlist id.
 
 ### __Listing API__
-- **createListing**: POST `/listing/`
+- **createListing**: POST `/listing`
     - Creates a new listing and saves it to database.
 - **updateListing**: PUT `/listing/:id`
     - PARAMS: id
     - Update listing information for a given listing id.
-- **getListings**: GET `/listing/`
-    - Gets all listings in the database.
+- **getListingByRating**: GET `/listing/recommendation`
+    - Gets all listings sorted by rating in descending order.
+- **getListingBySearchParameter**: GET `/listing/search`
+    - Gets all listings depending on a given search parameter.
+    - Currently supports only postalCode as a search parameter.
+- **getListingByLandlordId**: GET `/listing/landlord/:landlordId`
+    - PARAMS: landlordId
+    - Gets all listings associated with the given landlord id.
+- **getAverageRatingForAllListingByLandlordId**: GET `/listing/landlord/:landlordId/rating`
+    - PARAMS: landlordId
+    - Gets average rating and review count for all listings corresponding to given landlord id.
 - **getListingById**: GET `/listing/:id`
     - PARAMS: id
     - Gets the listing that corresponds to the given listing id.
-- **getListingByLandlordId**: GET `/listing/landlord/:id`
-    - PARAMS: id
-    - Gets all listings associated with the given landlord id.
+- **getListings**: GET `/listing`
+    - Gets all listings in the database.
 - **deleteListing**: DELETE `/listing/:id`
     - PARAMS: id
     - Deletes the listing that corresponds to the given listing id.
 
 ### __Comment API__
-
+- **addComment**: POST `/comment`
+    - Adds a new comment and saves it to database.
+- **getCommentsByListingId**: GET `/comment/listing/:listingId`
+    - PARAMS: listingId
+    - Gets all comments corresponding to the given listing id
+- **deleteComment**: DELETE `/comment/:id`
+    - PARAMS: id
+    - Deletes the comment that corresponds to the given comment id.
 
 ### __Like API__
-
+- **like**: POST `/like`
+    - Adds a like and saves it to database.
+- **unlike**: DELETE `/like/:id`
+    - PARAMS: id
+    - Delete like for given like id
 

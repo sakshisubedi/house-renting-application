@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { resendEmailVerificationToken, verifyUserEmail } from "./auth";
 import { useAuth, useNotification } from "./context/hookIndex";
 import Submit from "./Submit";
+import NavBar from "../NavBar"
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
@@ -77,7 +78,6 @@ export default function EmailVerification() {
       return updateNotification("error", "invalid OTP");
     }
 
-    // submit otp
     const {
       error,
       message,
@@ -98,52 +98,56 @@ export default function EmailVerification() {
   }, [activeOtpIndex]);
 
   useEffect(() => {
-    if (!user) navigate("/not-found");
-    if (isLoggedIn && isVerified) navigate("/");
+    if (!user) navigate('/landing');
+    if (isLoggedIn && isVerified) navigate('/landing');
   }, [user, isLoggedIn, isVerified]);
 
   return (
-    <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
-        {/* Verification Header */}
-        <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6"}>
-          <div>
-            <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
-              Please enter the OTP to verify your account
-            </h1>
-            <p className="text-center text-black">
-              OTP has been sent to your email
-            </p>
-          </div>
+    <div>
+      <NavBar />
 
-          {/* Verification Input */}
-          <div className="flex justify-center items-center space-x-4">
-            {otp.map((_, index) => {
-              return (
-                <input
-                  ref={activeOtpIndex === index ? inputRef : null}
-                  key={index}
-                  type="number"
-                  value={otp[index] || ""}
-                  onChange={handleOtpChange}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="w-12 h-12 border-2 focus:border-black rounded bg-transparent outline-none text-center text-black font-semibold text-xl spin-button-none"
-                />
-              );
-            })}
-          </div>
+      <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
+          {/* Verification Header */}
+          <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6"}>
+            <div>
+              <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
+                Please enter the OTP to verify your account
+              </h1>
+              <p className="text-center text-black">
+                OTP has been sent to your email
+              </p>
+            </div>
 
-          {/* Verification button */}
-          <div>
-            <Submit value="Verify Account" />
-            <button
-              onClick={handleOTPResend}
-              type="button"
-              className="text-blue-500 font-semibold hover:underline mt-2"
-            >
-              No OTP?
-            </button>
-          </div>
-        </form>
+            {/* Verification Input */}
+            <div className="flex justify-center items-center space-x-4">
+              {otp.map((_, index) => {
+                return (
+                  <input
+                    ref={activeOtpIndex === index ? inputRef : null}
+                    key={index}
+                    type="number"
+                    value={otp[index] || ""}
+                    onChange={handleOtpChange}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    className="w-12 h-12 border-2 focus:border-black rounded bg-transparent outline-none text-center text-black font-semibold text-xl spin-button-none"
+                  />
+                );
+              })}
+            </div>
+
+            {/* Verification button */}
+            <div>
+              <Submit value="Verify Account" />
+              <button
+                onClick={handleOTPResend}
+                type="button"
+                className="text-blue-500 font-semibold hover:underline mt-2"
+              >
+                No OTP?
+              </button>
+            </div>
+          </form>
+      </div>
     </div>
   );
 }

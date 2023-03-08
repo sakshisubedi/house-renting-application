@@ -30,6 +30,7 @@ function FilterRow(props) {
   const [baths, setBaths] = React.useState(tempData.pronouns ?? null);
   const [pet, setPet] = React.useState(tempData.pronouns ?? null);
 
+
   const handleInputChange = async (event) => {
     props.search(event.target.value);
   };
@@ -47,6 +48,7 @@ function FilterRow(props) {
             fontSize="27px"
             outline="none"
             px={4}
+            onChange={handleInputChange}
           />
         </Box>
         {/*Price*/}

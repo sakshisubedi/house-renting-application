@@ -16,9 +16,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { createListing } from "../services/listingApis";
-
 import NavBar from "./NavBar";
-// import axios from "axios";
 
 function AddListingPage() {
   const toast = useToast();
@@ -32,6 +30,7 @@ function AddListingPage() {
   const [area, setArea] = React.useState();
   const [pets, setPets] = React.useState();
   const [desc, setDesc] = React.useState();
+
 
   const [media, setMedia] = React.useState([]);
   const [selectedImages, setSelectedImages] = React.useState([]);
@@ -53,6 +52,7 @@ function AddListingPage() {
   const uploadImages = () => {
     setMedia(selectedImages);
   };
+
 
   const addListing = async () => {
     const newListing = {
@@ -78,6 +78,7 @@ function AddListingPage() {
         description: response?.error,
         status: "error",
         position: "top-right",
+
       });
     } else {
       toast({
@@ -85,6 +86,9 @@ function AddListingPage() {
         description: "Successfully added listing",
         status: "success",
         position: "top-right",
+
+
+
       });
     }
   };
@@ -101,13 +105,13 @@ function AddListingPage() {
             onSubmit={(e) => {
               // e.preventDefault();
               try {
-                // updateListingData();
                 addListing();
                 toast({
                   title: "Success",
                   description: "Changes Saved",
                   status: "success",
                   position: "top-right",
+
                 });
               } catch (error) {
                 toast({
