@@ -33,7 +33,7 @@ import { useLocation } from "react-router-dom";
 import { BiHide } from "react-icons/bi";
 import StarRatings from 'react-star-ratings';
 import { getListingById } from "../services/listingApis";
-import { getAverageRatingByListingId } from "../services/ratingApis";
+import { addRating, getAverageRatingByListingId, getRatingByUserId, updateRating } from "../services/ratingApis";
 import { getLandlordInfoById } from "../services/landlordApis";
 import InterestedPeopleList from "./InterestedPeopleList";
 import DetailedProfile from "./DetailedProfile";
@@ -165,23 +165,43 @@ function IndividualListingPage() {
   ];
 
   const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
-  const [currentRating, setCurrentRating] = useState(0); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
+  const [currentRating, setCurrentRating] = useState(null); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
   const [listingInfo, setListingInfo] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [landlordInfo, setLandlordInfo] = useState(null);
 
-  const changeCurrentRating = (value) => {
-    setCurrentRating(value);
-    // UPDATE DB USING RATING API
+  const changeCurrentRating = async (value) => {
+    if (!currentRating) {
+      // create new rating
+      const rating = {
+        userId: "640656792b0fe156679a8bc2", // NEED TO ADD CURRENT USER ID
+        listingId: listingId,
+        rating: value
+      };
+      console.log("req", rating)
+      const response = await addRating(rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    } else {
+      // update rating
+      const rating = {
+        rating: value
+      };
+      const response = await updateRating(currentRating._id, rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    }
   };
 
   const toast = useToast();
 
   const location = useLocation();
-
+  let listingId;
   useEffect(() => {
-    const listingId = location.pathname.split("/").pop();
+    listingId = location.pathname.split("/").pop();
 
     async function getListing() {
       const response = await getListingById(listingId);
@@ -193,7 +213,6 @@ function IndividualListingPage() {
     
     async function getAverageRating() {
       const response = await getAverageRatingByListingId(listingId);
-      console.log(response);
       if(response?.data && response.data.length>0) {
         setAverageRating(response.data[0].averageRating);
         setReviewCount(response.data[0].reviewCount);
@@ -207,8 +226,16 @@ function IndividualListingPage() {
       }
     }
 
+    async function getCurrentRating() {
+      const response = await getRatingByUserId("640656792b0fe156679a8bc2", listingId); // NEED TO ENTER CURRENT USER ID
+      if(response?.data && response.data.length>0) {
+        setCurrentRating(response.data[0]);
+      }
+    }
+
     getListing();
     getAverageRating();
+    getCurrentRating();
   }, [location])
 
   return (
@@ -337,7 +364,8 @@ function IndividualListingPage() {
                   starEmptyColor={"#E2E8F0"}
                   starHoverColor={"#F6E05E"}
                   starDimension={"30px"}
-                  rating={currentRating}
+                  // rating={currentRating}
+                  rating={currentRating ? currentRating.rating : 0}
                   changeRating={(value)=>{
                     changeCurrentRating(value);
                   }}
@@ -423,10 +451,11 @@ function IndividualListingPage() {
               border="2px"
               borderColor="gray.300"
               borderRadius={"2xl"}
-              p={5}
+              py={5}
+              px={2}
             >
               <Text fontWeight={"bold"} textAlign={"center"}>
-                People who also wishlisted this
+                People who have wishlisted this
               </Text>
               <Divider borderWidth={"3px"} my={2} />
               {/* WISHLISTED PEOPLE */}
@@ -447,13 +476,13 @@ function IndividualListingPage() {
                         align={"left"}
                         w={"60%"}
                       >
-                        <Text blur={"md"}>{person.name}</Text>
-                        <Divider borderWidth={"1px"} />
+                        <Text blur={"md"} fontWeight={"bold"}>{person.name}</Text>
+                        <Divider borderWidth={"2px"} />
                         <HStack spacing={2}>
                           {person.age.isPublic ? (
                             <Text>{person.age.data}</Text>
                           ) : (
-                            <BiHide />
+                            <BiHide size={"1.5rem"}/>
                           )}
                           <Spacer />
                           <Text>{person.pronoun}</Text>
@@ -465,7 +494,7 @@ function IndividualListingPage() {
                       <Spacer />
                       <DetailedProfile p={person}></DetailedProfile>
                     </HStack>
-                    <Divider borderWidth={"2px"} />
+                    <Divider borderWidth={"2px"} my={2} />
                   </Box>
                 ))}
               </VStack>

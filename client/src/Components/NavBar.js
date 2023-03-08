@@ -6,16 +6,33 @@ import {
     Flex,
     useColorModeValue,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logoImg from '../img/logo.jpg'
 import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
 // Setting isLoggedIn Status
 import { useAuth } from "../Components/auth/context/hookIndex"
+import { getUserAllInfoById } from "../services/userApis";
 const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
+
+    const navigate = useNavigate();
+    const [userData, setUserData] = React.useState(null);
+
+    useEffect(() => {
+      async function getUserData() {
+        if (isLoggedIn) {
+          const response = await getUserAllInfoById(authInfo.profile.id);
+          if (response?.data) {
+            // console.log(response.data);
+            setUserData(response.data);
+          }
+        }
+      }
+      getUserData();
+    }, []);
 
     return (
         <Box>
@@ -72,7 +89,15 @@ const NavBar = ({ profileURL }) => {
                             borderRadius='full'
                             boxSize='50px'
                             icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
-                            onClick={handleLogout}
+                            // onClick={handleLogout}
+                            onClick={(e)=>{
+                                // window.location.href = '/customer/me'
+                                navigate("/customer/me", {
+                                  state: {
+                                    userInfo: userData ?? null,
+                                  },
+                                });
+                            }}
                         />
                     ) : (
                         <IconButton

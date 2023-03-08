@@ -168,7 +168,7 @@ const InterestedPeopleList = () => {
                     </Center>
 
                     <Box p='1'>
-                        <Divider borderWidth={"1.5px"} />
+                        <Divider borderWidth={"3px"}/>
                     </Box>
 
                     <ModalCloseButton />
@@ -181,25 +181,25 @@ const InterestedPeopleList = () => {
                                 overflowX={"hidden"}
                             >
                                 {wishlistedPeople.map((person, ind) => (
-                                    <Box w={"full"}>
+                                    <Box w={"full"} key={ind}>
                                         <Box key={ind} w={"full"} p='3'>
                                             <HStack px={2}>
-                                                <Avatar name={person.name} size={"sm"} />
+                                                <Avatar name={person.name} size={"lg"} />
                                                 <Spacer />
                                                 <VStack
                                                     fontSize={"sm"}
                                                     spacing={2}
                                                     align={"left"}
-                                                    w={"60%"}
+                                                    w={"70%"}
                                                 >
-                                                    <Text blur={"md"}>{person.name}</Text>
-                                                    <Divider borderWidth={"0.9px"} />
+                                                    <Text blur={"md"} fontWeight={"bold"} fontSize={"lg"}>{person.name}</Text>
+                                                    <Divider borderWidth={"1.5px"} />
                                                     <HStack>
                                                         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
                                                             {person.age.isPublic ? (
                                                                 <Text>{person.age.data}</Text>
                                                             ) : (
-                                                                <BiHide />
+                                                                <BiHide size={"1.5rem"} />
                                                             )}
                                                         </Flex>
                                                         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
@@ -209,7 +209,7 @@ const InterestedPeopleList = () => {
                                                             {person.occupation.isPublic ? (
                                                                 <Text>{person.occupation.data}</Text>
                                                             ) : (
-                                                                <BiHide />
+                                                                <BiHide size={"1.5rem"} />
                                                             )}
                                                         </Flex>
                                                     </HStack>
@@ -219,7 +219,7 @@ const InterestedPeopleList = () => {
                                                 <DetailedProfile p={person}></DetailedProfile>
                                             </HStack>
                                         </Box>
-                                        <Divider borderWidth={"1px"} />
+                                        <Divider borderWidth={"2px"} />
                                     </Box>
 
                                 ))}
