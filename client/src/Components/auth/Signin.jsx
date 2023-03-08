@@ -72,7 +72,7 @@ export default function Signin() {
           {/* Card size */}
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
             <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
-              LOGIN
+              User LOGIN
             </h1>
             <FormInput
               value={userInfo.email.data}
@@ -102,7 +102,7 @@ export default function Signin() {
               <p style={{color: "#4B4B4B", paddingRight: "3px"}}>
                 Don't have an account?
               </p>
-              <CustomLink to="/auth/signup">Sign up</CustomLink>
+              <CustomLink to="/auth/signup">SIGN UP</CustomLink>
             </div>
           </form>
       </div>

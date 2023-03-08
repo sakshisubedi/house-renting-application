@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const client = axios.create({ baseURL: "http://localhost:4000/api/v1/login/" });
+const client = axios.create({ baseURL: "http://localhost:4000/api/v1/login" });
 
 export default client;
 
@@ -57,13 +57,13 @@ export const getIsAuth = async (token) => {
   }
 };
 
-export const forgetPassword = async (data) => {
+export const forgetPassword = async (email) => {
   try {
-    const { emailData } = await client.post("/forget-password", { email: {data} });
-    return emailData;
+    const { data } = await client.post("/forget-password", { email });
+    return data;
   } catch (error) {
     const { response } = error;
-    if (response?.emailData) return response.emailData;
+    if (response?.data) return response.data;
 
     return { error: error.message || error };
   }

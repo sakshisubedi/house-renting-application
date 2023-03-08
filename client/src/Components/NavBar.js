@@ -5,18 +5,26 @@ import {
     IconButton,
     Flex,
     useColorModeValue,
+    Avatar,
+    Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuDivider,
 } from "@chakra-ui/react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import logoImg from '../img/logo.jpg'
 import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
+
 // Setting isLoggedIn Status
 import { useAuth } from "../Components/auth/context/hookIndex"
+
 const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
-
+    
     return (
         <Box>
             <Flex
@@ -66,28 +74,64 @@ const NavBar = ({ profileURL }) => {
                             window.location.href = '/wishlist';
                         }}
                     />
-                    {/* Double click the profile icon to logout */}
-                    {isLoggedIn ? (
-                        <IconButton
-                            borderRadius='full'
-                            boxSize='50px'
-                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
-                            onClick={handleLogout}
-                        />
-                    ) : (
-                        <IconButton
-                            borderRadius='full'
-                            boxSize='50px'
-                            icon={<Image borderRadius='full' boxSize='50px' objectFit='cover' src={profileURL} alt="profile" />}
-                            onClick={(e) => {
-                                // route to profile page
-                                window.location.href = '/auth/signin';
-                            }}
-                        />
-                    )}
+
+                    <Flex alignItems={'center'}>
+                        <Menu>
+                            <MenuButton
+                                as={Button}
+                                rounded={'full'}
+                                variant={'link'}
+                                cursor={'pointer'}
+                                minW={0}>
+                                <Avatar size={'md'} src={ profileURL }
+                                />
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem 
+                                    onClick={(e) => {
+                                        // route to profile page
+                                        window.location.href = '/customer/me';
+                                    }}>
+                                    Profile
+                                </MenuItem>
+
+                                <MenuDivider />
+                                
+                                {/* User Authentication */}
+                                { isLoggedIn ? (
+                                    <MenuItem onClick={handleLogout}>
+                                        Log out
+                                    </MenuItem>
+                                ) : (
+                                    <MenuItem 
+                                        onClick={(e) => {
+                                            // route to login
+                                            window.location.href = '/auth/signin';
+                                        }}>
+                                        User Login
+                                    </MenuItem>
+                                )}
+
+                                {/* Landlord Authentication */}
+                                { isLoggedIn ? (
+                                    <MenuItem onClick={handleLogout}>
+                                        Log out
+                                    </MenuItem>
+                                ) : (
+                                    <MenuItem 
+                                        onClick={(e) => {
+                                            // route to login
+                                            // window.location.href = '/landlord/signin';
+                                        }}>
+                                        Landlord Login
+                                    </MenuItem>
+                                )}
+                            </MenuList>
+                        </Menu>
+                    </Flex>
+
                 </HStack>
             </Flex>
-
         </Box>
     )
 }
