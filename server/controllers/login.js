@@ -24,10 +24,10 @@ generateMailTransporter = () =>
         }
     });
 
-sendError = (res, error, statusCode = 401) =>
+sendError = (res, error, statusCode = 500) =>
   res.status(statusCode).json({ error });
 
-generateRandomByte = () => {
+const generateRandomByte = () => {
   return new Promise((resolve, reject) => {
     crypto.randomBytes(30, (err, buff) => {
       if (err) reject(err);
@@ -59,7 +59,7 @@ const login = () => {
     }
 }
 
-// user sign in status
+// user sign
 const signIn = (models) => {
   return async (req, res, next) => {
     const { email: {data}, password } = req.body;
@@ -79,7 +79,7 @@ const signIn = (models) => {
   }
 }
 
-// create a user on login for given 
+// create a user
 const create = (models) => {
   return async (req, res, next) => {
     const { name, email: {data}, password } = req.body;
@@ -108,7 +108,7 @@ const create = (models) => {
       `,
     });
   
-    res.status(201).json({
+    res.status(200).json({
       user: {
         id: newUser._id,
         name: newUser.name,
@@ -207,14 +207,14 @@ const resendEmailVerificationToken = (models) => {
   }
 }
 
-// update rating for given rating id
+// user forget password
 const forgetPassword = (models) => {
   return async (req, res, next) => {
-    const { email: {data} } = req.body;
+    const { email } = req.body;
 
-    if (!data) return sendError(res, "Email is missing!");
+    if (!email) return sendError(res, "Email is missing!");
   
-    const user = await models.user.findOne({ 'email.data': data });
+    const user = await models.user.findOne({ 'email.data': email });
     if (!user) return sendError(res, "User not found!", 404);
   
     const alreadyHasToken = await models.passwordResetToken.findOne({ owner: user._id });
@@ -231,7 +231,6 @@ const forgetPassword = (models) => {
     });
     await newPasswordResetToken.save();
   
-    // might needed to be updated, just for now
     const resetPasswordUrl = `http://localhost:3000/auth/reset-password?token=${token}&id=${user._id}`;
   
     const transport = generateMailTransporter();
@@ -246,8 +245,7 @@ const forgetPassword = (models) => {
       `,
     });
   
-    res.json({ message: "Link sent to your email",
-               test: data});
+    res.json({ message: "Link sent to your email" });
   }
 }
 
@@ -317,16 +315,16 @@ const isValidPassResetToken = (models) => {
 
       // Request type error
       if (!token.trim() || !isValidObjectId(userId))
-          return sendError(res, "Invalid request!");
+          return sendError(res, "Invalid request");
     
       // userId not matched
-      const resetToken = await models.PasswordResetToken.findOne({ owner: userId });
+      const resetToken = await models.passwordResetToken.findOne({ owner: userId });
       if (!resetToken)
-          return sendError(res, "Unauthorized access, invalid request!");
+          return sendError(res, "Invalid user id");
     
       // OTP not matched
       const matched = await resetToken.compareToken(token);
-      if (!matched) return sendError(res, "Unauthorized access, invalid request!");
+      if (!matched) return sendError(res, "Invalid token");
     
       req.resetToken = resetToken;
       next();
@@ -352,5 +350,5 @@ module.exports = {
     resetPassword, 
     isAuth,
     isValidPassResetToken,
-    sendResetPasswordTokenStatus
+    sendResetPasswordTokenStatus,
 }
