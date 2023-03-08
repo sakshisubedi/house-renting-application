@@ -25,7 +25,7 @@ function App() {
   return (
     <>
       {/* <LandingPage /> */}
-      <Router>
+      <Router basename='/'>
         <Routes>
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/search" element={<SearchResult />} />
@@ -40,14 +40,15 @@ function App() {
           <Route path="/listing" element={<AddListingPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/listing/:id" element={<IndividualListingPage />} />
-          <Route path='*' element={<Navigate to='/landing' />} />
-
-          {/* Authentication part */}
           <Route path="/auth/signin" element={<Signin />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/verification" element={<EmailVerification />} />
           <Route path="/auth/forget-password" element={<ForgetPassword />} />
           <Route path="/auth/reset-password" element={<ConfirmPassword />} />
+          <Route path='*' element={<Navigate to='/landing' />} />
+
+          {/* Authentication part */}
+          
         </Routes>
       </Router>
       {/* <div className="App">

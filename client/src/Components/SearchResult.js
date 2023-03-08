@@ -4,7 +4,7 @@ import React from "react";
 import FilterRow from "./FilterRow";
 import ListingCard from "./ListingCard";
 import house1 from "../img/house1.jpg";
-import { getListingsByRating } from "../services/listingApis";
+import { getListingBySearchParameter, getListingsByRating } from "../services/listingApis";
 
 export default class SearchResult extends React.Component {
   constructor(props) {
@@ -29,6 +29,13 @@ export default class SearchResult extends React.Component {
     });
   };
 
+  handleSearch = async (postalCode) => {
+    const recommendedListings = await getListingBySearchParameter(postalCode);
+    this.setState({
+      recommendedListings,
+    });
+  }
+
   render() {
     const { recommendedListings, currentPage, listingsPerPage } = this.state;
     const indexOfLastListing = currentPage * listingsPerPage;
@@ -48,7 +55,7 @@ export default class SearchResult extends React.Component {
           <Heading pl={10} pt={5} textAlign="left">
             Showing results for “Location”...
           </Heading>
-          <FilterRow></FilterRow>
+          <FilterRow search={this.handleSearch} />
         </Box>
         <Box margin="auto" pt={5} pl={10}>
           <VStack align="left" spacing={30}>

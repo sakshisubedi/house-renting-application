@@ -17,6 +17,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
+import { updateLandlord } from "../services/landlordApis";
 import React from "react";
 import NavBar from "./NavBar";
 import LandlordViewCard from "./LandlordViewCard";
@@ -25,9 +26,20 @@ import ListingCard from "./ListingCard";
 function EditLandlordProfilePage() {
   // need to get actual data from db
 
-  let tempData = {
-    name: "Pratyush Karmakar",
-    email: "pkarmakar@ucsd.edu",
+  let landlordData = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+    name: "Anthe Braybrooke",
+    email: "abraybrookej@amazon.com",
+    password: "test123",
+    isVerified: true,
+    pronoun: "They/Them",
+    age: 27,
+    phoneNo: "1234567890",
+    introduction: "some test self intro",
+    profilePicture: null,
+    _id: "640656792b0fe156679a8bc2",
+    createdAt: "2023-03-06T21:09:13.377Z",
+    updatedAt: "2023-03-06T21:09:13.377Z",
+    __v: 0,
   };
   let tempListing = {
     img: house1,
@@ -43,20 +55,35 @@ function EditLandlordProfilePage() {
     petFriendly: "allowed",
     postalCode: 920092,
   };
-  const [desc, setDesc] = React.useState(tempData.desc ?? null);
-  const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
-  const [age, setAge] = React.useState(tempData.age ?? null);
-  const [phone, setPhone] = React.useState(tempData.phone ?? null);
+  const [desc, setDesc] = React.useState(landlordData.introduction ?? null);
+  const [pronouns, setPronouns] = React.useState(landlordData.pronoun ?? null);
+  const [age, setAge] = React.useState(landlordData.age ?? null);
+  const [phone, setPhone] = React.useState(landlordData.phoneNo ?? null);
 
-  const updateUserData = () => {
-    tempData.desc = desc === "" ? null : desc;
-    tempData.pronouns = pronouns === "" ? null : pronouns;
-    tempData.age = age === "" ? null : parseInt(age);
-    tempData.phone = phone === "" ? null : phone;
-    console.log(tempData, "landlord data");
+  const updateLandlordData = async () => {
+    landlordData.introduction = desc === "" ? null : desc;
+    landlordData.pronoun = pronouns === "" ? null : pronouns;
+    landlordData.age = age === "" ? null : parseInt(age);
+    landlordData.phoneNo = phone === "" ? null : phone;
+    landlordData.updatedAt = new Date().toISOString();
+    console.log(landlordData, "landlord data");
 
-    // need to transform tempData into proper DB schema format
-    // SAVE TO DB
+    const response = await updateLandlord(landlordData, landlordData._id); // NEED TO ENTER DYNAMIC LANDLORD ID
+    if(response?.error) {
+      toast({
+        title: "Failed",
+        description: response?.error,
+        status: "error",
+        position: "top-right"
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Successfully updated landlord profile",
+        status: "success",
+        position: "top-right"
+      });
+    }
   };
 
   const toast = useToast();
@@ -67,10 +94,10 @@ function EditLandlordProfilePage() {
       <Box my={100} ml={250} mr={250}>
         <Box>
           <HStack spacing={5} mb={10}>
-            <Avatar size="2xl" name={tempData.name} src={null} />
+            <Avatar size="2xl" name={landlordData.name} src={null} />
             <VStack spacing={5} align="left" pl={50} w="100%">
               <Flex>
-                <Heading mr={5}>{tempData.name}</Heading>
+                <Heading mr={5}>{landlordData.name}</Heading>
                 <CheckCircleIcon boxSize={7} color={"blue.500"} />
               </Flex>
               <Textarea
@@ -94,19 +121,21 @@ function EditLandlordProfilePage() {
                 colorScheme="blue"
                 w={100}
                 onClick={(e) => {
-                  // e.preventDefault();
+                  e.preventDefault();
                   try {
-                    updateUserData();
-                    toast({
-                      title: "Success",
-                      description: "Changes Saved",
-                      status: "success",
-                    });
+                    updateLandlordData();
+                    // toast({
+                    //   title: "Success",
+                    //   description: "Changes Saved",
+                    //   status: "success",
+                    //   position: "top-right"
+                    // });
                   } catch (error) {
                     toast({
                       title: "Failed",
                       description: error,
                       status: "error",
+                      position: "top-right"
                     });
                   }
                 }}
@@ -123,7 +152,7 @@ function EditLandlordProfilePage() {
                   <Input
                     type="email"
                     placeholder="johndoe@gmail.com"
-                    defaultValue={tempData.email}
+                    defaultValue={landlordData.email}
                     w="50%"
                     isDisabled
                   />
@@ -141,9 +170,9 @@ function EditLandlordProfilePage() {
                     w="50%"
                     onChange={(e) => setPronouns(e.target.value)}
                   >
-                    <option value="He/Him/His">He/Him/His</option>
-                    <option value="She/Her/Hers">She/Her/Hers</option>
-                    <option value="They/Them/Their">They/Them/Their</option>
+                    <option value="He/Him">He/Him</option>
+                    <option value="She/Her">She/Her</option>
+                    <option value="They/Them">They/Them</option>
                   </Select>
                 </HStack>
               </FormControl>

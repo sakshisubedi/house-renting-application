@@ -41,7 +41,7 @@ const updateListing = (models) => {
 }
 
 // get all listings
-const getListing = (models) => {
+const getListings = (models) => {
     return async (req, res, next) => {
         try {
             return res.status(200).json({
@@ -219,10 +219,15 @@ const getAverageRatingForAllListingByLandlordId = (models) => {
 const getListingBySearchParameter = (models) => {
     return async (req, res, next) => {
         try {
+            const findQuery = {
+                postalCode: {
+                    $regex: new RegExp(`^${req.query.postalCode}`)
+                }
+            }
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.find({...req.query})
+                data: await models.listing.find(findQuery)
             })
         } catch (error) {
             return res.status(500).json({
@@ -236,7 +241,7 @@ const getListingBySearchParameter = (models) => {
 module.exports = {
     createListing,
     updateListing,
-    getListing,
+    getListings,
     getListingById,
     getListingByLandlordId,
     deleteListing,

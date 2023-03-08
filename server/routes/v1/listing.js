@@ -9,7 +9,7 @@ module.exports = (models) => {
     routes.get('/landlord/:landlordId', listingController.getListingByLandlordId(models));
     routes.get('/landlord/:landlordId/rating', listingController.getAverageRatingForAllListingByLandlordId(models));
     routes.get('/:id', listingController.getListingById(models));
-    routes.get('/', listingController.getListing(models));
+    routes.get('/', listingController.getListings(models));
     routes.delete('/:id', listingController.deleteListing(models));
     return routes;
 }

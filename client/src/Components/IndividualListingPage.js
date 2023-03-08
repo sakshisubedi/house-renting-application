@@ -282,9 +282,9 @@ function IndividualListingPage() {
         >
           {/* IMAGES */}
           {/* <HStack p={1} spacing={5}>
-            <Image rounded={"2xl"} src={tempData.img ?? null} />
+            <Image rounded={"2xl"} src={listingData.img ?? null} />
             <Spacer/>
-            <Image rounded={"2xl"} src={tempData.img ?? null} />
+            <Image rounded={"2xl"} src={listingData.img ?? null} />
           </HStack> */}
         </Box>
         <HStack spacing={5} align={"top"}>
