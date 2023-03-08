@@ -1,3 +1,3 @@
 export default {
-  BASE_URL: "http://localhost:4000",
+  BASE_URL: "house-renting-application-git-develop-sakshisubedi.vercel.app"
 };
