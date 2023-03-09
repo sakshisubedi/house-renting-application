@@ -19,6 +19,7 @@ function FilterRow(props) {
     email: "xyz@gmail.com",
   };
 
+
   const [selectedPriceOption, setSelectedPriceOption] = useState(null);
   const handlePriceOptionSelect = (value) => {
     setSelectedPriceOption(value);
@@ -52,10 +53,12 @@ function FilterRow(props) {
             onChange={handleInputChange}
           />
         </Box>
-        {/*Price*/}
+
+        {/*rentPrice */}
         <Select
-          placeholder="Price"
+          placeholder="Rent"
           h="75px"
+
           defaultValue={rentPrice}
           fontSize="25px"
           border="1px solid #eaebef"
@@ -63,14 +66,9 @@ function FilterRow(props) {
           borderRadius="10px"
           onChange={(e) => {
             setRentPrice(e.target.value);
-            props.search(
-              postalCode,
-              e.target.value,
-              rating,
-              beds,
-              baths,
-              petPref
-            );
+
+            props.search(postalCode, e.target.value, rating, beds, baths, petPref);
+
           }}
           bg="#eaebef"
         >
@@ -93,14 +91,8 @@ function FilterRow(props) {
           borderRadius="10px"
           onChange={(e) => {
             setRating(e.target.value);
-            props.search(
-              postalCode,
-              rentPrice,
-              e.target.value,
-              beds,
-              baths,
-              petPref
-            );
+
+            props.search(postalCode, rentPrice, e.target.value, beds, baths, petPref);
           }}
           bg="#eaebef"
         >
@@ -123,14 +115,9 @@ function FilterRow(props) {
           borderRadius="10px"
           onChange={(e) => {
             setBeds(e.target.value);
-            props.search(
-              postalCode,
-              rentPrice,
-              rating,
-              e.target.value,
-              baths,
-              petPref
-            );
+
+            props.search(postalCode, rentPrice, rating, e.target.value, baths, petPref);
+
           }}
           bg="#eaebef"
         >
@@ -150,15 +137,10 @@ function FilterRow(props) {
           width="180px"
           borderRadius="10px"
           onChange={(e) => {
-            setBaths(e.target.value);
-            props.search(
-              postalCode,
-              rentPrice,
-              rating,
-              beds,
-              e.target.value,
-              petPref
-            );
+
+            setBaths(e.target.value); 
+            props.search(postalCode, rentPrice, rating, beds, e.target.value, petPref);
+
           }}
           bg="#eaebef"
         >
@@ -180,19 +162,13 @@ function FilterRow(props) {
           borderRadius="10px"
           onChange={(e) => {
             setPetPref(e.target.value);
-            props.search(
-              postalCode,
-              rentPrice,
-              rating,
-              beds,
-              baths,
-              e.target.value
-            );
+
+            props.search(postalCode, rentPrice, rating, beds, baths, e.target.value);
           }}
           bg="#eaebef"
         >
-          <option value="yes">yes</option>
-          <option value="no">no</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
         </Select>
 
         {/* </Flex> */}

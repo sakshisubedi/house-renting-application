@@ -73,7 +73,7 @@ const getIsWishlistedByUser = (models) => {
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: item.length != 0
+                data: item.length != 0 ? item[0] : false
             })
         } catch (error) {
             return res.status(500).json({

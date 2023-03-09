@@ -90,14 +90,7 @@ export async function getListingRating(landlordId) {
   }
 }
 
-export async function getListingBySearchParameter(
-  postalCode,
-  rentPrice = "",
-  rating = "",
-  beds = "",
-  bathrooms = "",
-  petPref = ""
-) {
+export async function getListingBySearchParameter(postalCode, rentPrice="", rating="", beds="", bathrooms="", petPref="") {
   try {
     const searchParams = new URLSearchParams();
     if (postalCode !== "") {
@@ -117,6 +110,7 @@ export async function getListingBySearchParameter(
     }
     if (petPref !== "") {
       searchParams.append("hasPet", petPref === "Yes");
+
     }
     const { data } = await axios.get(
       `${BASE_URL}/api/v1/listing/search?${searchParams.toString()}`

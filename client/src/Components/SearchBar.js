@@ -51,7 +51,7 @@ export default function SearchBar(props) {
           }
           // onClick={handleSearchSubmit}
           onClick={(e) => {
-            navigate("/searchResult");
+            navigate("/search");
         }}
         />
       </HStack>

@@ -52,7 +52,6 @@ const DetailedProfile = ({ p }) => {
                                     <Avatar size="2xl" name={p.name} src={null} />
                                     <VStack spacing={3} align="left" pl={50} w="100%">
                                         <Heading>{p.name}</Heading>
-                                        {/* <Input mr={5} defaultValue={tempData.name ?? null} placeholder="Enter First and Last Name here..."  /> */}
                                         <Text
                                             fontWeight='semibold'
                                             fontSize='md'
@@ -86,69 +85,74 @@ const DetailedProfile = ({ p }) => {
                                         Personal Info:
                                     </Heading>
 
-                                    <Box px={5}>
-                                        <SimpleGrid columns={2} spacingX='60px' spacingY='3px'>
+                                    <Box px={5} mt={5}>
+                                        <SimpleGrid columns={4} spacingX={"3rem"}>
 
                                             <Box>
-                                                <HStack>
+                                                <VStack spacing={3}>
                                                     <Box
                                                         fontWeight='medium'
                                                         letterSpacing='wide'
                                                         fontSize='lg'
                                                     >
-                                                        Email:
+                                                        Email
                                                     </Box>
                                                     {p.email.isPublic ? (
-                                                        <Box as='span' fontWeight='normal' fontSize='md'>
+                                                        <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
                                                             {' '}{p.email.data}
                                                         </Box>
-                                                    ) : (<BiHide />)}
-                                                </HStack>
-                                            </Box>
-
-                                            <Box
-                                                fontWeight='medium'
-                                                letterSpacing='wide'
-                                                fontSize='lg'
-                                            >
-                                                Pronouns:
-                                                <Box as='span' fontWeight='normal' fontSize='md'>
-                                                    {' '}{p.pronoun}
-                                                </Box>
+                                                    ) : (<BiHide size={"1.5rem"} />)}
+                                                </VStack>
                                             </Box>
 
                                             <Box>
-                                                <HStack>
+                                                <VStack spacing={3}>
                                                     <Box
                                                         fontWeight='medium'
                                                         letterSpacing='wide'
                                                         fontSize='lg'
                                                     >
-                                                        Age:
+                                                        Pronouns
+                                                    </Box>
+                                                    <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
+                                                        {' '}{p.pronoun}
+                                                    </Box>
+                                                </VStack>
+                                            </Box>
+                                            
+
+                                            <Box>
+                                                <VStack spacing={3}>
+                                                    <Box
+                                                        fontWeight='medium'
+                                                        letterSpacing='wide'
+                                                        fontSize='lg'
+                                                    >
+                                                        Age
                                                     </Box>
                                                     {p.age.isPublic ? (
-                                                        <Box as='span' fontWeight='normal' fontSize='md'>
+                                                        <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
                                                             {' '}{p.age.data}
                                                         </Box>
-                                                    ) : (<BiHide />)}
-                                                </HStack>
+                                                    ) : (<BiHide size={"1.5rem"} />)}
+                                                </VStack>
                                             </Box>
 
                                             <Box>
-                                                <HStack>
+                                                <VStack spacing={3}>
                                                     <Box
                                                         fontWeight='medium'
                                                         letterSpacing='wide'
                                                         fontSize='lg'
                                                     >
-                                                        Occupation:
+                                                        Occupation
                                                     </Box>
                                                     {p.occupation.isPublic ? (
-                                                        <Box as='span' fontWeight='normal' fontSize='md'>
+                                                        <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
                                                             {' '}{p.occupation.data}
                                                         </Box>
-                                                    ) : (<BiHide />)}
-                                                </HStack>
+                                                    ) : (<BiHide size={"1.5rem"} />)}
+                                                </VStack>
                                             </Box>
                                         </SimpleGrid>
                                     </Box>
@@ -168,8 +172,8 @@ const DetailedProfile = ({ p }) => {
                                         Renting Info:
                                     </Heading>
 
-                                    <Box px={5}>
-                                        <SimpleGrid columns={1} spacingY='3px'>
+                                    <Box px={5} mt={5}>
+                                        <SimpleGrid columns={2} spacingY='1rem' spacingX={"10rem"}>
 
                                             <Box
                                                 fontWeight='medium'
@@ -177,21 +181,22 @@ const DetailedProfile = ({ p }) => {
                                                 fontSize='lg'
                                             >
                                                 Preferred Move in Date:
-                                                <Box as='span' fontWeight='normal' fontSize='md'>
-                                                    {' '}{p.preferredMoveInDate}
-                                                </Box>
+                                            </Box>
+                                            <Box as='span' fontWeight='normal' fontSize='md'>
+                                                {' '}{new Date(p.preferredMoveInDate).toDateString()}
                                             </Box>
 
-                                            <Box
+                                            {/* <Box
                                                 fontWeight='medium'
                                                 letterSpacing='wide'
                                                 fontSize='lg'
                                             >
                                                 Desired Space:
-                                                <Box as='span' fontWeight='normal' fontSize='md'>
-                                                    {' '}2 bedrooms, 1 bathrooms
-                                                </Box>
                                             </Box>
+                                            <Box as='span' fontWeight='normal' fontSize='md'>
+                                                {' '}2 bedrooms, 1 bathrooms
+                                            </Box> */}
+                                            
 
                                             <Box
                                                 fontWeight='medium'
@@ -199,21 +204,22 @@ const DetailedProfile = ({ p }) => {
                                                 fontSize='lg'
                                             >
                                                 Looking for Roommates:
-                                                <Box as='span' fontWeight='normal' fontSize='md'>
-                                                    {' '}{p.isLookingForFlatmate ? "Yes" : "No"}
-                                                </Box>
+                                            </Box>
+                                            <Box as='span' fontWeight='normal' fontSize='md'>
+                                                {' '}{p.isLookingForFlatmate ? "Yes" : "No"}
                                             </Box>
 
-                                            <Box
+                                            {/* <Box
                                                 fontWeight='medium'
                                                 letterSpacing='wide'
                                                 fontSize='lg'
                                             >
                                                 Roommates Preferences:
-                                                <Box as='span' fontWeight='normal' fontSize='md'>
-                                                    {' '}...
-                                                </Box>
                                             </Box>
+                                            <Box as='span' fontWeight='normal' fontSize='md'>
+                                                {' '}...
+                                            </Box> */}
+                                            
 
                                             <Box
                                                 fontWeight='medium'
@@ -221,10 +227,11 @@ const DetailedProfile = ({ p }) => {
                                                 fontSize='lg'
                                             >
                                                 Open to Having Pets:
-                                                <Box as='span' fontWeight='normal' fontSize='md'>
-                                                    {' '}{p.preferPet ? "Yes" : "No"}
-                                                </Box>
                                             </Box>
+                                            <Box as='span' fontWeight='normal' fontSize='md'>
+                                                {' '}{p.preferPet ? "Yes" : "No"}
+                                            </Box>
+                                           
                                         </SimpleGrid>
                                     </Box>
                                 </VStack>
