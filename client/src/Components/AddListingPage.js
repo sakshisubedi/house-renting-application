@@ -1,4 +1,11 @@
 import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Box,
   Button,
   VStack,
@@ -35,6 +42,7 @@ function AddListingPage() {
 
   const [media, setMedia] = React.useState([]);
   const [selectedImages, setSelectedImages] = React.useState([]);
+  const [popup, setPopup] = React.useState(false);
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -52,6 +60,15 @@ function AddListingPage() {
   };
   const uploadImages = () => {
     setMedia(selectedImages);
+    setPopup(false);
+  };
+
+  const showPopup = () => {
+    setPopup(true);
+  };
+
+  const closePopup = () => {
+    setPopup(false);
   };
 
   const addListing = async () => {
@@ -142,39 +159,57 @@ function AddListingPage() {
                   />
                 </HStack>
               </FormControl>
-              <FormControl id="media">
-                <FormLabel w={"100%"}>Images/Videos (Up to 10)</FormLabel>
-                <Box
-                  w={"100%"}
-                  h={200}
-                  border="2px"
-                  borderColor="gray.300"
-                  borderRadius={"2xl"}
-                >
-                  {/* IMAGES */}
-                  <Box textAlign="left" my={6} mx={6}>
-                    <Heading size="lg" mb="4">
-                      Select Image(s)
-                    </Heading>
-                    <input
-                      type="file"
-                      name="myImage"
-                      onChange={onImageChange}
-                      multiple
-                    />
-                  </Box>
-                </Box>
-                <Button
-                  variant="solid"
-                  colorScheme="blue"
-                  w={200}
-                  mt={5}
-                  float={"right"}
-                  onClick={uploadImages}
-                >
-                  Upload Images/Videos
-                </Button>
-              </FormControl>
+              {/*  */}
+              <FormLabel w={"100%"}>Images/Videos (Up to 10)</FormLabel>
+              <Box
+                w={"100%"}
+                h={200}
+                border="2px"
+                borderColor="gray.300"
+                borderRadius={"2xl"}
+                p={10}
+                fontWeight="bold"
+              >
+                {" "}
+                {media.length > 0 ? `${media.length} file(s) uploaded` : "  "}
+              </Box>
+              {/*  */}
+              {popup && (
+                <Modal isOpen={popup} onClose={closePopup}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Select Image(s)</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <FormControl>
+                        <input
+                          type="file"
+                          name="myImage"
+                          onChange={onImageChange}
+                          multiple
+                        />
+                      </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={uploadImages}>
+                        Save
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+              )}
+              <Button
+                variant="solid"
+                colorScheme="blue"
+                align="right"
+                w={200}
+                mt={5}
+                float={"right"}
+                onClick={showPopup}
+              >
+                Upload Images/Videos
+              </Button>
+              {/*  */}
               <FormLabel w={"100%"} fontSize={"3xl"}>
                 Parameters
               </FormLabel>
@@ -196,7 +231,7 @@ function AddListingPage() {
                         type="number"
                         placeholder="Listing Price..."
                         defaultValue={price}
-                        w="50%"
+                        w="50 %"
                         onChange={(e) => setPrice(e.target.value)}
                       />
                     </HStack>

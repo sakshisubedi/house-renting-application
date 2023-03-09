@@ -23,15 +23,16 @@ function FilterRow(props) {
   const handlePriceOptionSelect = (value) => {
     setSelectedPriceOption(value);
   };
-
-  const [price, setPrice] = React.useState(tempData.pronouns ?? null);
-  const [rating, setRating] = React.useState(tempData.pronouns ?? null);
-  const [beds, setBeds] = React.useState(tempData.pronouns ?? null);
-  const [baths, setBaths] = React.useState(tempData.pronouns ?? null);
-  const [pet, setPet] = React.useState(tempData.pronouns ?? null);
+  const [postalCode, setPostalCode] = React.useState("");
+  const [rentPrice, setRentPrice] = React.useState("");
+  const [rating, setRating] = React.useState("");
+  const [beds, setBeds] = React.useState("");
+  const [baths, setBaths] = React.useState("");
+  const [petPref, setPetPref] = React.useState("");
 
   const handleInputChange = async (event) => {
-    props.search(event.target.value);
+    setPostalCode(event.target.value);
+    props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
   };
 
   return (
@@ -47,25 +48,36 @@ function FilterRow(props) {
             fontSize="27px"
             outline="none"
             px={4}
+            onChange={handleInputChange}
           />
         </Box>
         {/*Price*/}
         <Select
           placeholder="Price"
           h="75px"
-          defaultValue={price}
+          defaultValue={rentPrice}
           fontSize="25px"
           border="1px solid #eaebef"
           width="180px"
           borderRadius="10px"
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) => {
+            setRentPrice(e.target.value);
+            props.search(
+              postalCode,
+              e.target.value,
+              rating,
+              beds,
+              baths,
+              petPref
+            );
+          }}
           bg="#eaebef"
         >
-          <option value="1000+">&lt;1000</option>
-          <option value="2000">&lt;2000</option>
-          <option value="3000">&lt;3000</option>
-          <option value="4000">&lt;4000</option>
-          <option value="5000">&lt;5000</option>
+          <option value="<1000">&lt;1000</option>
+          <option value="<2000">&lt;2000</option>
+          <option value="<3000">&lt;3000</option>
+          <option value="<4000">&lt;4000</option>
+          <option value="<5000">&lt;5000</option>
         </Select>
 
         {/*Ratings*/}
@@ -78,14 +90,24 @@ function FilterRow(props) {
           // w="max-content"
           width="180px"
           borderRadius="10px"
-          onChange={(e) => setRating(e.target.value)}
+          onChange={(e) => {
+            setRating(e.target.value);
+            props.search(
+              postalCode,
+              rentPrice,
+              e.target.value,
+              beds,
+              baths,
+              petPref
+            );
+          }}
           bg="#eaebef"
         >
-          <option value="5">5</option>
-          <option value="4">4</option>
-          <option value="3">3</option>
-          <option value="2">2</option>
           <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
         </Select>
 
         {/*Beds*/}
@@ -98,12 +120,22 @@ function FilterRow(props) {
           w="max-content"
           width="180px"
           borderRadius="10px"
-          onChange={(e) => setBeds(e.target.value)}
+          onChange={(e) => {
+            setBeds(e.target.value);
+            props.search(
+              postalCode,
+              rentPrice,
+              rating,
+              e.target.value,
+              baths,
+              petPref
+            );
+          }}
           bg="#eaebef"
         >
-          <option value="1 Bed">1 Bed</option>
-          <option value="2 Bed">2 Bed</option>
-          <option value="3 Bed">3 Bed</option>
+          <option value="1">1 Bed</option>
+          <option value="2">2 Bed</option>
+          <option value="3">3 Bed</option>
         </Select>
 
         {/*Baths*/}
@@ -116,26 +148,46 @@ function FilterRow(props) {
           // w="max-content"
           width="180px"
           borderRadius="10px"
-          onChange={(e) => setBaths(e.target.value)}
+          onChange={(e) => {
+            setBaths(e.target.value);
+            props.search(
+              postalCode,
+              rentPrice,
+              rating,
+              beds,
+              e.target.value,
+              petPref
+            );
+          }}
           bg="#eaebef"
         >
-          <option value="1 Bathroom">1 Bathroom</option>
-          <option value="2 Bathroom">2 Bathroom</option>
-          <option value="3 Bathroom">3 Bathroom</option>
+          <option value="1">1 Bathroom</option>
+          <option value="2">2 Bathroom</option>
+          <option value="3">3 Bathroom</option>
         </Select>
 
         {/*More*/}
 
         <Select
-          placeholder="Pet-Friendly"
+          placeholder="Pet Preferences"
           h="75px"
-          defaultValue={pet}
+          defaultValue={petPref}
           fontSize="25px"
           width="180px"
           border="1px solid #eaebef"
           // w="max-content"
           borderRadius="10px"
-          onChange={(e) => setPet(e.target.value)}
+          onChange={(e) => {
+            setPetPref(e.target.value);
+            props.search(
+              postalCode,
+              rentPrice,
+              rating,
+              beds,
+              baths,
+              e.target.value
+            );
+          }}
           bg="#eaebef"
         >
           <option value="yes">yes</option>
