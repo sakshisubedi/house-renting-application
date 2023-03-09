@@ -40,8 +40,10 @@ function App() {
           <Route path="/listing" element={<AddListingPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/listing/:id" element={<IndividualListingPage />} />
-          <Route path="/auth/signin" element={<Signin />} />
-          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/user/signin" element={<Signin userType="customer" />}  />
+          <Route path="/auth/user/signup" element={<Signup userType="customer" />} />
+          <Route path="/auth/landlord/signin" element={<Signin userType="landlord" />} />
+          <Route path="/auth/landlord/signup" element={<Signup userType="landlord" />} />
           <Route path="/auth/verification" element={<EmailVerification />} />
           <Route path="/auth/forget-password" element={<ForgetPassword />} />
           <Route path="/auth/reset-password" element={<ConfirmPassword />} />

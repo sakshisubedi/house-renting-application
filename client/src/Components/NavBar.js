@@ -130,7 +130,7 @@ const NavBar = ({ profileURL }) => {
                                     <MenuItem 
                                         onClick={(e) => {
                                             // route to user login
-                                            window.location.href = '/auth/signin';
+                                            window.location.href = '/auth/user/signin';
                                         }}>
                                         User Login
                                     </MenuItem>
@@ -145,7 +145,7 @@ const NavBar = ({ profileURL }) => {
                                     <MenuItem 
                                         onClick={(e) => {
                                             // route to landlord login
-                                            window.location.href = '/landlord/signin';
+                                            window.location.href = '/auth/landlord/signin';
                                         }}>
                                         Landlord Login
                                     </MenuItem>
