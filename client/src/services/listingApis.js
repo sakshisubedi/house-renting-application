@@ -79,7 +79,7 @@ export async function getListingRating(landlordId) {
     }
 }
 
-export async function getListingBySearchParameter(postalCode, rentPrice, rating, beds, bathrooms, petPref) {
+export async function getListingBySearchParameter(postalCode, rentPrice="", rating="", beds="", bathrooms="", petPref="") {
     try {
         const searchParams = new URLSearchParams();
         if(postalCode !== "") {
