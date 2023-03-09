@@ -66,7 +66,6 @@ module.exports = (models) => {
           name: user.name,
           email: user.email.data,
           isVerified: user.isVerified,
-          aaa: user.isLookingForFlatmate
         },
       });
     });

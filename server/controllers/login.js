@@ -297,7 +297,6 @@ const isAuth = (models) => {
     
       const decode = jwt.verify(jwtToken, process.env.JWT_SECRET);
       const { userId } = decode;
-    
       // Check if user is found
       const user = await models.user.findById(userId);
       if (!user) return sendError(res, "User not found");
