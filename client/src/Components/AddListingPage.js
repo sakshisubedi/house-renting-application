@@ -38,7 +38,6 @@ function AddListingPage() {
   const [pets, setPets] = React.useState();
   const [desc, setDesc] = React.useState();
 
-
   const [media, setMedia] = React.useState([]);
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [popup, setPopup] = React.useState(false);
@@ -70,7 +69,6 @@ function AddListingPage() {
     setPopup(false);
   };
 
-
   const addListing = async () => {
     const newListing = {
       name: name,
@@ -95,7 +93,6 @@ function AddListingPage() {
         description: response?.error,
         status: "error",
         position: "top-right",
-
       });
     } else {
       toast({
@@ -103,9 +100,6 @@ function AddListingPage() {
         description: "Successfully added listing",
         status: "success",
         position: "top-right",
-
-
-
       });
     }
   };
@@ -128,7 +122,6 @@ function AddListingPage() {
                   description: "Changes Saved",
                   status: "success",
                   position: "top-right",
-
                 });
               } catch (error) {
                 toast({
@@ -173,6 +166,7 @@ function AddListingPage() {
                 borderRadius={"2xl"}
                 p={10}
                 fontWeight="bold"
+                ml="auto"
               >
                 {" "}
                 {media.length > 0 ? `${media.length} file(s) uploaded` : "  "}
@@ -210,6 +204,7 @@ function AddListingPage() {
                 mt={5}
                 float={"right"}
                 onClick={showPopup}
+                ml="auto"
               >
                 Upload Images/Videos
               </Button>
