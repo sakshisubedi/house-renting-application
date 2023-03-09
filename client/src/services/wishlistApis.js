@@ -15,7 +15,29 @@ export async function createWishlistItem(wishlistItem) {
 
 export async function getWishlistByUserId(userId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/${userId}}`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/${userId}`);
+        return data;
+    } catch (error) {
+        return {
+            error: error.message || error
+        }
+    }
+}
+
+export async function getInterestedPeopleByListingId(listingId) {
+    try {
+        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/interested/${listingId}`);
+        return data;
+    } catch (error) {
+        return {
+            error: error.message || error
+        }
+    }
+}
+
+export async function getIsWishlistedByUser(userId, listingId) {
+    try {
+        const { data } = await axios.get(`${BASE_URL}/api/v1/wishlist/user/${userId}/listing/${listingId}`);
         return data;
     } catch (error) {
         return {
