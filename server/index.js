@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const morgan = require('morgan')
+const cors = require("cors");
+const path = require("path");
+const morgan = require('morgan');
 require("dotenv").config();
 const $env = process.env;
 
@@ -14,9 +16,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use(morgan('combined'));
-
-let cors = require('cors')
-app.use(cors())
+app.use(cors());
 
 const startServer = async () => {
     const models = await require('./models')({ $env });
@@ -28,6 +28,18 @@ const startServer = async () => {
     })
     
     app.use('/api/v1', require('./routes/v1')(models));
+
+    // serving static files
+    if (process.env.NODE_ENV === "production") {
+        app.use(express.static(path.resolve(__dirname, '../client', 'build')));
+        app.get("*", (req, res) => {
+            res.sendFile(path.resolve(__dirname, '../client', 'build', 'index.html'),function (err) {
+                if(err) {
+                    res.status(500).send(err)
+                }
+            });
+        })
+    }
     
     app.listen(PORT, () => {
         console.log("Server listening on", PORT);

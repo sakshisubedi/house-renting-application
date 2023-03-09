@@ -20,6 +20,7 @@ import {
 import React from "react";
 import { updateUser } from "../services/userApis";
 import NavBar from "./NavBar";
+import { useLocation } from "react-router-dom";
 
 // Get current login user
 import { useAuth } from "../Components/auth/context/hookIndex";
@@ -31,7 +32,7 @@ function EditCustomerProfilePage() {
   const userEmail = authInfo.profile?.email;
   const userId = authInfo.profile?.id;
 
-  let userData = {
+  let tempUserData = {
     // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     email: {
       isPublic: true,
@@ -56,7 +57,10 @@ function EditCustomerProfilePage() {
     createdAt: "2023-03-01T22:56:00.991Z",
     updatedAt: "2023-03-01T22:56:00.991Z",
   };
+  const location = useLocation();
+  let userData = location.state.userInfo ?? tempUserData;
 
+  const [email, setEmail] = React.useState(userData.email.data);
   const [emailPublicFlag, setEmailPublicFlag] = React.useState(
     userData.email.isPublic.toString()
   );

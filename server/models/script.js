@@ -74,6 +74,13 @@ async function loadDummyData(models) {
         userId: userResponse._id,
     })
     const likeResponse = await like.save();
+
+    const rating = new models.rating({
+        listingId: listingResponse._id,
+        userId: userResponse._id,
+        rating: 4
+    })
+    const ratingResponse = await rating.save();
 }
 
 module.exports = loadDummyData;

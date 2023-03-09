@@ -30,6 +30,7 @@ function FilterRow(props) {
   const [baths, setBaths] = React.useState("");
   const [petPref, setPetPref] = React.useState("");
 
+
   const handleInputChange = async (event) => {
     setPostalCode(event.target.value);
     props.search(event.target.value, rentPrice, rating, beds, baths, petPref);

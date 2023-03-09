@@ -16,6 +16,7 @@ import {
   getListingsByRating,
 } from "../services/listingApis";
 
+
 export default class SearchResult extends React.Component {
   constructor(props) {
     super(props);
@@ -46,6 +47,7 @@ export default class SearchResult extends React.Component {
     });
   };
 
+
   render() {
     const { recommendedListings, currentPage, listingsPerPage } = this.state;
     const indexOfLastListing = currentPage * listingsPerPage;
@@ -75,6 +77,7 @@ export default class SearchResult extends React.Component {
           >
             <FilterRow search={this.handleSearch} />
           </Flex>
+
         </Box>
         <Box margin="auto" pt={3} pl={10}>
           <VStack

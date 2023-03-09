@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, IconButton, HStack, Image } from "@chakra-ui/react";
 import search from "../img/search.jpg";
 import { useNavigate } from "react-router-dom";
+import { getListingBySearchParameter } from "../services/listingApis";
 
-export default function SearchBar() {
+export default function SearchBar(props) {
   const navigate = useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleInputChange = (event) => {
-    setSearchQuery(event.target.value);
+  const handleInputChange = async (event) => {
+    props.search(event.target.value);
   };
 
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    // Perform search and display results
-    console.log(`Searching for "${searchQuery}"...`);
-    // Perform search and display results
-  };
+  // const handleSearchSubmit = (event) => {
+  //   event.preventDefault();
+  //   // Perform search and display results
+  //   console.log(`Searching for "${searchQuery}"...`);
+  //   // Perform search and display results
+  // };
 
   return (
     <>
@@ -33,7 +32,7 @@ export default function SearchBar() {
         <Input
           id="search-input"
           type="search"
-          placeholder="Enter an address or zip code"
+          placeholder="Enter postal code"
           // color="lavender"
           border="none"
           fontSize="25px"
