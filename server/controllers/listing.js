@@ -44,8 +44,8 @@ const updateListing = (models) => {
 const getListings = (models) => {
     return async (req, res, next) => {
         try {
-            const pageNum = req.query.pageNum >= 1 ? req.query.pageNum : 1
-            const numListings = req.query.numListings
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numListings = parseInt(req.query.numListings)
             const offset = numListings * (pageNum - 1)
             return res.status(200).json({
                 success: true,
@@ -132,8 +132,8 @@ const deleteListing = (models) => {
 const getListingByRating = (models) => {
     return async (req, res, next) => {
         try {
-            const pageNum = req.query.pageNum >= 1 ? req.query.pageNum : 1
-            const numListings = req.query.numListings
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numListings = parseInt(req.query.numListings)
             const offset = numListings * (pageNum - 1)
             return res.status(200).json({
                 success: true,
@@ -256,6 +256,10 @@ const getListingBySearchParameter = (models) => {
                 findQuery["hasPet"] = req.query.hasPet === "true"
             }
 
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numListings = parseInt(req.query.numListings)
+            const offset = numListings * (pageNum - 1)
+
             const pipeline = [
                 {
                   '$lookup': {
@@ -290,7 +294,7 @@ const getListingBySearchParameter = (models) => {
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.aggregate(pipeline)
+                data: await models.listing.aggregate(pipeline).skip(offset).limit(numListings)
             })
         } catch (error) {
             return res.status(500).json({
