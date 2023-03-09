@@ -3,13 +3,10 @@ import {
   Button,
   VStack,
   FormControl,
-  FormLabel,
-  Input,
   Textarea,
   HStack,
   Avatar,
   Heading,
-  Select,
   Image,
   ButtonGroup,
   Flex,
@@ -21,10 +18,13 @@ import {
 } from "@chakra-ui/react";
 import {
   AttachmentIcon,
+  CheckCircleIcon,
+  DeleteIcon,
   EmailIcon,
   PhoneIcon,
   StarIcon,
 } from "@chakra-ui/icons";
+import { BiLike } from "react-icons/bi";
 import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import favIcon from "../img/Union.svg";
@@ -384,16 +384,16 @@ function IndividualListingPage() {
                 border="2px"
                 borderColor="gray.300"
                 borderRadius={"2xl"}
-                p={5}
+                p={2}
               >
                 <form>
                   <FormControl id="commentText"></FormControl>
                   <Textarea
                     placeholder="Leave a Comment..."
                     variant={"filled"}
-                    mb={5}
+                    mb={2}
                   />
-                  <Flex mb={5}>
+                  <Flex mb={3}>
                     <Spacer />
                     <ButtonGroup>
                       <IconButton
@@ -418,8 +418,34 @@ function IndividualListingPage() {
                     </ButtonGroup>
                   </Flex>
                 </form>
-                <Divider borderWidth={"2px"} mb={5} />
-                <Box>{/* COMMENTS */}</Box>
+                <Divider borderWidth={"2px"} mb={3} />
+                <Box>
+                  {/* COMMENTS (need to have a loop)*/}
+                  <Box>
+                    <HStack spacing={2} px={3}>
+                      <Avatar name={"Test User"} size={"sm"}/>
+                      <Text fontWeight={"bold"} fontSize={"2xl"}>Test User</Text>
+                      <Spacer />
+                      <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
+                      <DeleteIcon boxSize={5} color={"blue.500"} onClick={()=>{}}/>
+                    </HStack>
+                    <Text ml={10} fontSize={"lg"}>Is this listing good?</Text>
+                    <Divider borderWidth={"3px"} my={2}/>
+                    <Box ml={"2rem"}>
+                      {/* REPLY BOX */}
+                      <HStack spacing={2} px={3}>
+                        <Avatar name={"Test Landlord"} size={"xs"}/>
+                        <Text fontWeight={"bold"} fontSize={"xl"}>Test Landlord</Text>
+                        <CheckCircleIcon boxSize={4} color={"blue.500"} />
+                        <Spacer />
+                        <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
+                        <DeleteIcon boxSize={5} color={"blue.500"} onClick={()=>{}}/>
+                      </HStack>
+                      <Text ml={10} fontSize={"md"}>Yes, this listing is really really good!</Text>
+                    </Box>
+                    <Divider borderWidth={"3px"} my={2}/>
+                  </Box>
+                </Box>
               </Box>
             </Box>
           </VStack>

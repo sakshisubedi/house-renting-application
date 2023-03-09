@@ -98,7 +98,7 @@ const DetailedProfile = ({ p }) => {
                                                         Email
                                                     </Box>
                                                     {p.email.isPublic ? (
-                                                        <Box as='span' fontWeight='normal' fontSize='md'>
+                                                        <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
                                                             {' '}{p.email.data}
                                                         </Box>
                                                     ) : (<BiHide size={"1.5rem"} />)}
@@ -114,7 +114,7 @@ const DetailedProfile = ({ p }) => {
                                                     >
                                                         Pronouns
                                                     </Box>
-                                                    <Box as='span' fontWeight='normal' fontSize='md'>
+                                                    <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
                                                         {' '}{p.pronoun}
                                                     </Box>
                                                 </VStack>
@@ -131,7 +131,7 @@ const DetailedProfile = ({ p }) => {
                                                         Age
                                                     </Box>
                                                     {p.age.isPublic ? (
-                                                        <Box as='span' fontWeight='normal' fontSize='md'>
+                                                        <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
                                                             {' '}{p.age.data}
                                                         </Box>
                                                     ) : (<BiHide size={"1.5rem"} />)}
@@ -148,7 +148,7 @@ const DetailedProfile = ({ p }) => {
                                                         Occupation
                                                     </Box>
                                                     {p.occupation.isPublic ? (
-                                                        <Box as='span' fontWeight='normal' fontSize='md'>
+                                                        <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
                                                             {' '}{p.occupation.data}
                                                         </Box>
                                                     ) : (<BiHide size={"1.5rem"} />)}
