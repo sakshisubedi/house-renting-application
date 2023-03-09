@@ -17,9 +17,10 @@ import {
   RadioGroup,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
-import { updateUser } from "../services/userApis";
+import React, { useEffect } from "react";
+import { updateUser, getUserAllInfoById } from "../services/userApis";
 import NavBar from "./NavBar";
+import { useLocation } from "react-router-dom";
 
 // Get current login user
 import { useAuth } from "../Components/auth/context/hookIndex"
@@ -31,7 +32,7 @@ function EditCustomerProfilePage() {
   const userEmail = authInfo.profile?.email;
   const userId = authInfo.profile?.id;
 
-  let userData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+  let tempUserData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     email: {
       isPublic: true,
       data: userEmail,
@@ -56,6 +57,12 @@ function EditCustomerProfilePage() {
     updatedAt: "2023-03-01T22:56:00.991Z",
   };
 
+  const location = useLocation();
+  let userData = location.state.userInfo ?? tempUserData;
+  // console.log(userData)
+  // const [userData, setUserData] = React.useState(tempUserData);
+
+  const [email, setEmail] = React.useState(userData.email.data);
   const [emailPublicFlag, setEmailPublicFlag] = React.useState(userData.email.isPublic.toString());
   const [desc, setDesc] = React.useState(userData.desc ?? null);
   const [pronouns, setPronouns] = React.useState(userData.pronoun ?? null);
@@ -66,14 +73,15 @@ function EditCustomerProfilePage() {
   );
   const [occupationPublicFlag, setOccupationPublicFlag] =
     React.useState(userData.occupation.isPublic.toString());
-  const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString() ?? null);
-  const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
+  // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
+  const [datePref, setDatePref] = React.useState((userData.preferredMoveInDate) ? new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) : null);
+  // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
   const [housematesBool, setHousematesBool] = React.useState(
     userData.isLookingForFlatmate ?? null
   );
-  const [roommatePrefs, setRoommatePrefs] = React.useState(
-    userData.roommatePrefs ?? null
-  );
+  // const [roommatePrefs, setRoommatePrefs] = React.useState(
+  //   userData.roommatePrefs ?? null
+  // );
   const [petsPref, setPetsPref] = React.useState(userData.preferPet ?? null);
   // console.log(userData)
   const updateUserData = async () => {
@@ -94,7 +102,7 @@ function EditCustomerProfilePage() {
     userData.updatedAt = new Date().toISOString();
     console.log(userData, "user data");
 
-    const response = await updateUser(userData, userData._id); // NEED TO ENTER DYNAMIC USER ID
+    const response = await updateUser(userData, userData._id);
     if(response?.error) {
       toast({
         title: "Failed",
@@ -176,7 +184,7 @@ function EditCustomerProfilePage() {
                     <Input
                       type="email"
                       placeholder="johndoe@gmail.com"
-                      defaultValue={userData.email.data}
+                      defaultValue={email}
                       w="full"
                       isDisabled
                     />
@@ -284,7 +292,7 @@ function EditCustomerProfilePage() {
                   />
                 </HStack>
               </FormControl>
-              <FormControl id="desiredSpace">
+              {/* <FormControl id="desiredSpace">
                 <HStack>
                   <VStack w="50%" align="left">
                     <FormLabel>Desired Space</FormLabel>
@@ -301,7 +309,7 @@ function EditCustomerProfilePage() {
                     onChange={(e) => setSpacePref(e.target.value)}
                   />
                 </HStack>
-              </FormControl>
+              </FormControl> */}
               <FormControl id="housematesBool">
                 <HStack>
                   <FormLabel w="50%">Looking for Housemates</FormLabel>
@@ -317,7 +325,7 @@ function EditCustomerProfilePage() {
                   </Select>
                 </HStack>
               </FormControl>
-              <FormControl id="roommatePref">
+              {/* <FormControl id="roommatePref">
                 <HStack>
                   <VStack w="50%" align="left">
                     <FormLabel>Roommate Preferences</FormLabel>
@@ -333,7 +341,7 @@ function EditCustomerProfilePage() {
                     onChange={(e) => setRoommatePrefs(e.target.value)}
                   />
                 </HStack>
-              </FormControl>
+              </FormControl> */}
               <FormControl id="petsBool">
                 <HStack>
                   <FormLabel w="50%">Open to having pets</FormLabel>

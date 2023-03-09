@@ -58,7 +58,7 @@ export default function IndividualListingPage() {
               borderColor="darkgray"
             />
             <Heading size="lg">Recommendations</Heading>
-            <ButtonRL />
+            {/* <ButtonRL /> */}
           </VStack>
 
           <Box my={50} ml={200} mr={200}>
