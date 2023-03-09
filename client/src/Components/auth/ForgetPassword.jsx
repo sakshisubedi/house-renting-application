@@ -13,23 +13,21 @@ export const isValidEmail = (email) => {
 };
 
 export default function ForgetPassword() {
-  const [email, setEmail] = useState({
-    data: "",
-  });
+  const [email, setEmail] = useState("");
 
   const { updateNotification } = useNotification();
 
   const handleChange = ({ target }) => {
     const { value } = target;
-    setEmail({ ...email, data: value });
+    setEmail(value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValidEmail(email.data))
+    if (!isValidEmail(email))
       return updateNotification("error", "Invalid email!");
 
-    const { error, message } = await forgetPassword(email.data);
+    const { error, message } = await forgetPassword(email);
     if (error) return updateNotification("error", error);
     updateNotification("success", message);
   };
@@ -45,7 +43,7 @@ export default function ForgetPassword() {
             </h1>
             <FormInput
               onChange={handleChange}
-              value={email.data}
+              value={email}
               label="Email *"
               placeholder="Enter Email"
               name="email"
