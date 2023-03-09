@@ -117,7 +117,7 @@ function FilterRow(props) {
           // width="150px"
           borderRadius="10px"
           onChange={(e) => {
-            setRating(e.target.value === "" ? null : e.target.value);
+            setRating(e.target.value);
             props.search(postalCode, rentPrice, e.target.value, beds, baths, petPref);
           }}
           bg="#eaebef"
@@ -140,7 +140,7 @@ function FilterRow(props) {
           width="180px"
           borderRadius="10px"
           onChange={(e) => {
-            setBeds(e.target.value === "" ? null : e.target.value);
+            setBeds(e.target.value);
             props.search(postalCode, rentPrice, rating, e.target.value, baths, petPref);
 
           }}
@@ -214,7 +214,7 @@ function FilterRow(props) {
           w="max-content"
           borderRadius="10px"
           onChange={(e) => {
-            setBaths(e.target.value === "" ? null : e.target.value); 
+            setBaths(e.target.value); 
             props.search(postalCode, rentPrice, rating, beds, e.target.value, petPref);
           }}
           bg="#eaebef"
@@ -235,7 +235,7 @@ function FilterRow(props) {
           w="max-content"
           borderRadius="10px"
           onChange={(e) => {
-            setPetPref(e.target.value === "" ? null : e.target.value);
+            setPetPref(e.target.value);
             props.search(postalCode, rentPrice, rating, beds, baths, e.target.value);
           }}
           bg="#eaebef"
