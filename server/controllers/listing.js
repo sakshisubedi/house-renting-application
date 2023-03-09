@@ -219,15 +219,71 @@ const getAverageRatingForAllListingByLandlordId = (models) => {
 const getListingBySearchParameter = (models) => {
     return async (req, res, next) => {
         try {
-            const findQuery = {
-                postalCode: {
+            const findQuery = {};
+
+            if("postalCode" in req.query) {
+                findQuery["postalCode"] = {
                     $regex: new RegExp(`^${req.query.postalCode}`)
                 }
             }
+
+            if("rent" in req.query) {
+                findQuery["rent"] = {
+                    $lt: parseInt(req.query.rent)
+                }
+            }
+
+            if("rating" in req.query) {
+                findQuery["rating"] = parseInt(req.query.rating)
+            }
+
+            if("bedrooms" in req.query) {
+                findQuery["bedrooms"] = parseInt(req.query.bedrooms)
+            }
+
+            if("bathrooms" in req.query) {
+                findQuery["bathrooms"] = parseInt(req.query.bathrooms)
+            }
+
+            if("hasPet" in req.query) {
+                findQuery["hasPet"] = req.query.hasPet === "true"
+            }
+
+            const pipeline = [
+                {
+                  '$lookup': {
+                    'from': 'ratings', 
+                    'localField': '_id', 
+                    'foreignField': 'listingId', 
+                    'as': 'ratings'
+                  }
+                }, {
+                  '$set': {
+                    'rating': {
+                      '$ceil': {
+                        '$ifNull': [
+                          {
+                            '$avg': '$ratings.rating'
+                          }, 0
+                        ]
+                      }
+                    }
+                  }
+                }, {
+                  '$unset': 'ratings'
+                }
+            ];
+            
+            if(Object.keys(findQuery).length > 0) {
+                pipeline.push({
+                    $match: findQuery
+                })
+            }
+
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.find(findQuery)
+                data: await models.listing.aggregate(pipeline)
             })
         } catch (error) {
             return res.status(500).json({

@@ -29,8 +29,8 @@ export default class SearchResult extends React.Component {
     });
   };
 
-  handleSearch = async (postalCode) => {
-    const recommendedListings = await getListingBySearchParameter(postalCode);
+  handleSearch = async (postalCode, rentPrice, rating, beds, bathrooms, petPref) => {
+    const recommendedListings = await getListingBySearchParameter(postalCode,  rentPrice, rating, beds, bathrooms, petPref);
     this.setState({
       recommendedListings,
     });
