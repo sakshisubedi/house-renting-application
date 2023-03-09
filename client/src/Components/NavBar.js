@@ -74,7 +74,7 @@ const NavBar = ({ profileURL }) => {
                             window.location.href = '/wishlist';
                         }}
                     />
-
+                    
                     <Flex alignItems={'center'}>
                         <Menu>
                             <MenuButton
@@ -87,25 +87,26 @@ const NavBar = ({ profileURL }) => {
                                 />
                             </MenuButton>
                             <MenuList>
-                                <MenuItem 
-                                    onClick={(e) => {
-                                        // route to profile page
-                                        window.location.href = '/customer/me';
-                                    }}>
-                                    Profile
-                                </MenuItem>
-
-                                <MenuDivider />
                                 
                                 {/* User Authentication */}
                                 { isLoggedIn ? (
-                                    <MenuItem onClick={handleLogout}>
-                                        Log out
-                                    </MenuItem>
+                                    <div>
+                                        <MenuItem 
+                                            onClick={(e) => {
+                                                // route to profile page
+                                                window.location.href = '/customer/me';
+                                            }}>
+                                            Profile
+                                        </MenuItem>
+                                        <MenuDivider />
+                                        <MenuItem onClick={handleLogout}>
+                                            Log out
+                                        </MenuItem>
+                                    </div>
                                 ) : (
                                     <MenuItem 
                                         onClick={(e) => {
-                                            // route to login
+                                            // route to user login
                                             window.location.href = '/auth/signin';
                                         }}>
                                         User Login
@@ -120,8 +121,8 @@ const NavBar = ({ profileURL }) => {
                                 ) : (
                                     <MenuItem 
                                         onClick={(e) => {
-                                            // route to login
-                                            // window.location.href = '/landlord/signin';
+                                            // route to landlord login
+                                            window.location.href = '/landlord/signin';
                                         }}>
                                         Landlord Login
                                     </MenuItem>

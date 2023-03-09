@@ -21,13 +21,20 @@ import React from "react";
 import { updateUser } from "../services/userApis";
 import NavBar from "./NavBar";
 
+// Get current login user
+import { useAuth } from "../Components/auth/context/hookIndex"
+
 function EditCustomerProfilePage() {
   // need to get actual data from db
+  const { authInfo } = useAuth();
+  const userName = authInfo.profile?.name;
+  const userEmail = authInfo.profile?.email;
+  const userId = authInfo.profile?.id;
 
   let userData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     email: {
       isPublic: true,
-      data: "abottrill2@unesco.org",
+      data: userEmail,
     },
     age: {
       isPublic: true,
@@ -37,8 +44,8 @@ function EditCustomerProfilePage() {
       isPublic: true,
       data: "Compensation Analyst",
     },
-    _id: "63ffd80035d9bd7fb39d9fa7",
-    name: "Ashton Bottrill",
+    _id: userId,
+    name: userName,
     isVerified: true,
     pronoun: "He/Him",
     preferredMoveInDate: "2023-04-05T07:00:00.000Z",

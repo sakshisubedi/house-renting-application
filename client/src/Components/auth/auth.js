@@ -1,6 +1,11 @@
 import axios from "axios";
+import env from "../../environment";
+const BASE_URL = env.BASE_URL;
 
-const client = axios.create({ baseURL: "http://localhost:4000/api/v1/login" });
+// Local test URL
+// const client = axios.create({ baseURL: "http://localhost:4000/api/v1/login" });
+
+const client = axios.create({ baseURL: `${BASE_URL}/api/v1/login` });
 
 export default client;
 

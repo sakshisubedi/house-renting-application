@@ -87,7 +87,7 @@ export default function Signup() {
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
             <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
-              User SIGN UP
+              USER SIGN UP
             </h1>
             <FormInput
               value={name}

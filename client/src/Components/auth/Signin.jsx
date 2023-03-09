@@ -72,7 +72,7 @@ export default function Signin() {
           {/* Card size */}
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
             <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
-              User LOGIN
+              USER LOGIN
             </h1>
             <FormInput
               value={userInfo.email.data}
