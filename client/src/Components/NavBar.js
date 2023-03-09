@@ -21,10 +21,27 @@ import emptyHeart from '../img/heart.jpg'
 
 // Setting isLoggedIn Status
 import { useAuth } from "../Components/auth/context/hookIndex"
+import { getUserAllInfoById } from "../services/userApis";
 
 const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
+
+    const navigate = useNavigate();
+    const [userData, setUserData] = React.useState(null);
+
+    useEffect(() => {
+      async function getUserData() {
+        if (isLoggedIn) {
+          const response = await getUserAllInfoById(authInfo.profile.id);
+          if (response?.data) {
+            // console.log(response.data);
+            setUserData(response.data);
+          }
+        }
+      }
+      getUserData();
+    }, []);
     
     return (
         <Box>
@@ -95,7 +112,12 @@ const NavBar = ({ profileURL }) => {
                                         <MenuItem 
                                             onClick={(e) => {
                                                 // route to profile page
-                                                window.location.href = '/customer/me';
+                                                // window.location.href = '/customer/me';
+                                                navigate("/customer/me", {
+                                                    state: {
+                                                        userInfo: userData ?? null,
+                                                    },
+                                                });
                                             }}>
                                             Profile
                                         </MenuItem>

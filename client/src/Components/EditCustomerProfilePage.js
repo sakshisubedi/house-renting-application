@@ -32,7 +32,7 @@ function EditCustomerProfilePage() {
   const userEmail = authInfo.profile?.email;
   const userId = authInfo.profile?.id;
 
-  let userData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+  let tempUserData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     email: {
       isPublic: true,
       data: userEmail,
@@ -58,7 +58,7 @@ function EditCustomerProfilePage() {
   };
 
   const location = useLocation();
-  userData = location.state.userInfo;
+  let userData = location.state.userInfo ?? tempUserData;
   // console.log(userData)
   // const [userData, setUserData] = React.useState(tempUserData);
 
