@@ -1,4 +1,11 @@
 import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Box,
   Button,
   VStack,
@@ -38,6 +45,10 @@ function AddListingPage() {
   const [media, setMedia] = React.useState([]);
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [popup, setPopup] = React.useState(false);
+
+  // const [popup, setPopup] = useState(false);
+  // const [media, setMedia] = useState([]);
+
   const onImageChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       let images = [];
@@ -64,6 +75,14 @@ function AddListingPage() {
   const showPopup = () => {
     setPopup(true);
   };
+
+  const closePopup = () => {
+    setPopup(false);
+  };
+
+  // const onImageChange = (event) => {
+  //   setMedia(event.target.files);
+  // };
 
   const updateListingData = () => {
     const newListing = {};
@@ -175,113 +194,43 @@ function AddListingPage() {
                 </HStack>
               </FormControl>
               {/* </FormControl> */}
-
+              <FormLabel w={"100%"}>Images/Videos (Up to 10)</FormLabel>\
+              <Box
+                w={"100%"}
+                h={200}
+                border="2px"
+                borderColor="gray.300"
+                borderRadius={"2xl"}
+                p={10}
+                fontWeight="bold"
+              >
+                {" "}
+                {media.length > 0 ? `${media.length} file(s) uploaded` : "  "}
+              </Box>
+              {/*  */}
               {popup && (
-                <Box
-                  position="absolute"
-                  width="100%"
-                  height="100%"
-                  backgroundColor={"rgba(00,00,00,0.5)"}
-                >
-                  <FormControl
-                    id="media"
-                    position=" relative"
-                    top="50%"
-                    left="50%"
-                    background="white"
-                    z-index="99999"
-                    transform="translate(-50%, -50%)"
-                    width="600px"
-                  >
-                    <FormLabel w={"100%"}>Images/Videos (Up to 10)</FormLabel>
-                    <Box
-                      w={"100%"}
-                      h={200}
-                      border="2px"
-                      borderColor="gray.300"
-                      borderRadius={"2xl"}
-                    >
-                      {/*  */}
-                      {/* IMAGES */}
-                      <Box
-                        textAlign="left"
-                        my={6}
-                        mx={6}
-                        position="absolute"
-                        width="70%"
-                        height="50%"
-                      >
-                        <Heading size="lg" mb="4">
-                          Select Image(s)
-                        </Heading>
+                <Modal isOpen={popup} onClose={closePopup}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Select Image(s)</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <FormControl>
                         <input
                           type="file"
                           name="myImage"
                           onChange={onImageChange}
                           multiple
                         />
-                        <Button
-                          type="submit"
-                          variant="solid"
-                          colorScheme="blue"
-                          w={100}
-                          onClick={uploadImages}
-                        >
-                          Save
-                        </Button>
-                      </Box>
-                      {/* <UploadImage /> */}
-
-                      {/*  */}
-
-                      {/*  */}
-                    </Box>
-
-                    {/* <Box bg="blue">
-                {media.map((image) => (
-                  <Text key={image}>{image}</Text>
-                ))}
-              </Box> */}
-                  </FormControl>
-                </Box>
-              )}
-
-              {media.length && (
-                <Box
-                  w={"100%"}
-                  h={200}
-                  border="2px"
-                  borderColor="gray.300"
-                  borderRadius={"2xl"}
-                >
-                  {/* const images = selectedImages.map((imageData) => {
-    const imageUrl = URL.createObjectURL(imageData);
-    const img = <img src={imageUrl} />;
-    return img;
-  }); */}
-                  {media.map(
-                    (imageData) => {
-                      return URL.createObjectURL(
-                        imageData.slice(22, imageData.length)
-                      );
-
-                      // (
-                      //   <Image
-                      //     width="200px"
-                      //     height="150px"
-                      //     borderRadius={"10px"}
-                      //     src={URL.createObjectURL(imageData)}
-                      //   />
-                      // );
-
-                      // const imageUrl = URL.createObjectURL(imageData);
-                      // const img = (
-                      // );
-                      // return img;
-                    }
-                    // <Text key={image}>{image}</Text>
-                  )}
-                </Box>
+                      </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={uploadImages}>
+                        Save
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               )}
               <Button
                 variant="solid"
@@ -297,6 +246,21 @@ function AddListingPage() {
               <FormLabel w={"100%"} fontSize={"3xl"}>
                 Parameters
               </FormLabel>
+              {/*  */}
+              {/* <Button
+                variant="solid"
+                colorScheme="blue"
+                align="right"
+                w={200}
+                mt={5}
+                float={"right"}
+                onClick={showPopup}
+              >
+                Upload Images/Videos
+              </Button> */}
+              {/* <FormLabel w={"100%"} fontSize={"3xl"}>
+                Parameters
+              </FormLabel> */}
               <Box
                 w={"100%"}
                 // h={200}
