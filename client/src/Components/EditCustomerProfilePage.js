@@ -28,340 +28,273 @@ import { useAuth } from "../Components/auth/context/hookIndex"
 function EditCustomerProfilePage() {
   // need to get actual data from db
   const { authInfo } = useAuth();
-  const userName = authInfo.profile?.name;
-  const userEmail = authInfo.profile?.email;
-  const userId = authInfo.profile?.id;
+  const userId = authInfo?.profile?.id;
+  const [userData, setUserData] = React.useState(null);
 
   let tempUserData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     email: {
-      isPublic: true,
-      data: userEmail,
+      isPublic: false,
+      data: authInfo?.profile?.email,
     },
     age: {
-      isPublic: true,
-      data: 25,
+      isPublic: false,
+      data: "",
     },
     occupation: {
-      isPublic: true,
-      data: "Compensation Analyst",
+      isPublic: false,
+      data: "",
     },
     _id: userId,
-    name: userName,
-    isVerified: true,
-    pronoun: "He/Him",
-    preferredMoveInDate: "2023-04-05T07:00:00.000Z",
-    preferPet: true,
+    name: authInfo?.profile?.name,
+    isVerified: false,
+    pronoun: "",
+    preferredMoveInDate: "",
+    preferPet: false,
     isLookingForFlatmate: false,
-    profilePicture: null,
-    createdAt: "2023-03-01T22:56:00.991Z",
-    updatedAt: "2023-03-01T22:56:00.991Z",
+    profilePicture: null
   };
 
-  const location = useLocation();
-  let userData = location.state.userInfo ?? tempUserData;
-  // console.log(userData)
-  // const [userData, setUserData] = React.useState(tempUserData);
-
-  const [email, setEmail] = React.useState(userData.email.data);
-  const [emailPublicFlag, setEmailPublicFlag] = React.useState(userData.email.isPublic.toString());
-  const [desc, setDesc] = React.useState(userData.desc ?? null);
-  const [pronouns, setPronouns] = React.useState(userData.pronoun ?? null);
-  const [age, setAge] = React.useState(userData.age.data ?? null);
-  const [agePublicFlag, setAgePublicFlag] = React.useState(userData.age.isPublic.toString());
-  const [occupation, setOccupation] = React.useState(
-    userData.occupation.data ?? null
-  );
-  const [occupationPublicFlag, setOccupationPublicFlag] =
-    React.useState(userData.occupation.isPublic.toString());
-  // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
-  const [datePref, setDatePref] = React.useState((userData.preferredMoveInDate) ? new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) : null);
-  // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
-  const [housematesBool, setHousematesBool] = React.useState(
-    userData.isLookingForFlatmate ?? null
-  );
-  // const [roommatePrefs, setRoommatePrefs] = React.useState(
-  //   userData.roommatePrefs ?? null
-  // );
-  const [petsPref, setPetsPref] = React.useState(userData.preferPet ?? null);
-  // console.log(userData)
-  const updateUserData = async () => {
-    userData.email.isPublic = emailPublicFlag === "true" ?? null;
-    // userData.desc = desc === "" ? null : desc;
-    userData.pronoun = pronouns === "" ? null : pronouns;
-    userData.age.data = age === "" ? null : parseInt(age);
-    userData.age.isPublic = agePublicFlag === "true" ?? null;
-    userData.occupation.data = occupation === "" ? null : occupation;
-    userData.occupation.isPublic = occupationPublicFlag === "true" ?? null;
-    userData.preferredMoveInDate = datePref === "" ? null : new Date(datePref);
-    // userData.spacePref = spacePref === "" ? null : spacePref;
-    userData.isLookingForFlatmate =
-      housematesBool === "" ? null : housematesBool === "true";
-    // userData.roommatePrefs = roommatePrefs === "" ? null : roommatePrefs;
-    userData.preferPet = petsPref === "" ? null : petsPref === "true";
-    userData.preferredMoveInDate = userData.preferredMoveInDate.toISOString() ?? null;
-    userData.updatedAt = new Date().toISOString();
-    console.log(userData, "user data");
-
-    const response = await updateUser(userData, userData._id);
-    if(response?.error) {
-      toast({
-        title: "Failed",
-        description: response?.error,
-        status: "error",
-        position: "top-right"
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Successfully updated user profile",
-        status: "success",
-        position: "top-right"
-      });
+  useEffect(() => {
+    async function getUserInfo() {
+      const response = await getUserAllInfoById(userId);
+      if(response?.data) {
+        setUserData(response.data);
+        tempUserData = response.data;
+      }
     }
+    getUserInfo();
+  },[authInfo]);
+
+ 
+
+  const updateUserData = async () => {
+    console.log(tempUserData, "---------");
   };
 
   const toast = useToast();
 
   return (
-    <Box>
-      <NavBar />
-      <Box my={100} ml={250} mr={250}>
+    userData && tempUserData && (
+      <>
         <Box>
-          <HStack spacing={5} mb={10}>
-            <Avatar size="2xl" name={userData.name} src={null} />
-            <VStack spacing={5} align="left" pl={50} w="100%">
-              <Heading>{userData.name}</Heading>
-              <Textarea
-                type="text"
-                placeholder="Short self intro..."
-                defaultValue={desc}
-                onChange={(e) => setDesc(e.target.value)}
-              />
-            </VStack>
-          </HStack>
-        </Box>
-        <Box>
-          <form>
-            <ButtonGroup spacing={5} float="right">
-              <Button variant="outline" colorScheme="red" w={100}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="solid"
-                colorScheme="blue"
-                w={100}
-                onClick={(e) => {
-                  e.preventDefault();
-                  try {
-                    updateUserData();
-                    // toast({
-                    //   title: "Success",
-                    //   description: "Changes Saved",
-                    //   status: "success",
-                    //   position: "top-right"
-                    // });
-                  } catch (error) {
-                    toast({
-                      title: "Failed",
-                      description: error,
-                      status: "error",
-                      position: "top-right"
-                    });
-                  }
-                }}
-              >
-                Save
-              </Button>
-            </ButtonGroup>
-            <br />
-            <br />
-            <VStack spacing={10} mt={10}>
-              <FormControl id="email">
-                <HStack>
-                  <FormLabel w="50%">Email</FormLabel>
-                  <VStack w="50%" align={"left"} spacing={5}>
-                    <Input
-                      type="email"
-                      placeholder="johndoe@gmail.com"
-                      defaultValue={email}
-                      w="full"
-                      isDisabled
-                    />
-                    <RadioGroup
-                      colorScheme={"blue"}
-                      defaultValue={emailPublicFlag}
-                      onChange={setEmailPublicFlag}
-                    >
-                      <HStack spacing={10}>
-                        <Text>Make this field public :</Text>
-                        <Radio value="true">Yes</Radio>
-                        <Radio value="false">No</Radio>
-                      </HStack>
-                    </RadioGroup>
-                  </VStack>
-                </HStack>
-              </FormControl>
-              <FormControl id="pronouns">
-                <HStack>
-                  <VStack w="50%" align="left">
-                    <FormLabel>Pronouns</FormLabel>
-                    <FormHelperText>E.g.: she/her/hers, etc.</FormHelperText>
-                  </VStack>
-                  <Select
-                    placeholder="Select option"
-                    defaultValue={pronouns}
-                    w="50%"
-                    onChange={(e) => setPronouns(e.target.value)}
-                  >
-                    <option value="He/Him">He/Him</option>
-                    <option value="She/Her">She/Her</option>
-                    <option value="They/Them">They/Them</option>
-                  </Select>
-                </HStack>
-              </FormControl>
-              <FormControl id="age">
-                <HStack>
-                  <FormLabel w="50%">Age</FormLabel>
-                  <VStack w="50%" align={"left"} spacing={5}>
-                    <Input
-                      type="number"
-                      placeholder="Enter your age..."
-                      defaultValue={age}
-                      w="full"
-                      onChange={(e) => setAge(e.target.value)}
-                    />
-                    <RadioGroup
-                      colorScheme={"blue"}
-                      defaultValue={agePublicFlag}
-                      onChange={setAgePublicFlag}
-                    >
-                      <HStack spacing={10}>
-                        <Text>Make this field public :</Text>
-                        <Radio value="true">Yes</Radio>
-                        <Radio value="false">No</Radio>
-                      </HStack>
-                    </RadioGroup>
-                  </VStack>
-                </HStack>
-              </FormControl>
-              <FormControl id="occupation">
-                <HStack>
-                  <VStack w="50%" align="left">
-                    <FormLabel>Occupation</FormLabel>
-                    <FormHelperText>
-                      E.g.: student, medical assistant, etc.
-                    </FormHelperText>
-                  </VStack>
-                  <VStack w="50%" align={"left"} spacing={5}>
-                    <Input
-                      type="text"
-                      placeholder="Enter your occupation..."
-                      defaultValue={occupation}
-                      w="full"
-                      onChange={(e) => setOccupation(e.target.value)}
-                    />
-                    <RadioGroup
-                      colorScheme={"blue"}
-                      defaultValue={occupationPublicFlag}
-                      onChange={setOccupationPublicFlag}
-                    >
-                      <HStack spacing={10}>
-                        <Text>Make this field public :</Text>
-                        <Radio value="true">Yes</Radio>
-                        <Radio value="false">No</Radio>
-                      </HStack>
-                    </RadioGroup>
-                  </VStack>
-                </HStack>
-              </FormControl>
-              <FormControl id="moveDate">
-                <HStack>
-                  <VStack w="50%" align="left">
-                    <FormLabel>Preferred Move-in Date</FormLabel>
-                    {/* <FormHelperText>
-                      E.g. Two months, one year, etc.
-                    </FormHelperText> */}
-                  </VStack>
-                  <Input
-                    type="date"
-                    placeholder="Enter your preferred move-in date..."
-                    defaultValue={datePref}
-                    w="50%"
-                    onChange={(e) => setDatePref(e.target.value)}
-                  />
-                </HStack>
-              </FormControl>
-              {/* <FormControl id="desiredSpace">
-                <HStack>
-                  <VStack w="50%" align="left">
-                    <FormLabel>Desired Space</FormLabel>
-                    <FormHelperText>
-                      Number of rooms your new place will ideally have/number of
-                      rooms you’d like to have.
-                    </FormHelperText>
-                  </VStack>
-                  <Textarea
+          <NavBar />
+          <Box my={100} ml={250} mr={250}>
+            <Box>
+              <HStack spacing={5} mb={10}>
+                <Avatar size="2xl" name={userData.name} src={null} />
+                <VStack spacing={5} align="left" pl={50} w="100%">
+                  <Heading>{userData.name}</Heading>
+                  {/* <Textarea
                     type="text"
-                    placeholder="Two bedroom, One bathroom..."
-                    defaultValue={spacePref}
-                    w="50%"
-                    onChange={(e) => setSpacePref(e.target.value)}
-                  />
-                </HStack>
-              </FormControl> */}
-              <FormControl id="housematesBool">
-                <HStack>
-                  <FormLabel w="50%">Looking for Housemates</FormLabel>
-                  <Select
-                    placeholder="Select option"
-                    defaultValue={housematesBool}
-                    w="50%"
-                    onChange={(e) => setHousematesBool(e.target.value)}
+                    placeholder="Short self intro..."
+                    defaultValue={desc}
+                    onChange={(e) => setDesc(e.target.value)}
+                  /> */}
+                </VStack>
+              </HStack>
+            </Box>
+            <Box>
+              <form>
+                <ButtonGroup spacing={5} float="right">
+                  <Button variant="outline" colorScheme="red" w={100}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="solid"
+                    colorScheme="blue"
+                    w={100}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      try {
+                        updateUserData();
+                        // toast({
+                        //   title: "Success",
+                        //   description: "Changes Saved",
+                        //   status: "success",
+                        //   position: "top-right"
+                        // });
+                      } catch (error) {
+                        toast({
+                          title: "Failed",
+                          description: error,
+                          status: "error",
+                          position: "top-right"
+                        });
+                      }
+                    }}
                   >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                    {/* <option value="No preference">No preference</option> */}
-                  </Select>
-                </HStack>
-              </FormControl>
-              {/* <FormControl id="roommatePref">
-                <HStack>
-                  <VStack w="50%" align="left">
-                    <FormLabel>Roommate Preferences</FormLabel>
-                    <FormHelperText>
-                      E.g. Gender, cleanliness, noise, etc.
-                    </FormHelperText>
-                  </VStack>
-                  <Textarea
-                    type="text"
-                    placeholder="No preference..."
-                    defaultValue={roommatePrefs}
-                    w="50%"
-                    onChange={(e) => setRoommatePrefs(e.target.value)}
-                  />
-                </HStack>
-              </FormControl> */}
-              <FormControl id="petsBool">
-                <HStack>
-                  <FormLabel w="50%">Open to having pets</FormLabel>
-                  <Select
-                    placeholder="Select option"
-                    defaultValue={petsPref}
-                    w="50%"
-                    onChange={(e) => setPetsPref(e.target.value)}
-                  >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                    {/* <option value="No preference">No preference</option> */}
-                  </Select>
-                </HStack>
-              </FormControl>
-            </VStack>
-          </form>
+                    Save
+                  </Button>
+                </ButtonGroup>
+                <br />
+                <br />
+                <VStack spacing={10} mt={10}>
+                  <FormControl id="email">
+                    <HStack>
+                      <FormLabel w="50%">Email</FormLabel>
+                      <VStack w="50%" align={"left"} spacing={5}>
+                        <Input
+                          type="email"
+                          placeholder="johndoe@gmail.com"
+                          defaultValue={userData.email.data}
+                          w="full"
+                          isDisabled
+                        />
+                        <RadioGroup
+                          colorScheme={"blue"}
+                          defaultValue={userData.email.isPublic.toString()}
+                          onChange={(e) => {
+                            tempUserData.email.isPublic = Boolean(e.target.value);
+                          }}
+                        >
+                          <HStack spacing={10}>
+                            <Text>Make this field public :</Text>
+                            <Radio value="true">Yes</Radio>
+                            <Radio value="false">No</Radio>
+                          </HStack>
+                        </RadioGroup>
+                      </VStack>
+                    </HStack>
+                  </FormControl>
+                  <FormControl id="pronouns">
+                    <HStack>
+                      <VStack w="50%" align="left">
+                        <FormLabel>Pronouns</FormLabel>
+                        <FormHelperText>E.g.: she/her/hers, etc.</FormHelperText>
+                      </VStack>
+                      <Select
+                        placeholder="Select option"
+                        defaultValue={userData.pronoun}
+                        w="50%"
+                        onChange={(e) => {
+                          tempUserData.pronoun = e.target.value;
+                        }}
+                      >
+                        <option value="He/Him">He/Him</option>
+                        <option value="She/Her">She/Her</option>
+                        <option value="They/Them">They/Them</option>
+                      </Select>
+                    </HStack>
+                  </FormControl>
+                  <FormControl id="age">
+                    <HStack>
+                      <FormLabel w="50%">Age</FormLabel>
+                      <VStack w="50%" align={"left"} spacing={5}>
+                        <Input
+                          type="number"
+                          placeholder="Enter your age..."
+                          defaultValue={userData.age.data}
+                          w="full"
+                          onChange={(e) => {
+                            tempUserData.age.data = e.target.value;
+                          }}
+                        />
+                        <RadioGroup
+                          colorScheme={"blue"}
+                          defaultValue={userData.age.isPublic.toString()}
+                          onChange={(e) => {
+                            tempUserData.age.isPublic = Boolean(e.target.value);
+                          }}
+                        >
+                          <HStack spacing={10}>
+                            <Text>Make this field public :</Text>
+                            <Radio value="true">Yes</Radio>
+                            <Radio value="false">No</Radio>
+                          </HStack>
+                        </RadioGroup>
+                      </VStack>
+                    </HStack>
+                  </FormControl>
+                  <FormControl id="occupation">
+                    <HStack>
+                      <VStack w="50%" align="left">
+                        <FormLabel>Occupation</FormLabel>
+                        <FormHelperText>
+                          E.g.: student, medical assistant, etc.
+                        </FormHelperText>
+                      </VStack>
+                      <VStack w="50%" align={"left"} spacing={5}>
+                        <Input
+                          type="text"
+                          placeholder="Enter your occupation..."
+                          defaultValue={userData.occupation.data}
+                          w="full"
+                          onChange={(e) => {
+                            tempUserData.occupation.data = e.target.value;
+                          }}
+                        />
+                        <RadioGroup
+                          colorScheme={"blue"}
+                          defaultValue={userData.occupation.isPublic.toString()}
+                          onChange={(e) => {
+                            tempUserData.occupation.isPublic = Boolean(e.target.value);
+                          }}
+                        >
+                          <HStack spacing={10}>
+                            <Text>Make this field public :</Text>
+                            <Radio value="true">Yes</Radio>
+                            <Radio value="false">No</Radio>
+                          </HStack>
+                        </RadioGroup>
+                      </VStack>
+                    </HStack>
+                  </FormControl>
+                  <FormControl id="moveDate">
+                    <HStack>
+                      <VStack w="50%" align="left">
+                        <FormLabel>Preferred Move-in Date</FormLabel>
+                      </VStack>
+                      <Input
+                        type="date"
+                        placeholder="Enter your preferred move-in date..."
+                        defaultValue={userData.preferredMoveInDate}
+                        w="50%"
+                        onChange={(e) => {
+                          tempUserData.preferredMoveInDate = e.target.value;
+                        }}
+                      />
+                    </HStack>
+                  </FormControl>
+                  <FormControl id="housematesBool">
+                    <HStack>
+                      <FormLabel w="50%">Looking for Housemates</FormLabel>
+                      <Select
+                        placeholder="Select option"
+                        defaultValue={userData.isLookingForFlatmate ? "true": "false"}
+                        w="50%"
+                        onChange={(e) => {
+                          tempUserData.isLookingForFlatmate = Boolean(e.target.value);
+                        }}
+                      >
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </Select>
+                    </HStack>
+                  </FormControl>
+                  <FormControl id="petsBool">
+                    <HStack>
+                      <FormLabel w="50%">Open to having pets</FormLabel>
+                      <Select
+                        placeholder="Select option"
+                        defaultValue={userData.preferPet}
+                        w="50%"
+                        onChange={(e) => {
+                          tempUserData.preferPet = Boolean(e.target.value);
+                        }}
+                      >
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </Select>
+                    </HStack>
+                  </FormControl>
+                </VStack>
+              </form>
+            </Box>
+          </Box>
         </Box>
-      </Box>
-    </Box>
+      </>
+    )
   );
 }
 
