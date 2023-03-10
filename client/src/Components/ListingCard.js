@@ -103,7 +103,11 @@ const ListingCard = ({ src }) => {
             fontSize='3xl'
           >
             <LinkOverlay as={"button"} onClick={() => {
-              navigate(`/listing/${src?._id}`);
+              navigate(`/listing/${src?._id}`, {
+                  state: {
+                      userId: src?.userId,
+                  },
+              });
             }}>
               {src.name}
             </LinkOverlay>
