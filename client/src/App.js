@@ -30,7 +30,7 @@ function App() {
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/search" element={<SearchResult />} />
           <Route
-            path="/customer/me"
+            path="/customer/:id"
             element={<EditCustomerProfilePage />}
           />
           <Route
