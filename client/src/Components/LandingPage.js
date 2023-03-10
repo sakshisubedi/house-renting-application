@@ -57,7 +57,8 @@ export default function IndividualListingPage() {
   };
 
   return (
-    currentListings && authInfo?.profile?.id && (
+    // && authInfo?.profile?.id
+    currentListings && (
       <Box>
         <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
         <Box my={10}>
@@ -79,7 +80,7 @@ export default function IndividualListingPage() {
             borderColor="darkgray"
           />
           <Heading size="lg">Recommendations</Heading>
-          <ButtonRL />
+          {/* <ButtonRL /> */}
         </VStack>
 
         <Box my={50} ml={200} mr={200}>

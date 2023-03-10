@@ -360,7 +360,8 @@ function IndividualListingPage() {
   };
 
   return (
-    listingInfo && landlordInfo && userId && (
+    // && userId
+    listingInfo && landlordInfo  && (
       <Box>
       <NavBar />
       <Box my={50} ml={150} mr={150}>

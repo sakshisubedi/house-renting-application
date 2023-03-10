@@ -1,7 +1,7 @@
+const emailjs = require("@emailjs/nodejs")
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
 const crypto = require("crypto");
-const nodemailer = require('nodemailer')
 
 // utilities
 generateOTP = (otp_length = 6) => {
@@ -13,16 +13,6 @@ generateOTP = (otp_length = 6) => {
 
     return OTP;
 };
-
-generateMailTransporter = () =>
-    nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 2525,
-        auth: {
-            user: process.env.MAIL_TRAP_USER,
-            pass: process.env.MAIL_TRAP_PASS
-        }
-    });
 
 sendError = (res, error, statusCode = 401) =>
   res.status(statusCode).json({ error });
@@ -59,7 +49,7 @@ const login = () => {
     }
 }
 
-// user sign in status
+// user sign in
 const signIn = (models) => {
   return async (req, res, next) => {
     const { email: {data}, password, userType } = req.body;
@@ -84,7 +74,7 @@ const signIn = (models) => {
   }
 }
 
-// create a user on login for given 
+// create a user on sign up
 const create = (models) => {
   return async (req, res, next) => {
     const { name, email: {data}, password, userType } = req.body;
@@ -114,16 +104,25 @@ const create = (models) => {
     console.log("newEmailVerificationToken--------", newEmailVerificationToken);
   
     await newEmailVerificationToken.save();
-    var transport = generateMailTransporter();
-    transport.sendMail({
-      from: "verification@rease.com",
-      to: userType === "landlord" ? newUser.email : newUser.email.data,
-      subject: "Email Verification",
-      html: `
-        <p>You verification OTP</p>
-        <h1>${OTP}</h1>
-      `,
-    });
+
+    var templateParams = {
+      to_name: newUser.name,
+      to_email: userType === "landlord" ? newUser.email : newUser.email.data,
+      message: "You verification code: " + OTP,
+    };
+    emailjs
+    .send('service_ihvcg7o', 'template_zck1flj', templateParams, {
+      publicKey: 'A123nkzSrVLiFfq4B',
+      privateKey: '_lEZmCaDezKB8zmpSYvEn',
+    })
+    .then(
+      function (response) {
+        console.log('SUCCESS!', response.status, response.text);
+      },
+      function (err) {
+        console.log('FAILED...', err);
+      },
+    );
   
     res.status(201).json({
       user: {
@@ -135,7 +134,7 @@ const create = (models) => {
   }
 }
 
-// Verify the email
+// Verify the email for user
 const verifyEmail = (models) => {
   return async (req, res, next) => {
     const { userId, OTP, userType } = req.body;
@@ -160,14 +159,24 @@ const verifyEmail = (models) => {
   
     await models.emailVerificationToken.findByIdAndDelete(token._id);
   
-    var transport = generateMailTransporter();
-  
-    transport.sendMail({
-      from: "verification@rease.com",
-      to: userType === "landlord" ? user.email : user.email.data,
-      subject: "Welcome Email",
-      html: "<h1>Welcome to our app and thanks for choosing us.</h1>",
-    });
+    var templateParams = {
+      to_name: user.name,
+      to_email: userType === "landlord" ? user.email : user.email.data,
+      message: "You email is verified",
+    };
+    emailjs
+    .send('service_ihvcg7o', 'template_zck1flj', templateParams, {
+      publicKey: 'A123nkzSrVLiFfq4B',
+      privateKey: '_lEZmCaDezKB8zmpSYvEn',
+    })
+    .then(
+      function (response) {
+        console.log('SUCCESS!', response.status, response.text);
+      },
+      function (err) {
+        console.log('FAILED...', err);
+      },
+    );
   
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     res.json({
@@ -184,7 +193,7 @@ const verifyEmail = (models) => {
   }
 }
 
-// update rating for given rating id
+// resendEmailVerificationToken for user
 const resendEmailVerificationToken = (models) => {
   return async (req, res, next) => {
     const { userId } = req.body;
@@ -213,16 +222,24 @@ const resendEmailVerificationToken = (models) => {
   
     await newEmailVerificationToken.save();
   
-    var transport = generateMailTransporter();
-    transport.sendMail({
-      from: "verification@rease.com",
-      to: userType === "landlord" ? user.email : user.email.data,
-      subject: "Email Verification",
-      html: `
-        <p>You verification OTP</p>
-        <h1>${OTP}</h1>
-      `,
-    });
+    var templateParams = {
+      to_name: user.name,
+      to_email: userType === "landlord" ? user.email : user.email.data,
+      message: "You verification code: " + OTP,
+    };
+    emailjs
+    .send('service_ihvcg7o', 'template_zck1flj', templateParams, {
+      publicKey: 'A123nkzSrVLiFfq4B',
+      privateKey: '_lEZmCaDezKB8zmpSYvEn',
+    })
+    .then(
+      function (response) {
+        console.log('SUCCESS!', response.status, response.text);
+      },
+      function (err) {
+        console.log('FAILED...', err);
+      },
+    );
   
     res.json({
       message: "New OTP has been sent to your registered email accout.",
@@ -230,7 +247,7 @@ const resendEmailVerificationToken = (models) => {
   }
 }
 
-// update rating for given rating id
+// forget password for user
 const forgetPassword = (models) => {
   return async (req, res, next) => {
     const { email, userType } = req.body;
@@ -270,24 +287,30 @@ const forgetPassword = (models) => {
     
     console.log("resetPasswordUrl------", resetPasswordUrl);
   
-    const transport = generateMailTransporter();
+    var templateParams = {
+      to_name: user.name,
+      to_email: user.email.data,
+      message: resetPasswordUrl,
+    };
+    emailjs
+    .send('service_ihvcg7o', 'template_neanzpw', templateParams, {
+      publicKey: 'A123nkzSrVLiFfq4B',
+      privateKey: '_lEZmCaDezKB8zmpSYvEn',
+    })
+    .then(
+      function (response) {
+        console.log('SUCCESS!', response.status, response.text);
+      },
+      function (err) {
+        console.log('FAILED...', err);
+      },
+    );
   
-    transport.sendMail({
-      from: "security@rease.com",
-      to: userType === "landlord" ? user.email : user.email.data,
-      subject: "Reset Password Link",
-      html: `
-        <p>Click here to reset password</p>
-        <a href='${resetPasswordUrl}'>Change Password</a>
-      `,
-    });
-  
-    res.json({ message: "Link sent to your email",
-               test: email});
+    res.json({ message: "Link sent to your email" });
   }
 }
 
-// update rating for given rating id
+// reset password for user
 const resetPassword = (models) => {
   return async (req, res, next) => {
     const { newPassword, userId, userType } = req.body;
@@ -311,18 +334,24 @@ const resetPassword = (models) => {
   
     await models.passwordResetToken.findByIdAndDelete(req.resetToken._id);
   
-    const transport = generateMailTransporter();
-  
-    transport.sendMail({
-      from: "security@rease.com",
-      to: userType === "landlord" ? user.email : user.email.data,
-      subject: "Password Reset Successfully",
-      html: `
-        <h1>Password Reset Successfully</h1>
-        <p>Now you can use new password.</p>
-  
-      `,
-    });
+    var templateParams = {
+      to_name: user.name,
+      to_email: userType === "landlord" ? user.email : user.email.data,
+      message: "Password Reset Successfully",
+    };
+    emailjs
+    .send('service_ihvcg7o', 'template_zck1flj', templateParams, {
+      publicKey: 'A123nkzSrVLiFfq4B',
+      privateKey: '_lEZmCaDezKB8zmpSYvEn',
+    })
+    .then(
+      function (response) {
+        console.log('SUCCESS!', response.status, response.text);
+      },
+      function (err) {
+        console.log('FAILED...', err);
+      },
+    );
   
     res.json({
       message: "Password reset successfully, now you can use new password.",
@@ -330,7 +359,7 @@ const resetPassword = (models) => {
   }
 }
 
-// Get user authen status
+// is-auth path
 const isAuth = (models) => {
   return async (req, res, next) => {
       const token = req.headers?.authorization;
@@ -385,9 +414,6 @@ const sendResetPasswordTokenStatus = (models) => {
     res.json({ valid: true });
   }
 }
-// exports.sendResetPasswordTokenStatus = (req, res) => {
-//   res.json({ valid: true });
-// };
 
 module.exports = {
     login, 

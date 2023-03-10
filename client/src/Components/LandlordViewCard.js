@@ -17,7 +17,16 @@ import heart from "../img/Union.svg";
 import star from "../img/rating_star.jpg";
 import delete1 from "../img/delete.jpg";
 import edit from "../img/edit.jpg";
+import { useNavigate } from "react-router-dom";
+import { deleteListing } from "../services/listingApis";
+
 const LandlordViewCard = ({ src }) => {
+  const navigate = useNavigate();
+  
+  async function deleteCurrentListing(listing_id){
+    await deleteListing(listing_id);
+  }
+
   return (
     <LinkBox
       borderRadius={15}
@@ -98,7 +107,8 @@ const LandlordViewCard = ({ src }) => {
                       />
                     }
                     onClick={(e) => {
-                      e.preventDefault();
+                      // e.preventDefault();
+                      deleteCurrentListing(src._id)
                     }}
                   />
                 </Box>
@@ -155,6 +165,9 @@ const LandlordViewCard = ({ src }) => {
                   backgroundColor="white"
                   border="2px"
                   borderRadius={10}
+                  onClick={()=>{
+                    navigate(`/listing/${src._id}`);
+                  }}
                 >
                   View
                 </Button>

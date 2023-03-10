@@ -1,6 +1,5 @@
 const routes = require('express').Router({mergeParams: true});
 const loginController = require('../../controllers/login');
-// const { isAuth } = require("../../controllers/login");
 const { check, validationResult } = require('express-validator')
 
 // utilities
