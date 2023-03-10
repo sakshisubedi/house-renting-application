@@ -46,6 +46,8 @@ const SearchResult = ({ src }) => {
   const handleSearch = async (postalCode, rentPrice, rating, beds, bathrooms, petPref) => {
     const recommendedListings = await getListingBySearchParameter(postalCode,  rentPrice, rating, beds, bathrooms, petPref);
     setRecommendedListings(recommendedListings);
+    setTotalPages(Math.ceil(recommendedListings.data.length/listingsPerPage));
+    handlePagination(recommendedListings, currentPage);
   };
 
   return (

@@ -52,6 +52,8 @@ export default function IndividualListingPage() {
     if (response?.data) {
       setRecommendedListings(response);
     }
+    setTotalPages(Math.ceil(response.data.length/listingsPerPage));
+    handlePagination(response, currentPage);
   };
 
   return (
