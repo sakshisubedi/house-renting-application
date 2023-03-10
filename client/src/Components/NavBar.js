@@ -20,12 +20,13 @@ import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
 
 // Setting isLoggedIn Status
-import { useAuth } from "../Components/auth/context/hookIndex"
+import { useAuth, useLandlordAuth } from "../Components/auth/context/hookIndex"
 import { getUserAllInfoById } from "../services/userApis";
 
 const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
+    const { landlordInfo, handleLogoutLandlord } = useLandlordAuth();
 
     const navigate = useNavigate();
     const [userData, setUserData] = React.useState(null);
@@ -137,8 +138,8 @@ const NavBar = ({ profileURL }) => {
                                 )}
 
                                 {/* Landlord Authentication */}
-                                { isLoggedIn ? (
-                                    <MenuItem onClick={handleLogout}>
+                                { landlordInfo.isLoggedIn ? (
+                                    <MenuItem onClick={handleLogoutLandlord}>
                                         Log out
                                     </MenuItem>
                                 ) : (
