@@ -7,6 +7,7 @@ import house1 from "../img/house1.jpg";
 import { getListingBySearchParameter, getListingsByRating } from "../services/listingApis";
 
 export default class SearchResult extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -30,13 +31,15 @@ export default class SearchResult extends React.Component {
   };
 
   handleSearch = async (postalCode, rentPrice, rating, beds, bathrooms, petPref) => {
-    const recommendedListings = await getListingBySearchParameter(postalCode,  rentPrice, rating, beds, bathrooms, petPref);
+    const recommendedListings = await getListingBySearchParameter(postalCode, rentPrice, rating, beds, bathrooms, petPref);
     this.setState({
       recommendedListings,
     });
   }
 
   render() {
+    const userId = "640669c85943eac949e1f7a8";
+
     const { recommendedListings, currentPage, listingsPerPage } = this.state;
     const indexOfLastListing = currentPage * listingsPerPage;
     const indexOfFirstListing = indexOfLastListing - listingsPerPage;
@@ -66,7 +69,7 @@ export default class SearchResult extends React.Component {
               mx={10}
             >
               {currentListings?.map((listing, idx) => (
-                <ListingCard key={idx} src={{ ...listing, img: house1 }}>
+                <ListingCard key={idx} userId={userId} src={{ ...listing, img: house1 }}>
                   {" "}
                 </ListingCard>
               ))}

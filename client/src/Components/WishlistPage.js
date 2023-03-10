@@ -60,7 +60,7 @@ function WishlistPage() {
             isPublic: true,
             data: "Compensation Analyst",
         },
-        _id: "6406a03278cf68a5f9f4dd6e",
+        _id: "640669c85943eac949e1f7a8",
         name: "Ashton Bottrill",
         isVerified: true,
         pronoun: "He/Him",
@@ -105,7 +105,7 @@ function WishlistPage() {
         if (!response?.error) { // traverse listing id to get listing data
             for (const listingId of response.data) {
                 const listingDetail = await getListingById(listingId.listingId);
-                if (response?.error) { continue; }
+                if (listingDetail?.error) { continue; }
                 else {
                     listings.push(listingDetail.data);
                 }

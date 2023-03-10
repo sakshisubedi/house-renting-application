@@ -14,8 +14,13 @@ import NavBar from "./NavBar";
 import SearchBar from "./SearchBar";
 import ButtonRL from "./ButtonRL";
 import { getListingBySearchParameter, getListingsByRating } from "../services/listingApis";
+import { useAuth } from "../Components/auth/context/hookIndex"
 
 export default function IndividualListingPage() {
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
+  const userId = authInfo.profile ? authInfo.profile.id : "640669c85943eac949e1f7a8"; // ELSE DUMMY USER ID
+
   const [recommendedListings, setRecommendedListings] = useState(null);
 
   useEffect(() => {
@@ -68,7 +73,7 @@ export default function IndividualListingPage() {
               <VStack align="left" spacing={30}>
                 <SimpleGrid columns={3} spacing={10}>
                   {recommendedListings.map((listing, idx) => (
-                    <ListingCard key={idx} src={{ ...listing, img: house1 }}>
+                    <ListingCard userId={userId} key={idx} src={{ ...listing, img: house1 }}>
                       {" "}
                     </ListingCard>
                   ))}
