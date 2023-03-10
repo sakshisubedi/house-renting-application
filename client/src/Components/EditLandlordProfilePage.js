@@ -77,7 +77,7 @@ function EditLandlordProfilePage() {
     }
     getLandlordInfo(userId);
     getListingsInfo(userId);
-  }, []);
+  }, [userId]);
 
   let landlordData = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     name: "Anthe Braybrooke",
