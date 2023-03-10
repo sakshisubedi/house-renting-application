@@ -82,7 +82,7 @@ export default function ConfirmPassword() {
       </div>
     );
 
-  if (!isValid)
+  if (isValid)
     return (
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
           <h1 className="text-4xl font-semibold text-black">

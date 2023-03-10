@@ -18,8 +18,12 @@ function FilterRow(props) {
     name: "xyz",
     email: "xyz@gmail.com",
   };
-  // const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
 
+
+  const [selectedPriceOption, setSelectedPriceOption] = useState(null);
+  const handlePriceOptionSelect = (value) => {
+    setSelectedPriceOption(value);
+  };
   const [postalCode, setPostalCode] = React.useState("");
   const [rentPrice, setRentPrice] = React.useState("");
   const [rating, setRating] = React.useState("");
@@ -27,24 +31,16 @@ function FilterRow(props) {
   const [baths, setBaths] = React.useState("");
   const [petPref, setPetPref] = React.useState("");
 
+
   const handleInputChange = async (event) => {
     setPostalCode(event.target.value);
     props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
   };
 
-
   return (
     <Box my={10}>
-      {/* <Flex pl={10} pt={5}> */}
       <HStack spacing="20px" margin="auto" m={10}>
-        <Box
-          w="630px"
-          h="83px"
-          border="1px solid darkgray"
-          borderRadius="15px"
-          // ml={10}
-          m={0}
-        >
+        <Box w="630px" h="75px" border="1px solid darkgray" borderRadius="15px">
           <Input
             id="search-input"
             type="search"
@@ -57,45 +53,22 @@ function FilterRow(props) {
             onChange={handleInputChange}
           />
         </Box>
+
         {/*rentPrice */}
-        {/* <Menu>
-          <MenuButton
-            as={Box}
-            w="150px"
-            h="83px"
-            borderRadius="10px"
-            bg="#eaebef"
-            border="1px solid #eaebef"
-            fontSize="27px"
-          >
-            <HStack
-              justifyContent="space-evenly"
-              textAlign="center"
-              lineHeight="83px"
-            >
-              <Box>rentPrice</Box>
-              <Icon as={FaChevronDown} fontSize="sm" />
-            </HStack>
-          </MenuButton>
-          <MenuList>
-            <MenuItem value="apple" fontSize="27px">
-              2000+
-            </MenuItem>
-            <MenuItem value="banana">1000-2000</MenuItem>
-            <MenuItem value="orange">700-1000</MenuItem>
-          </MenuList>
-        </Menu> */}
         <Select
           placeholder="Rent"
-          h="83px"
+          h="75px"
+
           defaultValue={rentPrice}
           fontSize="25px"
           border="1px solid #eaebef"
-          w="max-content"
+          width="180px"
           borderRadius="10px"
           onChange={(e) => {
             setRentPrice(e.target.value);
+
             props.search(postalCode, e.target.value, rating, beds, baths, petPref);
+
           }}
           bg="#eaebef"
         >
@@ -109,15 +82,16 @@ function FilterRow(props) {
         {/*Ratings*/}
         <Select
           placeholder="Rating"
-          h="83px"
+          h="75px"
           defaultValue={rating}
           fontSize="25px"
           border="1px solid #eaebef"
-          w="max-content"
-          // width="150px"
+          // w="max-content"
+          width="180px"
           borderRadius="10px"
           onChange={(e) => {
             setRating(e.target.value);
+
             props.search(postalCode, rentPrice, e.target.value, beds, baths, petPref);
           }}
           bg="#eaebef"
@@ -132,7 +106,7 @@ function FilterRow(props) {
         {/*Beds*/}
         <Select
           placeholder="Beds"
-          h="83px"
+          h="75px"
           defaultValue={beds}
           fontSize="25px"
           border="1px solid #eaebef"
@@ -141,6 +115,7 @@ function FilterRow(props) {
           borderRadius="10px"
           onChange={(e) => {
             setBeds(e.target.value);
+
             props.search(postalCode, rentPrice, rating, e.target.value, baths, petPref);
 
           }}
@@ -150,72 +125,22 @@ function FilterRow(props) {
           <option value="2">2 Bed</option>
           <option value="3">3 Bed</option>
         </Select>
-        {/* <Menu>
-          <MenuButton
-            as={Box}
-            w="150px"
-            h="83px"
-            borderRadius="10px"
-            bg="#eaebef"
-            border="1px solid #eaebef"
-            fontSize="27px"
-            px={10}
-          >
-            <HStack
-              justifyContent="space-evenly"
-              textAlign="center"
-              lineHeight="83px"
-            >
-              <Box mr={1}>Beds</Box>
-              <Icon as={FaChevronDown} fontSize="sm" />
-            </HStack>
-          </MenuButton>
-          <MenuList>
-            <MenuItem value="banana">1 Bed</MenuItem>
-            <MenuItem value="orange">2 Bed</MenuItem>
-            <MenuItem value="strawberry">3 Bed</MenuItem>
-          </MenuList>
-        </Menu> */}
 
-        {/*Baths */}
         {/*Baths*/}
-        {/* <Menu>
-          <MenuButton
-            as={Box}
-            w="150px"
-            h="83px"
-            borderRadius="10px"
-            bg="#eaebef"
-            border="1px solid #eaebef"
-            fontSize="27px"
-            px={10}
-          >
-            <HStack
-              justifyContent="space-evenly"
-              textAlign="center"
-              lineHeight="83px"
-            >
-              <Box mr={1}>Baths</Box>
-              <Icon as={FaChevronDown} fontSize="sm" />
-            </HStack>
-          </MenuButton>
-          <MenuList>
-            <MenuItem value="banana">1 bathroom</MenuItem>
-            <MenuItem value="orange">2 bathrooms</MenuItem>
-            <MenuItem value="strawberry">3 Bathrooms</MenuItem>
-          </MenuList>
-        </Menu> */}
         <Select
           placeholder="Bathrooms"
-          h="83px"
-          // defaultValue={baths}
+          h="75px"
+          defaultValue={baths}
           fontSize="25px"
           border="1px solid #eaebef"
-          w="max-content"
+          // w="max-content"
+          width="180px"
           borderRadius="10px"
           onChange={(e) => {
+
             setBaths(e.target.value); 
             props.search(postalCode, rentPrice, rating, beds, e.target.value, petPref);
+
           }}
           bg="#eaebef"
         >
@@ -228,14 +153,16 @@ function FilterRow(props) {
 
         <Select
           placeholder="Pet Preferences"
-          h="83px"
+          h="75px"
           defaultValue={petPref}
           fontSize="25px"
+          width="180px"
           border="1px solid #eaebef"
-          w="max-content"
+          // w="max-content"
           borderRadius="10px"
           onChange={(e) => {
             setPetPref(e.target.value);
+
             props.search(postalCode, rentPrice, rating, beds, baths, e.target.value);
           }}
           bg="#eaebef"

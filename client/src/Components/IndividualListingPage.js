@@ -3,13 +3,10 @@ import {
   Button,
   VStack,
   FormControl,
-  FormLabel,
-  Input,
   Textarea,
   HStack,
   Avatar,
   Heading,
-  Select,
   Image,
   ButtonGroup,
   Flex,
@@ -21,10 +18,13 @@ import {
 } from "@chakra-ui/react";
 import {
   AttachmentIcon,
+  CheckCircleIcon,
+  DeleteIcon,
   EmailIcon,
   PhoneIcon,
   StarIcon,
 } from "@chakra-ui/icons";
+import { BiLike } from "react-icons/bi";
 import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import favIcon from "../img/Union.svg";
@@ -33,12 +33,18 @@ import { useLocation } from "react-router-dom";
 import { BiHide } from "react-icons/bi";
 import StarRatings from 'react-star-ratings';
 import { getListingById } from "../services/listingApis";
-import { getAverageRatingByListingId } from "../services/ratingApis";
+import { addRating, getAverageRatingByListingId, getRatingByUserId, updateRating } from "../services/ratingApis";
 import { getLandlordInfoById } from "../services/landlordApis";
 import InterestedPeopleList from "./InterestedPeopleList";
 import DetailedProfile from "./DetailedProfile";
+import { useAuth } from "../Components/auth/context/hookIndex"
 
 function IndividualListingPage() {
+
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
+  const userId = authInfo.profile ? authInfo.profile.id : "640669c85943eac949e1f7a8"; // ELSE DUMMY USER ID
+
   // need to get actual data from PASSED PARAMS IN STATE or API CALLS
 
   let wishlistedPeople = [
@@ -165,23 +171,17 @@ function IndividualListingPage() {
   ];
 
   const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
-  const [currentRating, setCurrentRating] = useState(0); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
+  const [currentRating, setCurrentRating] = useState(null); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
   const [listingInfo, setListingInfo] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [landlordInfo, setLandlordInfo] = useState(null);
 
-  const changeCurrentRating = (value) => {
-    setCurrentRating(value);
-    // UPDATE DB USING RATING API
-  };
-
   const toast = useToast();
 
   const location = useLocation();
-
   useEffect(() => {
-    const listingId = location.pathname.split("/").pop();
+    let listingId = location.pathname.split("/").pop();
 
     async function getListing() {
       const response = await getListingById(listingId);
@@ -193,7 +193,6 @@ function IndividualListingPage() {
     
     async function getAverageRating() {
       const response = await getAverageRatingByListingId(listingId);
-      console.log(response);
       if(response?.data && response.data.length>0) {
         setAverageRating(response.data[0].averageRating);
         setReviewCount(response.data[0].reviewCount);
@@ -207,9 +206,43 @@ function IndividualListingPage() {
       }
     }
 
+    async function getCurrentRating() {
+      const response = await getRatingByUserId(userId, listingId);
+      if(response?.data && response.data.length>0) {
+        setCurrentRating(response.data[0]);
+      }
+    }
+
     getListing();
     getAverageRating();
+    getCurrentRating();
   }, [location])
+
+  const changeCurrentRating = async (value) => {
+    if (!currentRating) {
+      // create new rating
+      // console.log("here", location.pathname.split("/").pop())
+      const rating = {
+        userId: userId, // NEED TO ADD CURRENT USER ID
+        listingId: location.pathname.split("/").pop(),
+        rating: value
+      };
+      // console.log("req", rating)
+      const response = await addRating(rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    } else {
+      // update rating
+      const rating = {
+        rating: value
+      };
+      const response = await updateRating(currentRating._id, rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    }
+  };
 
   return (
     listingInfo && landlordInfo && (
@@ -337,7 +370,8 @@ function IndividualListingPage() {
                   starEmptyColor={"#E2E8F0"}
                   starHoverColor={"#F6E05E"}
                   starDimension={"30px"}
-                  rating={currentRating}
+                  // rating={currentRating}
+                  rating={currentRating ? currentRating.rating : 0}
                   changeRating={(value)=>{
                     changeCurrentRating(value);
                   }}
@@ -350,16 +384,16 @@ function IndividualListingPage() {
                 border="2px"
                 borderColor="gray.300"
                 borderRadius={"2xl"}
-                p={5}
+                p={2}
               >
                 <form>
                   <FormControl id="commentText"></FormControl>
                   <Textarea
                     placeholder="Leave a Comment..."
                     variant={"filled"}
-                    mb={5}
+                    mb={2}
                   />
-                  <Flex mb={5}>
+                  <Flex mb={3}>
                     <Spacer />
                     <ButtonGroup>
                       <IconButton
@@ -384,8 +418,34 @@ function IndividualListingPage() {
                     </ButtonGroup>
                   </Flex>
                 </form>
-                <Divider borderWidth={"2px"} mb={5} />
-                <Box>{/* COMMENTS */}</Box>
+                <Divider borderWidth={"2px"} mb={3} />
+                <Box>
+                  {/* COMMENTS (need to have a loop)*/}
+                  <Box>
+                    <HStack spacing={2} px={3}>
+                      <Avatar name={"Test User"} size={"sm"}/>
+                      <Text fontWeight={"bold"} fontSize={"2xl"}>Test User</Text>
+                      <Spacer />
+                      <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
+                      <DeleteIcon boxSize={5} color={"blue.500"} onClick={()=>{}}/>
+                    </HStack>
+                    <Text ml={10} fontSize={"lg"}>Is this listing good?</Text>
+                    <Divider borderWidth={"3px"} my={2}/>
+                    <Box ml={"2rem"}>
+                      {/* REPLY BOX */}
+                      <HStack spacing={2} px={3}>
+                        <Avatar name={"Test Landlord"} size={"xs"}/>
+                        <Text fontWeight={"bold"} fontSize={"xl"}>Test Landlord</Text>
+                        <CheckCircleIcon boxSize={4} color={"blue.500"} />
+                        <Spacer />
+                        <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
+                        <DeleteIcon boxSize={5} color={"blue.500"} onClick={()=>{}}/>
+                      </HStack>
+                      <Text ml={10} fontSize={"md"}>Yes, this listing is really really good!</Text>
+                    </Box>
+                    <Divider borderWidth={"3px"} my={2}/>
+                  </Box>
+                </Box>
               </Box>
             </Box>
           </VStack>
@@ -423,10 +483,11 @@ function IndividualListingPage() {
               border="2px"
               borderColor="gray.300"
               borderRadius={"2xl"}
-              p={5}
+              py={5}
+              px={2}
             >
               <Text fontWeight={"bold"} textAlign={"center"}>
-                People who also wishlisted this
+                People who have wishlisted this
               </Text>
               <Divider borderWidth={"3px"} my={2} />
               {/* WISHLISTED PEOPLE */}
@@ -447,13 +508,13 @@ function IndividualListingPage() {
                         align={"left"}
                         w={"60%"}
                       >
-                        <Text blur={"md"}>{person.name}</Text>
-                        <Divider borderWidth={"1px"} />
+                        <Text blur={"md"} fontWeight={"bold"}>{person.name}</Text>
+                        <Divider borderWidth={"2px"} />
                         <HStack spacing={2}>
                           {person.age.isPublic ? (
                             <Text>{person.age.data}</Text>
                           ) : (
-                            <BiHide />
+                            <BiHide size={"1.5rem"}/>
                           )}
                           <Spacer />
                           <Text>{person.pronoun}</Text>
@@ -465,7 +526,7 @@ function IndividualListingPage() {
                       <Spacer />
                       <DetailedProfile p={person}></DetailedProfile>
                     </HStack>
-                    <Divider borderWidth={"2px"} />
+                    <Divider borderWidth={"2px"} my={2} />
                   </Box>
                 ))}
               </VStack>
