@@ -16,44 +16,24 @@ import { useNavigate } from "react-router-dom";
 import heart from '../img/Union.svg'
 import emptyHeart from '../img/emptyHeartButton.svg'
 import house from '../img/house1.jpg'
-import { getIsWishlistedByUser, createWishlistItem, deleteWishlistItem } from '../services/wishlistApis';
+import { getIsWishlistedByUser, createWishlistItem, deleteWishlistItem, getWishlistByUserId } from '../services/wishlistApis';
 import { useEffect, useState } from "react";
+import { useAuth } from "./auth/context/hookIndex";
 
-const ListingCard = ({ userId, src }) => {
-
-  let wishlistItem = {
-    listingId: src._id,
-    userId: userId,
-  };
-
-  const [like, setLike] = useState(false);
-  const [wishlistId, setWishListId] = useState("");
-
-  const getLiked = async () => {
-    const response = await getIsWishlistedByUser(userId, src._id);
-    if (!response?.error) { // traverse listing id to get listing data
-      if (response.data == false) {
-        setLike(false);
-      } else {
-        setLike(true);
-        setWishListId(response.data._id);
-      }
-    }
-  }
-
-  useEffect(() => {
-    getLiked();
-  }, []);
-
+const ListingCard = ({ src }) => {
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistInfo, setWishlistInfo] = useState(null);
   const navigate = useNavigate();
-
   const toast = useToast();
 
-  const handleClick = () => {
-    setLike(current => !current);
-    if (like) {
+  const handleWishlist = async () => {
+    if(!isWishlisted) {
       try {
-        deleteWishlistItem(wishlistId);
+        await createWishlistItem({
+          listingId: src?._id,
+          userId: src?.userId
+        });
+        setIsWishlisted(true);
       } catch (error) {
         toast({
           title: "Failed",
@@ -64,7 +44,8 @@ const ListingCard = ({ userId, src }) => {
       }
     } else {
       try {
-        createWishlistItem(wishlistItem)
+        await deleteWishlistItem(wishlistInfo?._id);
+        setIsWishlisted(false);
       } catch (error) {
         toast({
           title: "Failed",
@@ -74,7 +55,27 @@ const ListingCard = ({ userId, src }) => {
         });
       }
     }
-  };
+  }
+
+  useEffect(() => {
+    async function isWishlistedByUser() {
+      const response = await getIsWishlistedByUser(src?.userId, src?._id);
+      if(!response.data) {
+        setIsWishlisted(response.data);
+      } else {
+        setIsWishlisted(true);
+      }
+    }
+    isWishlistedByUser();
+
+    async function getWishlist() {
+      const response = await getWishlistByUserId(src?.userId);
+      if(response?.data) {
+        setWishlistInfo(response.data[0]);
+      }
+    }
+    getWishlist();
+  }, [src?.userId, src?._id]);
 
   return (
     <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
@@ -102,20 +103,19 @@ const ListingCard = ({ userId, src }) => {
             fontSize='3xl'
           >
             <LinkOverlay as={"button"} onClick={() => {
-              navigate(`/listing/${src._id}`);
+              navigate(`/listing/${src?._id}`);
             }}>
-              {/* route to detailed listing page */}
               {src.name}
             </LinkOverlay>
 
           </Box>
           <IconButton
             bg="#FFFFFF"
-            icon={<Image src={like ? heart : emptyHeart} boxSize={30} alt="heart" />}
+            icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}
             onClick={(e) => {
               // cancel wishlist
               e.preventDefault();
-              handleClick();
+              handleWishlist();
             }}
           />
         </Flex>

@@ -14,13 +14,11 @@ import house1 from "../img/house1.jpg";
 import NavBar from "./NavBar";
 import SearchBar from "./SearchBar";
 import ButtonRL from "./ButtonRL";
-import {
-  getListingBySearchParameter,
-  getListingsByRating,
-} from "../services/listingApis";
-
+import { getListingBySearchParameter, getListingsByRating } from "../services/listingApis";
+import { useAuth } from "./auth/context/hookIndex";
 export default function IndividualListingPage() {
   const [recommendedListings, setRecommendedListings] = useState(null);
+  const { authInfo } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 6;
@@ -47,7 +45,7 @@ export default function IndividualListingPage() {
   };
 
   return (
-    recommendedListings && (
+    recommendedListings && authInfo?.profile?.id && (
       <Box>
         <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
         <Box my={10}>
@@ -78,7 +76,7 @@ export default function IndividualListingPage() {
             <VStack align="left" spacing={30}>
               <SimpleGrid columns={3} spacing={10}>
                 {recommendedListings.map((listing, idx) => (
-                  <ListingCard key={idx} src={{ ...listing, img: house1 }}>
+                  <ListingCard key={idx} src={{ ...listing, img: house1, userId: authInfo?.profile?.id }}>
                     {" "}
                   </ListingCard>
                 ))}
