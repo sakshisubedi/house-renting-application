@@ -24,11 +24,14 @@ import LandlordViewCard from "./LandlordViewCard";
 import house1 from "../img/house1.jpg";
 import { useAuth } from "../Components/auth/context/hookIndex";
 import { getLandlordInfoById } from "../services/landlordApis";
+import { getListingByLandlordId } from "../services/listingApis";
+import { getAverageRatingByListingId } from "../services/ratingApis";
 
 function EditLandlordProfilePage() {
   const { authInfo } = useAuth();
   const userId = authInfo.profile?.id;
   const [landlordInfo, setLandlordInfo] = React.useState(null);
+  const [listingsInfo, setListingsInfo] = React.useState(null);
 
   const [name, setName] = React.useState(null);
   const [email, setEmail] = React.useState(null);
@@ -50,9 +53,31 @@ function EditLandlordProfilePage() {
         setPhone(response.data.phoneNo);
       }
     }
+
+    async function getListingMetadata(listingId) {
+      const response = await getAverageRatingByListingId(listingId);
+      if (response?.data && response.data.length>0) {
+        return response;
+      }
+    }
+
+    async function getListingsInfo(landlordId) {
+      const response = await getListingByLandlordId(landlordId);
+      // console.log(response.data);
+      if(response?.data && response.data.length>0) {
+        response.data.forEach(async listing => {
+          const response1 = await getListingMetadata(listing._id);
+          if (response1) {
+            listing["rating"] = response1.data[0].averageRating ?? 0;
+            listing["reviewCount"] = response1.data[0].reviewCount ?? 0;
+          }
+        });
+        setListingsInfo(response.data);
+      }
+    }
     getLandlordInfo(userId);
+    getListingsInfo(userId);
   }, []);
-  // console.log(authInfo, userId, location, landlordInfo, "here")
 
   let landlordData = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     name: "Anthe Braybrooke",
@@ -248,9 +273,16 @@ function EditLandlordProfilePage() {
             </Flex>
             <Box mt={10}>
               {/* <LandlordViewCard></LandlordViewCard> */}
-              <LandlordViewCard ard src={tempListing}>
+              {listingsInfo?.map((listing, ind) => (
+                <Box key={ind}>
+                  <LandlordViewCard ard src={listing}>
+                    {" "}
+                  </LandlordViewCard>
+                </Box>
+              ))}
+              {/* <LandlordViewCard ard src={tempListing}>
                 {" "}
-              </LandlordViewCard>
+              </LandlordViewCard> */}
               {/* All listings go here */}
             </Box>
           </Box>
