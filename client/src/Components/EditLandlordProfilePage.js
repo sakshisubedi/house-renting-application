@@ -23,12 +23,20 @@ import NavBar from "./NavBar";
 import LandlordViewCard from "./LandlordViewCard";
 import house1 from "../img/house1.jpg";
 import ListingCard from "./ListingCard";
+
+// Get current login user
+import { useLandlordAuth } from "../Components/auth/context/hookIndex"
+
 function EditLandlordProfilePage() {
   // need to get actual data from db
+  const { landlordInfo } = useLandlordAuth();
+  const userName = landlordInfo.profile?.name;
+  const userEmail = landlordInfo.profile?.email;
+  const userId = landlordInfo.profile?.id;
 
   let landlordData = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
-    name: "Anthe Braybrooke",
-    email: "abraybrookej@amazon.com",
+    name: userName,
+    email: userEmail,
     password: "test123",
     isVerified: true,
     pronoun: "They/Them",
@@ -36,7 +44,7 @@ function EditLandlordProfilePage() {
     phoneNo: "1234567890",
     introduction: "some test self intro",
     profilePicture: null,
-    _id: "640656792b0fe156679a8bc2",
+    _id: userId,
     createdAt: "2023-03-06T21:09:13.377Z",
     updatedAt: "2023-03-06T21:09:13.377Z",
     __v: 0,

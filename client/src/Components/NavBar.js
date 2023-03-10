@@ -13,36 +13,19 @@ import {
     MenuItem,
     MenuDivider,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import logoImg from '../img/logo.jpg'
 import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
 
 // Setting isLoggedIn Status
-import { useAuth } from "../Components/auth/context/hookIndex"
-import { getUserAllInfoById } from "../services/userApis";
+import { useAuth, useLandlordAuth } from "../Components/auth/context/hookIndex"
 
 const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
+    const { landlordInfo, handleLogoutLandlord } = useLandlordAuth();
 
-    const navigate = useNavigate();
-    const [userData, setUserData] = React.useState(null);
-
-    useEffect(() => {
-      async function getUserData() {
-        if (isLoggedIn) {
-          const response = await getUserAllInfoById(authInfo.profile.id);
-          if (response?.data) {
-            // console.log(response.data);
-            setUserData(response.data);
-          }
-        }
-      }
-      getUserData();
-    }, []);
-    
     return (
         <Box>
             <Flex
@@ -105,50 +88,53 @@ const NavBar = ({ profileURL }) => {
                                 />
                             </MenuButton>
                             <MenuList>
-                                
+
                                 {/* User Authentication */}
                                 { isLoggedIn ? (
                                     <div>
                                         <MenuItem 
                                             onClick={(e) => {
                                                 // route to profile page
-                                                // window.location.href = '/customer/me';
-                                                navigate("/customer/me", {
-                                                    state: {
-                                                        userInfo: userData ?? null,
-                                                    },
-                                                });
+                                                window.location.href = '/customer/me';
                                             }}>
-                                            Profile
+                                            User Profile
                                         </MenuItem>
                                         <MenuDivider />
                                         <MenuItem onClick={handleLogout}>
                                             Log out
                                         </MenuItem>
                                     </div>
+                                ) : landlordInfo.isLoggedIn ? (
+                                    <div>
+                                        <MenuItem 
+                                            onClick={(e) => {
+                                                // route to profile page
+                                                window.location.href = '/landlord/me';
+                                            }}>
+                                            Landlord Profile
+                                        </MenuItem>
+                                        <MenuDivider />
+                                        <MenuItem onClick={handleLogoutLandlord}>
+                                            Log out
+                                        </MenuItem>
+                                    </div>
                                 ) : (
-                                    <MenuItem 
-                                        onClick={(e) => {
-                                            // route to user login
-                                            window.location.href = '/auth/signin';
-                                        }}>
-                                        User Login
-                                    </MenuItem>
-                                )}
-
-                                {/* Landlord Authentication */}
-                                { isLoggedIn ? (
-                                    <MenuItem onClick={handleLogout}>
-                                        Log out
-                                    </MenuItem>
-                                ) : (
-                                    <MenuItem 
-                                        onClick={(e) => {
-                                            // route to landlord login
-                                            window.location.href = '/landlord/signin';
-                                        }}>
-                                        Landlord Login
-                                    </MenuItem>
+                                    <div>
+                                        <MenuItem 
+                                            onClick={(e) => {
+                                                // route to user login
+                                                window.location.href = '/auth/signin';
+                                            }}>
+                                            User Login
+                                        </MenuItem>
+                                        <MenuItem 
+                                            onClick={(e) => {
+                                                // route to landlord login
+                                                window.location.href = '/landlord/signin';
+                                            }}>
+                                            Landlord Login
+                                        </MenuItem>
+                                    </div>
                                 )}
                             </MenuList>
                         </Menu>
