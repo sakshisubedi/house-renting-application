@@ -39,8 +39,34 @@ const getCommentsByListingId = (models) => {
                       }
                     }, {
                       '$match': {
-                        'parentId': null, 
+                        'parentId': null,
                         'listingId': mongoose.Types.ObjectId(req.params.listingId)
+                      }
+                    }, {
+                      '$lookup': {
+                        'from': 'users', 
+                        'localField': 'userId', 
+                        'foreignField': '_id', 
+                        'as': 'user'
+                      }
+                    }, {
+                      '$lookup': {
+                        'from': 'listings', 
+                        'localField': 'listingId', 
+                        'foreignField': '_id', 
+                        'as': 'listing'
+                      }
+                    }, {
+                      '$unset': 'userId'
+                    }, {
+                      '$unset': 'listingId'
+                    }, {
+                      '$unwind': {
+                        'path': '$user'
+                      }
+                    }, {
+                      '$unwind': {
+                        'path': '$listing'
                       }
                     }
                 ])

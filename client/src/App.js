@@ -35,7 +35,7 @@ function App() {
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/search" element={<SearchResult />} />
           <Route
-            path="/customer/me"
+            path="/customer/:id"
             element={<EditCustomerProfilePage />}
           />
           <Route
@@ -45,16 +45,20 @@ function App() {
           <Route path="/listing" element={<AddListingPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/listing/:id" element={<IndividualListingPage />} />
-          <Route path="/auth/signin" element={<Signin />} />
-          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/user/signin" element={<Signin userType="customer" />}  />
+          <Route path="/auth/user/signup" element={<Signup userType="customer" />} />
+          <Route path="/auth/landlord/signin" element={<Signin userType="landlord" />} />
+          <Route path="/auth/landlord/signup" element={<Signup userType="landlord" />} />
           <Route path="/auth/verification" element={<EmailVerification />} />
-          <Route path="/auth/forget-password" element={<ForgetPassword />} />
-          <Route path="/auth/reset-password" element={<ConfirmPassword />} />
-          <Route path="/landlord/signin" element={<LandlordSignin />} />
-          <Route path="/landlord/signup" element={<LandlordSignup />} />
-          <Route path="/landlord/verification" element={<LandlordEmailVerification />} />
-          <Route path="/landlord/forget-password" element={<LandlordForgetPassword />} />
-          <Route path="/landlord/reset-password" element={<LandlordConfirmPassword />} />
+          <Route path="/auth/user/forget-password" element={<ForgetPassword userType="customer" />} />
+          <Route path="/auth/landlord/forget-password" element={<ForgetPassword userType="landlord" />} />
+          <Route path="/auth/user/reset-password" element={<ConfirmPassword userType="customer" />} />
+          <Route path="/auth/landlord/reset-password" element={<ConfirmPassword userType="landlord" />} />
+          {/* <Route path="/landlord/signin" element={<LandlordSignin />} />
+          <Route path="/landlord/signup" element={<LandlordSignup />} /> */}
+          {/* <Route path="/landlord/verification" element={<LandlordEmailVerification />} /> */}
+          {/* <Route path="/landlord/forget-password" element={<LandlordForgetPassword />} />
+          <Route path="/landlord/reset-password" element={<LandlordConfirmPassword />} /> */}
           <Route path='*' element={<Navigate to='/landing' />} />
 
           {/* Authentication part */}

@@ -48,12 +48,13 @@ export const signInUser = async (userInfo) => {
   }
 };
 
-export const getIsAuth = async (token) => {
+export const getIsAuth = async (token, userType) => {
   try {
     const { data } = await client.get("/is-auth", {
       headers: {
         Authorization: "Bearer " + token,
         accept: "application/json",
+        userType
       },
     });
     return data;
@@ -65,9 +66,9 @@ export const getIsAuth = async (token) => {
   }
 };
 
-export const forgetPassword = async (email) => {
+export const forgetPassword = async (email, userType) => {
   try {
-    const { data } = await client.post("/forget-password", { email });
+    const { data } = await client.post("/forget-password", { email, userType });
     return data;
   } catch (error) {
     const { response } = error;

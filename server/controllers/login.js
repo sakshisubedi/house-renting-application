@@ -52,11 +52,16 @@ const login = () => {
 // user sign in
 const signIn = (models) => {
   return async (req, res, next) => {
-    const { email: {data}, password } = req.body;
+    const { email: {data}, password, userType } = req.body;
 
-    const user = await models.user.findOne({ 'email.data': data });
-    if (!user) return sendError(res, "Email/Password mismatch!");
-  
+    let user;
+    if(userType === "landlord") {
+      user = await models.landlord.findOne({ 'email': data });
+    } else {
+      user = await models.user.findOne({ 'email.data': data });
+    }
+    if (!user) return sendError(res, "Email does not exist!");
+    
     const matched = await user.comparePassword(password);
     if (!matched) return sendError(res, "Email/Password mismatch!");
   
@@ -72,12 +77,22 @@ const signIn = (models) => {
 // create a user on sign up
 const create = (models) => {
   return async (req, res, next) => {
-    const { name, email: {data}, password } = req.body;
+    const { name, email: {data}, password, userType } = req.body;
 
-    const oldUser = await models.user.findOne({ 'email.data': data });
+    let oldUser;
+    if(userType === "landlord") {
+      oldUser = await models.landlord.findOne({ 'email': data });
+    } else {
+      oldUser = await models.user.findOne({ 'email.data': data });
+    }
     if (oldUser) return sendError(res, "This email is already in use");
   
-    const newUser = new models.user({ name, email: {data}, password });
+    let newUser;
+    if(userType === "landlord") {
+      newUser = new models.landlord({ name, email: data, password });
+    } else {
+      newUser = new models.user({ name, email: {data}, password });
+    }
     await newUser.save();
   
     let OTP = generateOTP();
@@ -85,12 +100,14 @@ const create = (models) => {
       owner: newUser._id,
       token: OTP,
     });
+
+    console.log("newEmailVerificationToken--------", newEmailVerificationToken);
   
     await newEmailVerificationToken.save();
 
     var templateParams = {
       to_name: newUser.name,
-      to_email: newUser.email.data,
+      to_email: userType === "landlord" ? newUser.email : newUser.email.data,
       message: "You verification code: " + OTP,
     };
     emailjs
@@ -120,9 +137,14 @@ const create = (models) => {
 // Verify the email for user
 const verifyEmail = (models) => {
   return async (req, res, next) => {
-    const { userId, OTP } = req.body;
+    const { userId, OTP, userType } = req.body;
     if (!isValidObjectId(userId)) return sendError(res, "Invalid user");
-    const user = await models.user.findById(userId);
+    let user;
+    if(userType === "landlord") {
+      user = await models.landlord.findById(userId);
+    } else {
+      user = await models.user.findById(userId);
+    }
     if (!user) return sendError(res, "user not found!", 404);
     if (user.isVerified) return sendError(res, "user is already verified");
   
@@ -139,7 +161,7 @@ const verifyEmail = (models) => {
   
     var templateParams = {
       to_name: user.name,
-      to_email: user.email.data,
+      to_email: userType === "landlord" ? user.email : user.email.data,
       message: "You email is verified",
     };
     emailjs
@@ -164,6 +186,7 @@ const verifyEmail = (models) => {
         email: user.email,
         token: jwtToken,
         isVerified: user.isVerified,
+        userType
       },
       message: "Your email is verified.",
     });
@@ -201,7 +224,7 @@ const resendEmailVerificationToken = (models) => {
   
     var templateParams = {
       to_name: user.name,
-      to_email: user.email.data,
+      to_email: userType === "landlord" ? user.email : user.email.data,
       message: "You verification code: " + OTP,
     };
     emailjs
@@ -227,11 +250,17 @@ const resendEmailVerificationToken = (models) => {
 // forget password for user
 const forgetPassword = (models) => {
   return async (req, res, next) => {
-    const { email } = req.body;
+    const { email, userType } = req.body;
 
     if (!email) return sendError(res, "Email is missing!");
+
+    let user;
+    if(userType === "landlord") {
+      user = await models.landlord.findOne({ 'email': email });
+    } else {
+      user = await models.user.findOne({ 'email.data': email });
+    }
   
-    const user = await models.user.findOne({ 'email.data': email });
     if (!user) return sendError(res, "User not found!", 404);
   
     const alreadyHasToken = await models.passwordResetToken.findOne({ owner: user._id });
@@ -249,7 +278,14 @@ const forgetPassword = (models) => {
     await newPasswordResetToken.save();
   
     // might needed to be updated, just for now
-    const resetPasswordUrl = `http://localhost:3000/auth/reset-password?token=${token}&id=${user._id}`;
+    let resetPasswordUrl;
+    if(userType === "landlord") {
+      resetPasswordUrl = `http://localhost:3000/auth/landlord/reset-password?token=${token}&id=${user._id}`;
+    } else {
+      resetPasswordUrl = `http://localhost:3000/auth/user/reset-password?token=${token}&id=${user._id}`;
+    }
+    
+    console.log("resetPasswordUrl------", resetPasswordUrl);
   
     var templateParams = {
       to_name: user.name,
@@ -277,9 +313,15 @@ const forgetPassword = (models) => {
 // reset password for user
 const resetPassword = (models) => {
   return async (req, res, next) => {
-    const { newPassword, userId } = req.body;
+    const { newPassword, userId, userType } = req.body;
+    
+    let user;
+    if(userType === "landlord") {
+      user = await models.landlord.findById(userId)
+    } else {
+      user = await models.user.findById(userId);
+    }
 
-    const user = await models.user.findById(userId);
     const matched = await user.comparePassword(newPassword);
     if (matched)
       return sendError(
@@ -294,7 +336,7 @@ const resetPassword = (models) => {
   
     var templateParams = {
       to_name: user.name,
-      to_email: user.email.data,
+      to_email: userType === "landlord" ? user.email : user.email.data,
       message: "Password Reset Successfully",
     };
     emailjs
@@ -330,8 +372,13 @@ const isAuth = (models) => {
       const { userId } = decode;
     
       // Check if user is found
-      const user = await models.user.findById(userId);
-      if (!user) return;
+      let user;
+      if(req.headers.usertype === "landlord") {
+        user = await models.landlord.findById(userId);
+      } else {
+        user = await models.user.findById(userId);
+      }
+      if (!user) return sendError(res, "User not found");
     
       req.user = user;
     
@@ -347,7 +394,7 @@ const isValidPassResetToken = (models) => {
       // Request type error
       if (!token.trim() || !isValidObjectId(userId))
           return sendError(res, "Invalid request!");
-    
+
       // userId not matched
       const resetToken = await models.passwordResetToken.findOne({ owner: userId });
       if (!resetToken)
