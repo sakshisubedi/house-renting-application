@@ -39,12 +39,12 @@ import DetailedProfile from "./DetailedProfile";
 import { useAuth } from "../Components/auth/context/hookIndex"
 import { addComment, deleteComment, getCommentsByListingId } from "../services/commentApis";
 import { getUserPublicInfoById } from "../services/userApis";
+import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getWishlistByUserId } from "../services/wishlistApis";
 
 function IndividualListingPage() {
 
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
-  const userId = authInfo.profile ? authInfo.profile.id : "640669c85943eac949e1f7a8"; // ELSE DUMMY USER ID
 
   // need to get actual data from PASSED PARAMS IN STATE or API CALLS
 
@@ -179,10 +179,13 @@ function IndividualListingPage() {
   const [landlordInfo, setLandlordInfo] = useState(null);
   const [comments, setComments] = useState(null);
   const [comm, setComm] = React.useState(null);
+  const [wishlistInfo, setWishlistInfo] = useState(null);
 
   const toast = useToast();
 
   const location = useLocation();
+  const [userId, setUserId] = useState(location?.state?.userId || authInfo?.profile?.id);
+
   useEffect(() => {
     let listingId = location.pathname.split("/").pop();
 
@@ -236,11 +239,61 @@ function IndividualListingPage() {
       }
     }
 
+    async function isWishlistedByUser() {
+      const response = await getIsWishlistedByUser(userId, listingId);
+      if(!response.data) {
+        setIsWishlisted(response.data);
+      } else {
+        setIsWishlisted(true);
+      }
+    }
+    isWishlistedByUser();
+
+    async function getWishlist() {
+      const response = await getWishlistByUserId(userId);
+      if(response?.data) {
+        setWishlistInfo(response.data[0]);
+      }
+    }
+    getWishlist();
+
     getListing();
     getAverageRating();
     getCurrentRating();
     getComments(listingId);
-  }, [location])
+    isWishlistedByUser();
+  }, [location, userId])
+
+  const handleWishlist = async () => {
+    if(!isWishlisted) {
+      try {
+        await createWishlistItem({
+          listingId: location.pathname.split("/").pop(),
+          userId: userId
+        });
+        setIsWishlisted(true);
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    } else {
+      try {
+        await deleteWishlistItem(wishlistInfo?._id);
+        setIsWishlisted(false);
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    }
+  }
 
   const addComm = async () => {
     const comment = {
@@ -299,7 +352,7 @@ function IndividualListingPage() {
   };
 
   return (
-    listingInfo && landlordInfo && (
+    listingInfo && landlordInfo && userId && (
       <Box>
       <NavBar />
       <Box my={50} ml={150} mr={150}>
@@ -354,7 +407,7 @@ function IndividualListingPage() {
                   // ADD/REMOVE FROM WISHLIST
 
                   // CHANGING ICON SOURCE IMG
-                  setIsWishlisted(!isWishlisted);
+                  handleWishlist();
                 }}
               />
             </VStack>
