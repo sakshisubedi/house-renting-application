@@ -25,6 +25,7 @@ import { useLocation } from "react-router-dom";
 // Get current login user
 import { useAuth } from "../Components/auth/context/hookIndex"
 
+
 function EditCustomerProfilePage() {
   // need to get actual data from db
   const { authInfo } = useAuth();
@@ -32,7 +33,9 @@ function EditCustomerProfilePage() {
   const userEmail = authInfo.profile?.email;
   const userId = authInfo.profile?.id;
 
+
   let tempUserData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+
     email: {
       isPublic: true,
       data: userEmail,
@@ -56,6 +59,8 @@ function EditCustomerProfilePage() {
     createdAt: "2023-03-01T22:56:00.991Z",
     updatedAt: "2023-03-01T22:56:00.991Z",
   };
+ 
+
 
   const location = useLocation();
   let userData = location.state.userInfo ?? tempUserData;
@@ -67,7 +72,9 @@ function EditCustomerProfilePage() {
   const [desc, setDesc] = React.useState(userData.desc ?? null);
   const [pronouns, setPronouns] = React.useState(userData.pronoun ?? null);
   const [age, setAge] = React.useState(userData.age.data ?? null);
-  const [agePublicFlag, setAgePublicFlag] = React.useState(userData.age.isPublic.toString());
+  const [agePublicFlag, setAgePublicFlag] = React.useState(
+    userData.age.isPublic.toString()
+  );
   const [occupation, setOccupation] = React.useState(
     userData.occupation.data ?? null
   );
@@ -76,6 +83,7 @@ function EditCustomerProfilePage() {
   // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
   const [datePref, setDatePref] = React.useState((userData.preferredMoveInDate) ? new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) : null);
   // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
+
   const [housematesBool, setHousematesBool] = React.useState(
     userData.isLookingForFlatmate ?? null
   );
@@ -98,9 +106,11 @@ function EditCustomerProfilePage() {
       housematesBool === "" ? null : housematesBool === "true";
     // userData.roommatePrefs = roommatePrefs === "" ? null : roommatePrefs;
     userData.preferPet = petsPref === "" ? null : petsPref === "true";
-    userData.preferredMoveInDate = userData.preferredMoveInDate.toISOString() ?? null;
+    userData.preferredMoveInDate =
+      userData.preferredMoveInDate.toISOString() ?? null;
     userData.updatedAt = new Date().toISOString();
     console.log(userData, "user data");
+
 
     const response = await updateUser(userData, userData._id);
     if(response?.error) {
@@ -108,14 +118,14 @@ function EditCustomerProfilePage() {
         title: "Failed",
         description: response?.error,
         status: "error",
-        position: "top-right"
+        position: "top-right",
       });
     } else {
       toast({
         title: "Success",
         description: "Successfully updated user profile",
         status: "success",
-        position: "top-right"
+        position: "top-right",
       });
     }
   };
@@ -166,7 +176,7 @@ function EditCustomerProfilePage() {
                       title: "Failed",
                       description: error,
                       status: "error",
-                      position: "top-right"
+                      position: "top-right",
                     });
                   }
                 }}
