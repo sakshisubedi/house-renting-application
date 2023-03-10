@@ -33,7 +33,7 @@ export default function IndividualListingPage() {
       }
     }
     getRecommendedListings();
-  }, [recommendedListings]);
+  }, []);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
