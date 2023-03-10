@@ -44,10 +44,10 @@ const signInValidator = [
 ];
 
 module.exports = (models) => {
-    routes.post('/', landlordController.createLandlord(models));
-    routes.put('/:id', landlordController.updateLandlord(models));
-    routes.get('/:id', landlordController.getLandlordInfoById(models));
-    routes.get('/profilepic/:id', landlordController.getLandlordProfilePicById(models));
+    // routes.post('/', landlordController.createLandlord(models));
+    // routes.put('/:id', landlordController.updateLandlord(models));
+    // routes.get('/:id', landlordController.getLandlordInfoById(models));
+    // routes.get('/profilepic/:id', landlordController.getLandlordProfilePicById(models));
     routes.post("/sign-in-landlord", signInValidator, validate, landlordController.signIn(models));
     routes.post("/create-landlord", userValidtor, validate, landlordController.create(models));
     routes.post("/verify-email-landlord", landlordController.verifyEmail(models));
