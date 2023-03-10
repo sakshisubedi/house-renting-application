@@ -154,6 +154,7 @@ const InterestedPeopleList = ({wishlistedPeople}) => {
             <Button
                 colorScheme={"blue"}
                 variant={"link"}
+                isDisabled={!wishlistedPeople}
                 onClick={onOpen}>
                 View All
             </Button>

@@ -38,8 +38,8 @@ function FilterRow(props) {
   };
 
   return (
-    <Box my={10}>
-      <HStack spacing="20px" margin="auto" m={10}>
+    <Box my={5}>
+      <HStack spacing="20px">
         <Box w="630px" h="75px" border="1px solid darkgray" borderRadius="15px">
           <Input
             id="search-input"

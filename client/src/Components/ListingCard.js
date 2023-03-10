@@ -101,7 +101,7 @@ const ListingCard = ({ userId, src }) => {
             noOfLines={1}
             fontSize='3xl'
           >
-            <LinkOverlay onClick={(e) => {
+            <LinkOverlay as={"button"} onClick={() => {
               navigate(`/listing/${src._id}`);
             }}>
               {/* route to detailed listing page */}

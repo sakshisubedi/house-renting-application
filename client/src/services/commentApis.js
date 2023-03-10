@@ -26,7 +26,7 @@ export async function deleteComment(commentId) {
 
 export async function getCommentsByListingId(listingId) {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/v1/comment/${listingId}`);
+        const { data } = await axios.get(`${BASE_URL}/api/v1/comment/listing/${listingId}`);
         return data;
     } catch (error) {
         return {

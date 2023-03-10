@@ -20,10 +20,6 @@ import {
 } from "../services/listingApis";
 
 export default function IndividualListingPage() {
-  const { authInfo } = useAuth();
-  const { isLoggedIn } = authInfo;
-  const userId = authInfo.profile ? authInfo.profile.id : "640669c85943eac949e1f7a8"; // ELSE DUMMY USER ID
-
   const [recommendedListings, setRecommendedListings] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
