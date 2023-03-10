@@ -28,7 +28,7 @@ import {
 import { BiHide } from "react-icons/bi";
 import { React } from "react";
 
-const DetailedProfile = ({ p }) => {
+const DetailedProfile = ({ p, l }) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -38,6 +38,7 @@ const DetailedProfile = ({ p }) => {
                 colorScheme={"blue"}
                 variant={"outline"}
                 size={"xs"}
+                isDisabled={!l}
                 onClick={onOpen}>
                 View
             </Button>

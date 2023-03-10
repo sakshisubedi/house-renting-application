@@ -107,8 +107,9 @@ const LandlordViewCard = ({ src }) => {
                     width="5px"
                     icon={
                       <Image
-                        width="100%"
-                        objectFit="cover"
+                        width="75%"
+                        h="85%"
+                        objectFit="fill"
                         src={delete1}
                         alt="logo"
                       />
@@ -134,18 +135,16 @@ const LandlordViewCard = ({ src }) => {
                 w="80%"
                 mr={20}
               >
-                <SimpleGrid columns={5} spacing={1} w="100%">
+                <SimpleGrid columns={4} spacing={1} w="100%">
                   <Box>BedRooms</Box>
                   <Box>Bathrooms</Box>
                   <Box>SquareFeet</Box>
                   <Box>Pets</Box>
-                  <Box>Parameter 5</Box>
 
                   <Text>{src.bedrooms} beds</Text>
                   <Text>{src.bathrooms} baths</Text>
                   <Text>{src.squareFeet} sqft</Text>
                   <Text>{src.petFriendly}</Text>
-                  <Text> Value</Text>
                 </SimpleGrid>
               </Box>
               <Box mt={7} w="8%">
