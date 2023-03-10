@@ -21,12 +21,28 @@ import {
   RadioGroup,
   Radio,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { createListing } from "../services/listingApis";
 import NavBar from "./NavBar";
+import { getLandlordInfoById } from "../services/landlordApis";
+import { useLandlordAuth } from "../Components/auth/context/hookIndex";
 
 function AddListingPage() {
   const toast = useToast();
+
+  const { landlordInfo } = useLandlordAuth();
+  const landlordId = landlordInfo.profile?.id;
+  const [landlordData, setLandlordInfo] = React.useState(null);
+
+  useEffect(()=>{
+    async function getLandlordInfo(landlordId) {
+      const response = await getLandlordInfoById(landlordId);
+      if(response?.data) {
+        setLandlordInfo(response.data);
+      }
+    }
+    getLandlordInfo(landlordId);
+  }, [landlordId]);
 
   const [name, setName] = React.useState();
   const [price, setPrice] = React.useState();
@@ -69,12 +85,13 @@ function AddListingPage() {
     setPopup(false);
   };
 
-  const addListing = async () => {
+  const addListing = async (landlordId) => {
     const newListing = {
       name: name,
       address: address,
       rent: parseInt(price),
-      landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
+      // landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
+      landlordId: landlordId,
       description: desc,
       media: [],
       bedrooms: parseInt(bedrooms),
@@ -84,7 +101,7 @@ function AddListingPage() {
       postalCode: zipcode,
     };
 
-    console.log("new listing = ", newListing);
+    // console.log("new listing = ", newListing);
 
     const response = await createListing(newListing);
     if (response?.error) {
@@ -116,7 +133,7 @@ function AddListingPage() {
             onSubmit={(e) => {
               // e.preventDefault();
               try {
-                addListing();
+                addListing(landlordData._id);
                 toast({
                   title: "Success",
                   description: "Changes Saved",
