@@ -18,34 +18,44 @@ import { getListingBySearchParameter, getListingsByRating } from "../services/li
 import { useAuth } from "./auth/context/hookIndex";
 export default function IndividualListingPage() {
   const [recommendedListings, setRecommendedListings] = useState(null);
-  const { authInfo } = useAuth();
-
   const [currentPage, setCurrentPage] = useState(1);
-  const resultsPerPage = 6;
+  const [listingsPerPage, setListingsPerPage] = useState(6);
+  const { authInfo } = useAuth();
+  const [ totalPages, setTotalPages ] = useState(0);
+  const [currentListings, setCurrentListings] = useState(null);
 
   useEffect(() => {
     async function getRecommendedListings() {
       const response = await getListingsByRating();
       if (response?.data) {
-        setRecommendedListings(response.data);
+        setRecommendedListings(response);
+        setTotalPages(Math.ceil(response.data.length/listingsPerPage));
+        handlePagination(response, currentPage);
       }
     }
     getRecommendedListings();
   }, []);
 
+  const handlePagination = (listings, pageNo) => {
+    console.log((pageNo-1)*listingsPerPage, pageNo*listingsPerPage);
+    setCurrentListings(listings.data.slice((pageNo-1)*listingsPerPage, pageNo*listingsPerPage));
+  }
+
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+    handlePagination(recommendedListings, pageNumber);
   };
 
   const handleSearch = async (postalCode) => {
     const response = await getListingBySearchParameter(postalCode);
     if (response?.data) {
-      setRecommendedListings(response.data);
+      setRecommendedListings(response);
     }
   };
 
   return (
-    recommendedListings && authInfo?.profile?.id && (
+    currentListings && authInfo?.profile?.id && (
       <Box>
         <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
         <Box my={10}>
@@ -75,7 +85,7 @@ export default function IndividualListingPage() {
             {/* empty listing page */}
             <VStack align="left" spacing={30}>
               <SimpleGrid columns={3} spacing={10}>
-                {recommendedListings.map((listing, idx) => (
+                {currentListings.map((listing, idx) => (
                   <ListingCard key={idx} src={{ ...listing, img: house1, userId: authInfo?.profile?.id }}>
                     {" "}
                   </ListingCard>
@@ -84,28 +94,24 @@ export default function IndividualListingPage() {
             </VStack>
           </Center>
 
-          {recommendedListings && (
+          {currentListings && (
             <Flex justifyContent={"center"} margin="auto" mt={10}>
               <Box mt={10}>
                 {/* Display the pagination buttons */}
-                {Array.from(
-                  {
-                    length: Math.ceil(
-                      recommendedListings.length / resultsPerPage
-                    ),
-                  },
-                  (_, i) => i + 1
-                ).map((pageNumber) => (
-                  <Button
-                    key={pageNumber}
-                    onClick={() => handlePageChange(pageNumber)}
-                    mr={2}
-                    colorScheme={currentPage === pageNumber ? "blue" : "gray"}
-                    size="sm"
-                  >
-                    {pageNumber}
-                  </Button>
-                ))}
+                {
+                  Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (pageNumber) => (
+                      <Button
+                        key={pageNumber}
+                        mx={2}
+                        colorScheme={pageNumber === currentPage ? "blue" : "gray"}
+                        onClick={() => handlePageChange(pageNumber)}
+                      >
+                        {pageNumber}
+                      </Button>
+                    )
+                  )
+                }
               </Box>
             </Flex>
           )}
