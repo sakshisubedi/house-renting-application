@@ -278,6 +278,7 @@ function EditLandlordProfilePage() {
                   <LandlordViewCard ard src={listing}>
                     {" "}
                   </LandlordViewCard>
+                  <br/>
                 </Box>
               ))}
               {/* <LandlordViewCard ard src={tempListing}>
