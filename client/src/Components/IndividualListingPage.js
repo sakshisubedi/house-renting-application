@@ -343,6 +343,7 @@ function IndividualListingPage() {
               <IconButton
                 bg={"white"}
                 style={{ backgroundColor: "transparent" }}
+                isDisabled={!isLoggedIn}
                 icon={
                   <Image
                     boxSize={16}
@@ -442,6 +443,7 @@ function IndividualListingPage() {
                 borderColor="gray.300"
                 borderRadius={"2xl"}
                 p={2}
+                style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
               >
                 <form>
                   <FormControl id="commentText"></FormControl>
@@ -450,6 +452,7 @@ function IndividualListingPage() {
                     variant={"filled"}
                     mb={2}
                     defaultValue={comm}
+                    isDisabled={!isLoggedIn}
                     onChange={(e) => setComm(e.target.value)}
                   />
                   <Flex mb={3}>
@@ -458,6 +461,7 @@ function IndividualListingPage() {
                       <IconButton
                         colorScheme={"blue"}
                         icon={<AttachmentIcon />}
+                        isDisabled={!isLoggedIn}
                         onClick={() => {
                           // ADD IMAGES POPUP
                         }}
@@ -467,6 +471,7 @@ function IndividualListingPage() {
                         variant="solid"
                         colorScheme="blue"
                         w={100}
+                        isDisabled={!isLoggedIn}
                         onClick={(e) => {
                           // e.preventDefault();
                           // ADD NEW COMMENT

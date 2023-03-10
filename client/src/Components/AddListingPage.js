@@ -93,7 +93,7 @@ function AddListingPage() {
       // landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
       landlordId: landlordId,
       description: desc,
-      media: [],
+      media: media,
       bedrooms: parseInt(bedrooms),
       bathrooms: parseInt(bathrooms),
       squareFeet: parseInt(area),
@@ -131,15 +131,16 @@ function AddListingPage() {
         <Box>
           <form
             onSubmit={(e) => {
-              // e.preventDefault();
+              e.preventDefault();
               try {
                 addListing(landlordData._id);
-                toast({
-                  title: "Success",
-                  description: "Changes Saved",
-                  status: "success",
-                  position: "top-right",
-                });
+                window.location.href = '/landlord/me';
+                // toast({
+                //   title: "Success",
+                //   description: "Changes Saved",
+                //   status: "success",
+                //   position: "top-right",
+                // });
               } catch (error) {
                 toast({
                   title: "Failed",
@@ -247,7 +248,7 @@ function AddListingPage() {
                         type="number"
                         placeholder="Listing Price..."
                         defaultValue={price}
-                        w="50 %"
+                        w="50%"
                         onChange={(e) => setPrice(e.target.value)}
                       />
                     </HStack>
