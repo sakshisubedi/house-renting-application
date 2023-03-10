@@ -8,16 +8,16 @@ const defaultAuthInfo = {
   profile: null,
   isLoggedIn: false,
   isPending: false,
-  error: "",
+  error: ""
 };
 
 export default function AuthProvider({ children }) {
   const [authInfo, setAuthInfo] = useState({ ...defaultAuthInfo });
   const { updateNotification } = useNotification();
 
-  const handleLogin = async (email, password) => {
+  const handleLogin = async (email, password, userType) => {
     setAuthInfo({ ...authInfo, isPending: true });
-    const { error, user } = await signInUser({ email, password });
+    const { error, user } = await signInUser({ email, password, userType });
     if (error) {
       updateNotification("error", error);
       return setAuthInfo({ ...authInfo, isPending: false, error });
@@ -31,14 +31,17 @@ export default function AuthProvider({ children }) {
     });
 
     localStorage.setItem("auth-token", user.token);
+    localStorage.setItem("user-type", userType);
   };
 
   const isAuth = async () => {
     const token = localStorage.getItem("auth-token");
     if (!token) return;
+    const userType = localStorage.getItem("user-type");
+    if (!token) return;
 
     setAuthInfo({ ...authInfo, isPending: true });
-    const { error, user } = await getIsAuth(token);
+    const { error, user } = await getIsAuth(token, userType);
     if (error) {
       updateNotification("error", error);
       return setAuthInfo({ ...authInfo, isPending: false, error });
@@ -48,12 +51,13 @@ export default function AuthProvider({ children }) {
       profile: { ...user },
       isLoggedIn: true,
       isPending: false,
-      error: "",
+      error: ""
     });
   };
 
   const handleLogout = () => {
     localStorage.removeItem("auth-token");
+    localStorage.removeItem("user-type");
     setAuthInfo({ ...defaultAuthInfo });
   };
 

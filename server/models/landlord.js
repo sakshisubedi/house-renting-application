@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
 // Landlord Collection Schema
 const landlordSchema = new mongoose.Schema({
@@ -42,5 +43,19 @@ const landlordSchema = new mongoose.Schema({
         default: null
     }
 }, { timestamps: true });
+
+// password security
+landlordSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+
+    next();
+});
+
+landlordSchema.methods.comparePassword = async function (password) {
+    const result = await bcrypt.compare(password, this.password);
+    return result;
+};
 
 module.exports = landlordSchema;

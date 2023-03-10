@@ -30,6 +30,7 @@ export default function Signin({userType}) {
       data: ""
     },
     password: "",
+    userType: userType
   });
 
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export default function Signin({userType}) {
     const { ok, error } = validateUserInfo(userInfo);
 
     if (!ok) return updateNotification("error", error);
-    handleLogin(userInfo.email, userInfo.password);
+    handleLogin(userInfo.email, userInfo.password, userInfo.userType);
   };
 
   useEffect(() => {
@@ -92,7 +93,7 @@ export default function Signin({userType}) {
 
             <div className="flex justify-end"
                   style={{margin: "2px"}}>
-              <CustomLink to="/auth/forget-password">Forget password?</CustomLink>
+              <CustomLink to={userType === "customer" ? "/auth/user/forget-password" : "/auth/landlord/forget-password"}>Forget password?</CustomLink>
             </div>
 
             <Submit value="LOGIN" busy={isPending} />

@@ -38,6 +38,7 @@ export default function Signup({userType}) {
       data: ""
     },
     password: "",
+    userType: userType
   });
 
   const navigate = useNavigate();
@@ -70,19 +71,11 @@ export default function Signup({userType}) {
 
     const response = await newUser(userInfo);
     if (response.error) {
-      // return console.log(response.error);
-      // throw response.error;
-      toast({
-        title: "Failed",
-        description: response.error,
-        status: "error",
-        position: "top-right"
-      })
-      return;
+      return updateNotification("error", response.error);
     }
 
     navigate("/auth/verification", {
-      state: { user: response.user },
+      state: { user: response.user, userType },
       replace: true,
     });
   };
