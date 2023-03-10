@@ -177,8 +177,8 @@ function IndividualListingPage() {
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [landlordInfo, setLandlordInfo] = useState(null);
-  const [comments, setComments] = useState(null);
-  const [comm, setComm] = React.useState(null);
+  const [commentInfo, setCommentInfo] = useState(null);
+  const [commentText, setCommentText] = React.useState(null);
   const [wishlistInfo, setWishlistInfo] = useState(null);
 
   const toast = useToast();
@@ -219,25 +219,7 @@ function IndividualListingPage() {
       }
     }
 
-    async function getComments(listingId) {
-      const response = await getCommentsByListingId(listingId);
-      if(response?.data && response.data.length>0) {
-        response.data.map(async c => {
-          let response1 = await getUserPublicInfoById(c.userId);
-          if (response1?.data && response1.data.length>0){
-            c["userName"] = response1.data[0].name;
-          }
-          if (c.reply.length>0) {
-            let response2 = await getLandlordInfoById(c.reply[0].userId);
-            if (response2?.data){
-              c.reply[0]["userName"] = response2.data.name;
-            }
-          }
-        });
-        // console.log(response.data);
-        setComments(response.data);
-      }
-    }
+    
 
     async function isWishlistedByUser() {
       const response = await getIsWishlistedByUser(userId, listingId);
@@ -263,6 +245,28 @@ function IndividualListingPage() {
     getComments(listingId);
     isWishlistedByUser();
   }, [location, userId])
+
+  const getComments = async (listingId) => {
+    const response = await getCommentsByListingId(listingId);
+    console.log("----------", response);
+    if(response?.data && response.data.length>0) {
+      // response.data.map(async c => {
+      //   let userInfo = await getUserPublicInfoById(c.userId);
+      //   console.log("------userInfo----", userInfo);
+      //   if (userInfo?.data && userInfo.data.length>0){
+      //     c["userName"] = userInfo.data[0].name;
+      //   }
+      //   if (c.reply.length>0) {
+      //     let landlordInfo = await getLandlordInfoById(c.reply[0].userId);
+      //     console.log("------landlordInfo----", landlordInfo);
+      //     if (landlordInfo?.data){
+      //       c.reply[0]["userName"] = landlordInfo.data.name;
+      //     }
+      //   }
+      // });
+      setCommentInfo(response.data);
+    }
+  }
 
   const handleWishlist = async () => {
     if(!isWishlisted) {
@@ -295,34 +299,38 @@ function IndividualListingPage() {
     }
   }
 
-  const addComm = async () => {
-    const comment = {
-      listingId: location.pathname.split("/").pop(),
-      userId: userId,
-      comment: comm
-    }
-    console.log(comment)
-    const response = await addComment(comment);
-    if(response?.error) {
-      toast({
-        title: "Failed",
-        description: response?.error,
-        status: "error",
-        position: "top-right"
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Successfully added new comment",
-        status: "success",
-        position: "top-right"
-      });
+  const handleComment = async () => {
+    if(commentText.trim() !== "") {
+      const listingId = location.pathname.split("/").pop();
+      const comment = {
+        listingId,
+        userId: userId,
+        comment: commentText
+      }
+      console.log(comment)
+      const response = await addComment(comment);
+      await getComments(listingId);
+      if(response?.error) {
+        toast({
+          title: "Failed",
+          description: response?.error,
+          status: "error",
+          position: "top-right"
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Successfully added new comment",
+          status: "success",
+          position: "top-right"
+        });
+      }
     }
   }
 
   async function deleteComm(comm_id){
     await deleteComment(comm_id);
-    // getComments(location.pathname.split("/").pop());
+    await getComments(location.pathname.split("/").pop());
   }
 
   const changeCurrentRating = async (value) => {
@@ -502,8 +510,8 @@ function IndividualListingPage() {
                     placeholder="Leave a Comment..."
                     variant={"filled"}
                     mb={2}
-                    defaultValue={comm}
-                    onChange={(e) => setComm(e.target.value)}
+                    defaultValue={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
                   />
                   <Flex mb={3}>
                     <Spacer />
@@ -521,10 +529,10 @@ function IndividualListingPage() {
                         colorScheme="blue"
                         w={100}
                         onClick={(e) => {
-                          // e.preventDefault();
+                          e.preventDefault();
                           // ADD NEW COMMENT
                           try {
-                            addComm();
+                            handleComment();
                             // toast({
                             //   title: "Success",
                             //   description: "Changes Saved",
@@ -549,11 +557,11 @@ function IndividualListingPage() {
                 <Divider borderWidth={"2px"} mb={3} />
                 <Box>
                   {/* COMMENTS */}
-                  {comments?.map((comment, ind) => (
+                  {commentInfo?.map((comment, ind) => (
                     <Box key={ind}>
                       <HStack spacing={2} px={3}>
-                        <Avatar name={comment.userName} size={"sm"}/>
-                        <Text fontWeight={"bold"} fontSize={"2xl"}>{comment.userName}</Text>
+                        <Avatar name={comment.user.name} size={"sm"}/>
+                        <Text fontWeight={"bold"} fontSize={"2xl"}>{comment.user.name}</Text>
                         <Spacer />
                         <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
                         <BiReply ml={5} size={30} color={"#3182CE"} onClick={()=>{}}/>
@@ -568,8 +576,8 @@ function IndividualListingPage() {
                           <Box ml={"2rem"}>
                             {/* REPLY BOX */}
                             <HStack spacing={2} px={3}>
-                              <Avatar name={comment.reply[0].userName} size={"xs"}/>
-                              <Text fontWeight={"bold"} fontSize={"xl"}>{comment.reply[0].userName}</Text>
+                              <Avatar name={comment.user.name} size={"xs"}/>
+                              <Text fontWeight={"bold"} fontSize={"xl"}>{comment.reply[0].user.name}</Text>
                               <CheckCircleIcon boxSize={4} color={"blue.500"} />
                               <Spacer />
                               <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
