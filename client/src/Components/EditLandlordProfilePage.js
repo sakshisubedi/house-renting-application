@@ -18,15 +18,68 @@ import {
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import { updateLandlord } from "../services/landlordApis";
-import React from "react";
+import React, { useEffect } from "react";
 import NavBar from "./NavBar";
 import LandlordViewCard from "./LandlordViewCard";
 import house1 from "../img/house1.jpg";
-import ListingCard from "./ListingCard";
-function EditLandlordProfilePage() {
-  // need to get actual data from db
+import { useLandlordAuth } from "../Components/auth/context/hookIndex";
+import { getLandlordInfoById } from "../services/landlordApis";
+import { getListingByLandlordId } from "../services/listingApis";
+import { getAverageRatingByListingId } from "../services/ratingApis";
 
-  let landlordData = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+function EditLandlordProfilePage() {
+  const { landlordInfo } = useLandlordAuth();
+  const landlordId = landlordInfo.profile?.id;
+  const [landlordData, setLandlordInfo] = React.useState(null);
+  const [listingsInfo, setListingsInfo] = React.useState(null);
+
+  const [name, setName] = React.useState(null);
+  const [email, setEmail] = React.useState(null);
+  const [desc, setDesc] = React.useState(null);
+  const [pronouns, setPronouns] = React.useState(null);
+  const [age, setAge] = React.useState(null);
+  const [phone, setPhone] = React.useState(null);
+
+  useEffect(()=>{
+    async function getLandlordInfo(landlordId) {
+      const response = await getLandlordInfoById(landlordId);
+      if(response?.data) {
+        setLandlordInfo(response.data);
+        setName(response.data.name);
+        setEmail(response.data.email);
+        setDesc(response.data.introduction);
+        setPronouns(response.data.pronoun);
+        setAge(response.data.age);
+        setPhone(response.data.phoneNo);
+      }
+    }
+
+    async function getListingMetadata(listingId) {
+      const response = await getAverageRatingByListingId(listingId);
+      if (response?.data && response.data.length>0) {
+        return response;
+      }
+    }
+
+    async function getListingsInfo(landlordId) {
+      const response = await getListingByLandlordId(landlordId);
+      // console.log(response.data);
+      if(response?.data && response.data.length>0) {
+        response.data.forEach(async listing => {
+          const response1 = await getListingMetadata(listing._id);
+          if (response1) {
+            listing["rating"] = response1.data[0].averageRating ?? 0;
+            listing["reviewCount"] = response1.data[0].reviewCount ?? 0;
+          }
+        });
+        setListingsInfo(response.data);
+      }
+    }
+    getLandlordInfo(landlordId);
+    getListingsInfo(landlordId);
+  }, [landlordId]);
+
+  let tempLandlordData = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     name: "Anthe Braybrooke",
     email: "abraybrookej@amazon.com",
     password: "test123",
@@ -55,10 +108,10 @@ function EditLandlordProfilePage() {
     petFriendly: "allowed",
     postalCode: 920092,
   };
-  const [desc, setDesc] = React.useState(landlordData.introduction ?? null);
-  const [pronouns, setPronouns] = React.useState(landlordData.pronoun ?? null);
-  const [age, setAge] = React.useState(landlordData.age ?? null);
-  const [phone, setPhone] = React.useState(landlordData.phoneNo ?? null);
+  // const [desc, setDesc] = React.useState(landlordData.introduction ?? null);
+  // const [pronouns, setPronouns] = React.useState(landlordData.pronoun ?? null);
+  // const [age, setAge] = React.useState(landlordData.age ?? null);
+  // const [phone, setPhone] = React.useState(landlordData.phoneNo ?? null);
 
   const updateLandlordData = async () => {
     landlordData.introduction = desc === "" ? null : desc;
@@ -66,7 +119,7 @@ function EditLandlordProfilePage() {
     landlordData.age = age === "" ? null : parseInt(age);
     landlordData.phoneNo = phone === "" ? null : phone;
     landlordData.updatedAt = new Date().toISOString();
-    console.log(landlordData, "landlord data");
+    // console.log(landlordData, "landlord data");
 
     const response = await updateLandlord(landlordData, landlordData._id); // NEED TO ENTER DYNAMIC LANDLORD ID
     if(response?.error) {
@@ -94,10 +147,10 @@ function EditLandlordProfilePage() {
       <Box my={100} ml={250} mr={250}>
         <Box>
           <HStack spacing={5} mb={10}>
-            <Avatar size="2xl" name={landlordData.name} src={null} />
+            <Avatar size="2xl" name={name} />
             <VStack spacing={5} align="left" pl={50} w="100%">
               <Flex>
-                <Heading mr={5}>{landlordData.name}</Heading>
+                <Heading mr={5}>{name}</Heading>
                 <CheckCircleIcon boxSize={7} color={"blue.500"} />
               </Flex>
               <Textarea
@@ -152,7 +205,7 @@ function EditLandlordProfilePage() {
                   <Input
                     type="email"
                     placeholder="johndoe@gmail.com"
-                    defaultValue={landlordData.email}
+                    defaultValue={email}
                     w="50%"
                     isDisabled
                   />
@@ -220,9 +273,17 @@ function EditLandlordProfilePage() {
             </Flex>
             <Box mt={10}>
               {/* <LandlordViewCard></LandlordViewCard> */}
-              <LandlordViewCard ard src={tempListing}>
+              {listingsInfo?.map((listing, ind) => (
+                <Box key={ind}>
+                  <LandlordViewCard ard src={listing}>
+                    {" "}
+                  </LandlordViewCard>
+                  <br/>
+                </Box>
+              ))}
+              {/* <LandlordViewCard ard src={tempListing}>
                 {" "}
-              </LandlordViewCard>
+              </LandlordViewCard> */}
               {/* All listings go here */}
             </Box>
           </Box>

@@ -23,7 +23,7 @@ import { BiHide } from "react-icons/bi";
 import { React, Lorem } from "react";
 import DetailedProfile from './DetailedProfile';
 
-const InterestedPeopleList = () => {
+const InterestedPeopleList = ({l}) => {
     let wishlistedPeople = [
         {
             email: {
@@ -154,6 +154,7 @@ const InterestedPeopleList = () => {
             <Button
                 colorScheme={"blue"}
                 variant={"link"}
+                isDisabled={!l}
                 onClick={onOpen}>
                 View All
             </Button>

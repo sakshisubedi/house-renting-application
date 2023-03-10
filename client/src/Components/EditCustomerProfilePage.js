@@ -20,10 +20,10 @@ import {
 import React, { useEffect } from "react";
 import { updateUser, getUserAllInfoById } from "../services/userApis";
 import NavBar from "./NavBar";
-import { useLocation } from "react-router-dom";
 
 // Get current login user
 import { useAuth } from "../Components/auth/context/hookIndex"
+// import { useLocation } from "react-router-dom";
 
 
 function EditCustomerProfilePage() {
@@ -33,6 +33,49 @@ function EditCustomerProfilePage() {
   const userEmail = authInfo.profile?.email;
   const userId = authInfo.profile?.id;
 
+  const [userData, setUserData] = React.useState(null);
+  const [name, setName] = React.useState(null);
+  const [email, setEmail] = React.useState(null);
+  const [emailPublicFlag, setEmailPublicFlag] = React.useState(null);
+  const [desc, setDesc] = React.useState(null);
+  const [pronouns, setPronouns] = React.useState(null);
+  const [age, setAge] = React.useState(null);
+  const [agePublicFlag, setAgePublicFlag] = React.useState(null);
+  const [occupation, setOccupation] = React.useState(null);
+  const [occupationPublicFlag, setOccupationPublicFlag] = React.useState(null);
+  // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
+  const [datePref, setDatePref] = React.useState(null);
+  // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
+
+  const [housematesBool, setHousematesBool] = React.useState(null);
+  // const [roommatePrefs, setRoommatePrefs] = React.useState(
+  //   userData.roommatePrefs ?? null
+  // );
+  const [petsPref, setPetsPref] = React.useState(null);
+  // const location = useLocation();
+  // console.log(location.state, "here", authInfo)
+  useEffect(() => {
+    async function getUserData(userId) {
+      const response = await getUserAllInfoById(userId);
+      if (response?.data) {
+        // console.log(response.data, "user data recd");
+        setUserData(response.data);
+        setName(response.data.name);
+        setEmail(response.data.email.data);
+        setEmailPublicFlag(response.data.email.isPublic.toString());
+        setDesc(response.data.desc ?? null);
+        setPronouns(response.data.pronoun);
+        setAge(response.data.age.data);
+        setAgePublicFlag(response.data.age.isPublic.toString());
+        setOccupation(response.data.occupation.data);
+        setOccupationPublicFlag(response.data.occupation.isPublic.toString());
+        setDatePref(new Date(response.data.preferredMoveInDate).toISOString().substring(0, 10));
+        setHousematesBool(response.data.isLookingForFlatmate);
+        setPetsPref(response.data.preferPet);
+      }
+    }
+    getUserData(userId);
+  }, [userId]);
 
   let tempUserData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
 
@@ -62,35 +105,35 @@ function EditCustomerProfilePage() {
  
 
 
-  const location = useLocation();
-  let userData = location.state.userInfo ?? tempUserData;
+  
+  // let userData = location.state.userInfo ?? tempUserData;
   // console.log(userData)
   // const [userData, setUserData] = React.useState(tempUserData);
 
-  const [email, setEmail] = React.useState(userData.email.data);
-  const [emailPublicFlag, setEmailPublicFlag] = React.useState(userData.email.isPublic.toString());
-  const [desc, setDesc] = React.useState(userData.desc ?? null);
-  const [pronouns, setPronouns] = React.useState(userData.pronoun ?? null);
-  const [age, setAge] = React.useState(userData.age.data ?? null);
-  const [agePublicFlag, setAgePublicFlag] = React.useState(
-    userData.age.isPublic.toString()
-  );
-  const [occupation, setOccupation] = React.useState(
-    userData.occupation.data ?? null
-  );
-  const [occupationPublicFlag, setOccupationPublicFlag] =
-    React.useState(userData.occupation.isPublic.toString());
-  // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
-  const [datePref, setDatePref] = React.useState((userData.preferredMoveInDate) ? new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) : null);
-  // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
-
-  const [housematesBool, setHousematesBool] = React.useState(
-    userData.isLookingForFlatmate ?? null
-  );
-  // const [roommatePrefs, setRoommatePrefs] = React.useState(
-  //   userData.roommatePrefs ?? null
+  // const [email, setEmail] = React.useState(userData.email.data);
+  // const [emailPublicFlag, setEmailPublicFlag] = React.useState(userData.email.isPublic.toString());
+  // const [desc, setDesc] = React.useState(userData.desc ?? null);
+  // const [pronouns, setPronouns] = React.useState(userData.pronoun ?? null);
+  // const [age, setAge] = React.useState(userData.age.data ?? null);
+  // const [agePublicFlag, setAgePublicFlag] = React.useState(
+  //   userData.age.isPublic.toString()
   // );
-  const [petsPref, setPetsPref] = React.useState(userData.preferPet ?? null);
+  // const [occupation, setOccupation] = React.useState(
+  //   userData.occupation.data ?? null
+  // );
+  // const [occupationPublicFlag, setOccupationPublicFlag] =
+  //   React.useState(userData.occupation.isPublic.toString());
+  // // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
+  // const [datePref, setDatePref] = React.useState((userData.preferredMoveInDate) ? new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) : null);
+  // // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
+
+  // const [housematesBool, setHousematesBool] = React.useState(
+  //   userData.isLookingForFlatmate ?? null
+  // );
+  // // const [roommatePrefs, setRoommatePrefs] = React.useState(
+  // //   userData.roommatePrefs ?? null
+  // // );
+  // const [petsPref, setPetsPref] = React.useState(userData.preferPet ?? null);
   // console.log(userData)
   const updateUserData = async () => {
     userData.email.isPublic = emailPublicFlag === "true" ?? null;
@@ -109,7 +152,7 @@ function EditCustomerProfilePage() {
     userData.preferredMoveInDate =
       userData.preferredMoveInDate.toISOString() ?? null;
     userData.updatedAt = new Date().toISOString();
-    console.log(userData, "user data");
+    // console.log(userData, "user data upd");
 
 
     const response = await updateUser(userData, userData._id);
@@ -138,9 +181,9 @@ function EditCustomerProfilePage() {
       <Box my={100} ml={250} mr={250}>
         <Box>
           <HStack spacing={5} mb={10}>
-            <Avatar size="2xl" name={userData.name} src={null} />
+            <Avatar size="2xl" name={name} />
             <VStack spacing={5} align="left" pl={50} w="100%">
-              <Heading>{userData.name}</Heading>
+              <Heading>{name}</Heading>
               <Textarea
                 type="text"
                 placeholder="Short self intro..."
