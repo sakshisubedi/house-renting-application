@@ -460,7 +460,7 @@ function IndividualListingPage() {
           </HStack> */}
         </Box>
         <HStack spacing={5} align={"top"}>
-          <VStack spacing={5} w={"75%"}>
+          <VStack spacing={5} w={"75%"} align={"left"}>
             <Box mt={5} w={"full"}>
               <HStack
                 spacing={5}
