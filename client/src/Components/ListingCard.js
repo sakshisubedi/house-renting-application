@@ -61,8 +61,10 @@ const ListingCard = ({ src }) => {
   }
 
   useEffect(() => {
+    const id = src?.userId || authInfo?.profile?.id;
+    setUserId(id);
     async function isWishlistedByUser() {
-      const response = await getIsWishlistedByUser(userId, src?._id);
+      const response = await getIsWishlistedByUser(id, src?._id);
       if(!response.data) {
         setIsWishlisted(response.data);
       } else {
@@ -72,13 +74,13 @@ const ListingCard = ({ src }) => {
     isLoggedIn && isWishlistedByUser();
 
     async function getWishlist() {
-      const response = await getWishlistByUserId(userId);
+      const response = await getWishlistByUserId(id);
       if(response?.data) {
         setWishlistInfo(response.data[0]);
       }
     }
     isLoggedIn && getWishlist();
-  }, [userId, src?._id]);
+  }, [userId, isLoggedIn, authInfo?.profile?.id, src?.userId, src?._id]);
 
   return (
     <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>

@@ -27,7 +27,6 @@ const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
     const userType = localStorage.getItem('user-type');
-    // const { landlordInfo, handleLogoutLandlord } = useLandlordAuth();
 
     const navigate = useNavigate();
     const [userData, setUserData] = React.useState(null);
@@ -88,7 +87,7 @@ const NavBar = ({ profileURL }) => {
                     justify={'flex-end'}
                     direction={'row'}
                     spacing={6}>
-                    {isLoggedIn && <IconButton
+                    {(isLoggedIn && userType !== "landlord") && <IconButton
                         height='30px'
                         icon={<Image width='40px' objectFit='cover' src={emptyHeart} alt="wishilist" />}
                         onClick={(e) => {

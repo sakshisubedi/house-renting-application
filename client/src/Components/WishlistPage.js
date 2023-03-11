@@ -15,11 +15,14 @@ import { getWishlistByUserId } from '../services/wishlistApis';
 import { getListingById } from "../services/listingApis";
 import { useEffect, useState } from "react";
 import { useAuth } from "./auth/context/hookIndex";
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function WishlistPage() {
     // need to get actual data from db
     const { authInfo } = useAuth();
+    const { isLoggedIn } = authInfo;
+    const location = useLocation();
+    const [userId, setUserId] = useState(location?.state?.userId || authInfo?.profile?.id);
 
     const [wishlistedListings, setwishlistedListings] = useState([]);
 
@@ -39,12 +42,13 @@ function WishlistPage() {
     }
 
     useEffect(() => {
-        getUserWishlist(authInfo?.profile?.id);
-    }, [authInfo?.profile?.id]);
-
+        const id = location?.state?.userId || authInfo?.profile?.id;
+        setUserId(id);
+        isLoggedIn && getUserWishlist(id);
+    }, [userId, isLoggedIn, authInfo?.profile?.id, location?.state?.userId]);
 
     return (
-        wishlistedListings.length>0 && authInfo?.profile.id && <Box>
+        userId && <Box>
         <NavBar />
         <Box my={50} ml={200} mr={200}>
             {wishlistedListings.length == 0 ?
@@ -59,7 +63,7 @@ function WishlistPage() {
                         <Heading>Your Wishlist</Heading>
                         <Center>
                             <SimpleGrid columns={3} spacing={10}>
-                                {wishlistedListings.map( (listing) => (<ListingCard src={{...listing, userId: authInfo?.profile?.id} }> </ListingCard>))}
+                                {wishlistedListings.map( (listing, idx) => (<ListingCard key={idx} src={{...listing, userId: authInfo?.profile?.id} }> </ListingCard>))}
                             </SimpleGrid>
                         </Center>
                     </VStack>
