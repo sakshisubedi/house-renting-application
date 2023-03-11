@@ -155,16 +155,17 @@ const NavBar = ({ profileURL }) => {
                                         </MenuItem>
                                     </div>
                                 ) : (
+                                    // as we will have only one login panel
                                     <MenuItem 
                                         onClick={(e) => {
                                             // route to user login
                                             window.location.href = '/auth/user/signin';
                                         }}>
-                                        User Login
+                                        Login
                                     </MenuItem>
                                 )}
 
-                                {/* Landlord Authentication */}
+                                {/* Landlord Authentication
                                 { landlordInfo.isLoggedIn ? (
                                     <MenuItem onClick={handleLogoutLandlord}>
                                         Log out
@@ -177,7 +178,7 @@ const NavBar = ({ profileURL }) => {
                                         }}>
                                         Landlord Login
                                     </MenuItem>
-                                )}
+                                )} */}
                             </MenuList>
                         </Menu>
                     </Flex>
