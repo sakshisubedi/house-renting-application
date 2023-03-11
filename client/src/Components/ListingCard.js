@@ -21,17 +21,20 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./auth/context/hookIndex";
 
 const ListingCard = ({ src }) => {
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistInfo, setWishlistInfo] = useState(null);
   const navigate = useNavigate();
   const toast = useToast();
+  const [userId, setUserId] = useState(src?.userId || authInfo?.profile?.id);
 
   const handleWishlist = async () => {
     if(!isWishlisted) {
       try {
         await createWishlistItem({
           listingId: src?._id,
-          userId: src?.userId
+          userId: userId
         });
         setIsWishlisted(true);
       } catch (error) {
@@ -59,23 +62,23 @@ const ListingCard = ({ src }) => {
 
   useEffect(() => {
     async function isWishlistedByUser() {
-      const response = await getIsWishlistedByUser(src?.userId, src?._id);
+      const response = await getIsWishlistedByUser(userId, src?._id);
       if(!response.data) {
         setIsWishlisted(response.data);
       } else {
         setIsWishlisted(true);
       }
     }
-    isWishlistedByUser();
+    isLoggedIn && isWishlistedByUser();
 
     async function getWishlist() {
-      const response = await getWishlistByUserId(src?.userId);
+      const response = await getWishlistByUserId(userId);
       if(response?.data) {
         setWishlistInfo(response.data[0]);
       }
     }
-    getWishlist();
-  }, [src?.userId, src?._id]);
+    isLoggedIn && getWishlist();
+  }, [userId, src?._id]);
 
   return (
     <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
@@ -105,7 +108,7 @@ const ListingCard = ({ src }) => {
             <LinkOverlay as={"button"} onClick={() => {
               navigate(`/listing/${src?._id}`, {
                   state: {
-                      userId: src?.userId,
+                      userId: userId,
                   },
               });
             }}>
@@ -113,7 +116,7 @@ const ListingCard = ({ src }) => {
             </LinkOverlay>
 
           </Box>
-          <IconButton
+          {isLoggedIn && <IconButton
             bg="#FFFFFF"
             icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}
             onClick={(e) => {
@@ -121,7 +124,7 @@ const ListingCard = ({ src }) => {
               e.preventDefault();
               handleWishlist();
             }}
-          />
+          />}
         </Flex>
 
         <Box color="#505050" lineHeight="tight" noOfLines={1}>
