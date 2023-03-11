@@ -248,22 +248,7 @@ function IndividualListingPage() {
 
   const getComments = async (listingId) => {
     const response = await getCommentsByListingId(listingId);
-    console.log("----------", response);
     if(response?.data && response.data.length>0) {
-      // response.data.map(async c => {
-      //   let userInfo = await getUserPublicInfoById(c.userId);
-      //   console.log("------userInfo----", userInfo);
-      //   if (userInfo?.data && userInfo.data.length>0){
-      //     c["userName"] = userInfo.data[0].name;
-      //   }
-      //   if (c.reply.length>0) {
-      //     let landlordInfo = await getLandlordInfoById(c.reply[0].userId);
-      //     console.log("------landlordInfo----", landlordInfo);
-      //     if (landlordInfo?.data){
-      //       c.reply[0]["userName"] = landlordInfo.data.name;
-      //     }
-      //   }
-      // });
       setCommentInfo(response.data);
     }
   }
@@ -326,6 +311,7 @@ function IndividualListingPage() {
         });
       }
     }
+    setCommentText(null);
   }
 
   async function deleteComm(comm_id){
@@ -572,21 +558,28 @@ function IndividualListingPage() {
                       </HStack>
                       <Text ml={10} fontSize={"lg"}>{comment.comment}</Text>
                       <Divider borderWidth={"3px"} my={2}/>
-                      {comment.reply.length>0 ?
+                      {comment.reply.length>0 && Object.keys(comment.reply[0]).length>0 ?
                         <>
                           <Box ml={"2rem"}>
                             {/* REPLY BOX */}
-                            <HStack spacing={2} px={3}>
-                              <Avatar name={comment.user.name} size={"xs"}/>
-                              <Text fontWeight={"bold"} fontSize={"xl"}>{comment.reply[0].user.name}</Text>
-                              <CheckCircleIcon boxSize={4} color={"blue.500"} />
-                              <Spacer />
-                              <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
-                              <IconButton icon={<DeleteIcon boxSize={5}/>} variant={"link"} colorScheme={"blue"} onClick={()=>{
-                                deleteComm(comment.reply[0]._id)
-                              }}/>
-                            </HStack>
-                            <Text ml={10} fontSize={"md"}>{comment.reply[0].comment}</Text>
+                            {
+                              comment.reply.map((reply, idx) => (
+                                <>
+                                  <HStack spacing={2} px={3} key={idx}>
+                                    <Avatar name={reply.user.name} size={"xs"}/>
+                                    <Text fontWeight={"bold"} fontSize={"xl"}>{reply.user.name}</Text>
+                                    <CheckCircleIcon boxSize={4} color={"blue.500"} />
+                                    <Spacer />
+                                    <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
+                                    <IconButton icon={<DeleteIcon boxSize={5}/>} variant={"link"} colorScheme={"blue"} onClick={()=>{
+                                      deleteComm(reply._id)
+                                    }}/>
+                                  </HStack>
+                                  <Text ml={10} fontSize={"md"}>{reply.comment}</Text>
+                                </>
+                              ))
+                            }
+                            
                           </Box>
                           <Divider borderWidth={"3px"} my={2}/>
                         </>
