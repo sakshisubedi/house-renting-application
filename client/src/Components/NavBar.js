@@ -117,7 +117,7 @@ const NavBar = ({ profileURL }) => {
                                                     onClick={(e) => {
                                                         // route to profile page
                                                         // window.location.href = '/customer/me';
-                                                        navigate("/landlord/me", {
+                                                        navigate(`/landlord/${authInfo?.profile?.id}`, {
                                                             state: {
                                                                 userInfo: userData ?? null,
                                                             },
