@@ -33,7 +33,7 @@ function App() {
             element={<EditCustomerProfilePage />}
           />
           <Route
-            path="/landlord/me"
+            path="/landlord/:id"
             element={<EditLandlordProfilePage />}
           />
           <Route path="/listing" element={<AddListingPage />} />
