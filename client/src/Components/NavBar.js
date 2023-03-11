@@ -20,14 +20,14 @@ import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
 
 // Setting isLoggedIn Status
-import { useAuth, useLandlordAuth, useNotification } from "../Components/auth/context/hookIndex"
+import { useAuth, useNotification } from "../Components/auth/context/hookIndex"
 import { getUserAllInfoById } from "../services/userApis";
 
 const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
     const userType = localStorage.getItem('user-type');
-    const { landlordInfo, handleLogoutLandlord } = useLandlordAuth();
+    // const { landlordInfo, handleLogoutLandlord } = useLandlordAuth();
 
     const navigate = useNavigate();
     const [userData, setUserData] = React.useState(null);
@@ -88,13 +88,13 @@ const NavBar = ({ profileURL }) => {
                     justify={'flex-end'}
                     direction={'row'}
                     spacing={6}>
-                    <IconButton
+                    {isLoggedIn && <IconButton
                         height='30px'
                         icon={<Image width='40px' objectFit='cover' src={emptyHeart} alt="wishilist" />}
                         onClick={(e) => {
                             window.location.href = '/wishlist';
                         }}
-                    />
+                    />}
                     
                     <Flex alignItems={'center'}>
                         <Menu>
@@ -124,7 +124,7 @@ const NavBar = ({ profileURL }) => {
                                                             },
                                                         });
                                                     }}>
-                                                    Profile
+                                                    Landlord Profile
                                                 </MenuItem>
                                             ) : (
                                                 <MenuItem 
@@ -137,7 +137,7 @@ const NavBar = ({ profileURL }) => {
                                                             },
                                                         });
                                                     }}>
-                                                    Profile
+                                                    User Profile
                                                 </MenuItem>
                                             )
                                         }
@@ -155,28 +155,23 @@ const NavBar = ({ profileURL }) => {
                                         </MenuItem>
                                     </div>
                                 ) : (
-                                    <MenuItem 
-                                        onClick={(e) => {
-                                            // route to user login
-                                            window.location.href = '/auth/user/signin';
-                                        }}>
-                                        User Login
-                                    </MenuItem>
-                                )}
-
-                                {/* Landlord Authentication */}
-                                { landlordInfo.isLoggedIn ? (
-                                    <MenuItem onClick={handleLogoutLandlord}>
-                                        Log out
-                                    </MenuItem>
-                                ) : (
-                                    <MenuItem 
-                                        onClick={(e) => {
-                                            // route to landlord login
-                                            window.location.href = '/auth/landlord/signin';
-                                        }}>
-                                        Landlord Login
-                                    </MenuItem>
+                                    <>
+                                        <MenuItem 
+                                            onClick={(e) => {
+                                                // route to user login
+                                                window.location.href = '/auth/user/signin';
+                                            }}>
+                                            User Login
+                                        </MenuItem>
+                                        <MenuDivider />
+                                        <MenuItem 
+                                            onClick={(e) => {
+                                                // route to user login
+                                                window.location.href = '/auth/landlord/signin';
+                                            }}>
+                                            Landlord Login
+                                        </MenuItem>
+                                    </>
                                 )}
                             </MenuList>
                         </Menu>
