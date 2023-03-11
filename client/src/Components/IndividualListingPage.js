@@ -39,12 +39,12 @@ import DetailedProfile from "./DetailedProfile";
 import { useAuth } from "../Components/auth/context/hookIndex"
 import { addComment, deleteComment, getCommentsByListingId } from "../services/commentApis";
 import { getUserPublicInfoById } from "../services/userApis";
+import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getWishlistByUserId } from "../services/wishlistApis";
 
 function IndividualListingPage() {
 
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
-  const userId = authInfo.profile ? authInfo.profile.id : "640669c85943eac949e1f7a8"; // ELSE DUMMY USER ID
 
   // need to get actual data from PASSED PARAMS IN STATE or API CALLS
 
@@ -177,12 +177,15 @@ function IndividualListingPage() {
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [landlordInfo, setLandlordInfo] = useState(null);
-  const [comments, setComments] = useState(null);
-  const [comm, setComm] = React.useState(null);
+  const [commentInfo, setCommentInfo] = useState(null);
+  const [commentText, setCommentText] = React.useState(null);
+  const [wishlistInfo, setWishlistInfo] = useState(null);
 
   const toast = useToast();
 
   const location = useLocation();
+  const [userId, setUserId] = useState(location?.state?.userId || authInfo?.profile?.id);
+
   useEffect(() => {
     let listingId = location.pathname.split("/").pop();
 
@@ -216,60 +219,118 @@ function IndividualListingPage() {
       }
     }
 
-    async function getComments(listingId) {
-      const response = await getCommentsByListingId(listingId);
-      if(response?.data && response.data.length>0) {
-        response.data.map(async c => {
-          let response1 = await getUserPublicInfoById(c.userId);
-          if (response1?.data && response1.data.length>0){
-            c["userName"] = response1.data[0].name;
-          }
-          if (c.reply.length>0) {
-            let response2 = await getLandlordInfoById(c.reply[0].userId);
-            if (response2?.data){
-              c.reply[0]["userName"] = response2.data.name;
-            }
-          }
-        });
-        // console.log(response.data);
-        setComments(response.data);
+    
+
+    async function isWishlistedByUser() {
+      const response = await getIsWishlistedByUser(userId, listingId);
+      if(!response.data) {
+        setIsWishlisted(response.data);
+      } else {
+        setIsWishlisted(true);
       }
     }
+    isWishlistedByUser();
+
+    async function getWishlist() {
+      const response = await getWishlistByUserId(userId);
+      if(response?.data) {
+        setWishlistInfo(response.data[0]);
+      }
+    }
+    getWishlist();
 
     getListing();
     getAverageRating();
     getCurrentRating();
     getComments(listingId);
-  }, [location])
+    isWishlistedByUser();
+  }, [location, userId])
 
-  const addComm = async () => {
-    const comment = {
-      listingId: location.pathname.split("/").pop(),
-      userId: userId,
-      comment: comm
+  const getComments = async (listingId) => {
+    const response = await getCommentsByListingId(listingId);
+    console.log("----------", response);
+    if(response?.data && response.data.length>0) {
+      // response.data.map(async c => {
+      //   let userInfo = await getUserPublicInfoById(c.userId);
+      //   console.log("------userInfo----", userInfo);
+      //   if (userInfo?.data && userInfo.data.length>0){
+      //     c["userName"] = userInfo.data[0].name;
+      //   }
+      //   if (c.reply.length>0) {
+      //     let landlordInfo = await getLandlordInfoById(c.reply[0].userId);
+      //     console.log("------landlordInfo----", landlordInfo);
+      //     if (landlordInfo?.data){
+      //       c.reply[0]["userName"] = landlordInfo.data.name;
+      //     }
+      //   }
+      // });
+      setCommentInfo(response.data);
     }
-    console.log(comment)
-    const response = await addComment(comment);
-    if(response?.error) {
-      toast({
-        title: "Failed",
-        description: response?.error,
-        status: "error",
-        position: "top-right"
-      });
+  }
+
+  const handleWishlist = async () => {
+    if(!isWishlisted) {
+      try {
+        await createWishlistItem({
+          listingId: location.pathname.split("/").pop(),
+          userId: userId
+        });
+        setIsWishlisted(true);
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
     } else {
-      toast({
-        title: "Success",
-        description: "Successfully added new comment",
-        status: "success",
-        position: "top-right"
-      });
+      try {
+        await deleteWishlistItem(wishlistInfo?._id);
+        setIsWishlisted(false);
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    }
+  }
+
+  const handleComment = async () => {
+    if(commentText.trim() !== "") {
+      const listingId = location.pathname.split("/").pop();
+      const comment = {
+        listingId,
+        userId: userId,
+        comment: commentText
+      }
+      console.log(comment)
+      const response = await addComment(comment);
+      await getComments(listingId);
+      if(response?.error) {
+        toast({
+          title: "Failed",
+          description: response?.error,
+          status: "error",
+          position: "top-right"
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Successfully added new comment",
+          status: "success",
+          position: "top-right"
+        });
+      }
     }
   }
 
   async function deleteComm(comm_id){
     await deleteComment(comm_id);
-    // getComments(location.pathname.split("/").pop());
+    await getComments(location.pathname.split("/").pop());
   }
 
   const changeCurrentRating = async (value) => {
@@ -299,7 +360,8 @@ function IndividualListingPage() {
   };
 
   return (
-    listingInfo && landlordInfo && (
+    // && userId
+    listingInfo && landlordInfo  && (
       <Box>
       <NavBar />
       <Box my={50} ml={150} mr={150}>
@@ -355,7 +417,7 @@ function IndividualListingPage() {
                   // ADD/REMOVE FROM WISHLIST
 
                   // CHANGING ICON SOURCE IMG
-                  setIsWishlisted(!isWishlisted);
+                  handleWishlist();
                 }}
               />
             </VStack>
@@ -451,9 +513,11 @@ function IndividualListingPage() {
                     placeholder="Leave a Comment..."
                     variant={"filled"}
                     mb={2}
-                    defaultValue={comm}
+                    // defaultValue={comm}
                     isDisabled={!isLoggedIn}
-                    onChange={(e) => setComm(e.target.value)}
+                    // onChange={(e) => setComm(e.target.value)}
+                    defaultValue={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
                   />
                   <Flex mb={3}>
                     <Spacer />
@@ -473,10 +537,10 @@ function IndividualListingPage() {
                         w={100}
                         isDisabled={!isLoggedIn}
                         onClick={(e) => {
-                          // e.preventDefault();
+                          e.preventDefault();
                           // ADD NEW COMMENT
                           try {
-                            addComm();
+                            handleComment();
                             // toast({
                             //   title: "Success",
                             //   description: "Changes Saved",
@@ -501,11 +565,11 @@ function IndividualListingPage() {
                 <Divider borderWidth={"2px"} mb={3} />
                 <Box>
                   {/* COMMENTS */}
-                  {comments?.map((comment, ind) => (
+                  {commentInfo?.map((comment, ind) => (
                     <Box key={ind}>
                       <HStack spacing={2} px={3}>
-                        <Avatar name={comment.userName} size={"sm"}/>
-                        <Text fontWeight={"bold"} fontSize={"2xl"}>{comment.userName}</Text>
+                        <Avatar name={comment.user.name} size={"sm"}/>
+                        <Text fontWeight={"bold"} fontSize={"2xl"}>{comment.user.name}</Text>
                         <Spacer />
                         <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
                         <BiReply ml={5} size={30} color={"#3182CE"} onClick={()=>{}}/>
@@ -520,8 +584,8 @@ function IndividualListingPage() {
                           <Box ml={"2rem"}>
                             {/* REPLY BOX */}
                             <HStack spacing={2} px={3}>
-                              <Avatar name={comment.reply[0].userName} size={"xs"}/>
-                              <Text fontWeight={"bold"} fontSize={"xl"}>{comment.reply[0].userName}</Text>
+                              <Avatar name={comment.user.name} size={"xs"}/>
+                              <Text fontWeight={"bold"} fontSize={"xl"}>{comment.reply[0].user.name}</Text>
                               <CheckCircleIcon boxSize={4} color={"blue.500"} />
                               <Spacer />
                               <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>

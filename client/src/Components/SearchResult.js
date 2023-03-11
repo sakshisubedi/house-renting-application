@@ -11,114 +11,106 @@ import React from "react";
 import FilterRow from "./FilterRow";
 import ListingCard from "./ListingCard";
 import house1 from "../img/house1.jpg";
-import {
-  getListingBySearchParameter,
-  getListingsByRating,
-} from "../services/listingApis";
+import { getListingBySearchParameter, getListingsByRating, } from "../services/listingApis";
+import { useEffect, useState } from "react";
+import { useAuth } from "./auth/context/hookIndex";
 
+const SearchResult = ({ src }) => {
+  const [recommendedListings, setRecommendedListings] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [listingsPerPage, setListingsPerPage] = useState(8);
+  const { authInfo } = useAuth();
+  const [ totalPages, setTotalPages ] = useState(0);
+  const [currentListings, setCurrentListings] = useState(null);
 
-export default class SearchResult extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      recommendedListings: null,
-      currentPage: 1,
-      listingsPerPage: 8,
-    };
+  useEffect(() => {
+    async function getRecommendedListings() {
+      const response = await getListingsByRating();
+      setRecommendedListings(response);
+      setTotalPages(Math.ceil(response.data.length/listingsPerPage));
+      handlePagination(response, currentPage);
+    }
+    getRecommendedListings();
+  }, []);
+
+  const handlePagination = (listings, pageNo) => {
+    setCurrentListings(listings.data.slice((pageNo-1)*listingsPerPage, pageNo*listingsPerPage));
   }
 
-  async componentDidMount() {
-    const recommendedListings = await getListingsByRating();
-    this.setState({
-      recommendedListings,
-    });
-  }
 
-  handlePageChange = (pageNumber) => {
-    this.setState({
-      currentPage: pageNumber,
-    });
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    handlePagination(recommendedListings, pageNumber);
   };
 
-  handleSearch = async (postalCode, rentPrice, rating, beds, bathrooms, petPref) => {
+  const handleSearch = async (postalCode, rentPrice, rating, beds, bathrooms, petPref) => {
     const recommendedListings = await getListingBySearchParameter(postalCode,  rentPrice, rating, beds, bathrooms, petPref);
-    this.setState({
-      recommendedListings,
-    });
+    setRecommendedListings(recommendedListings);
+    setTotalPages(Math.ceil(recommendedListings.data.length/listingsPerPage));
+    handlePagination(recommendedListings, currentPage);
   };
 
-
-  render() {
-    const { recommendedListings, currentPage, listingsPerPage } = this.state;
-    const indexOfLastListing = currentPage * listingsPerPage;
-    const indexOfFirstListing = indexOfLastListing - listingsPerPage;
-    const currentListings = recommendedListings?.data.slice(
-      indexOfFirstListing,
-      indexOfLastListing
-    );
-    const totalPages = Math.ceil(
-      recommendedListings?.data.length / listingsPerPage
-    );
-
-    return (
+  return (
+    currentListings && authInfo?.profile?.id && <Box>
+      <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
       <Box>
-        <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
-        <Box>
-          <Heading ml={8} mt={5} pl={10} pt={5} pr={5} textAlign="left">
-            Showing results for “Location”...
-          </Heading>
-          <Flex
-            justifyContent="space-between"
-            alignItems="flex-start"
-            pl={10}
-            pr={5}
-            pt={5}
-            ml={8}
-          >
-            <FilterRow search={this.handleSearch} />
-          </Flex>
+        <Heading ml={8} mt={5} pl={10} pt={5} pr={5} textAlign="left">
+          Showing results for “Location”...
+        </Heading>
+        <Flex
+          justifyContent="space-between"
+          alignItems="flex-start"
+          pl={10}
+          pr={5}
+          pt={5}
+          ml={8}
+        >
+          <FilterRow search={handleSearch} />
+        </Flex>
 
-        </Box>
-        <Box margin="auto" pt={3} pl={10}>
-          <VStack
-            spacing={30}
-            justifyContent="space-between"
-            alignItems="flex-start"
-            margin="auto"
-            ml={8}
+      </Box>
+      <Box margin="auto" pt={3} pl={10}>
+        <VStack
+          spacing={30}
+          justifyContent="space-between"
+          alignItems="flex-start"
+          margin="auto"
+          ml={8}
+        >
+          <SimpleGrid
+            columns={{ base: 1, md: 4 }}
+            spacing={10}
+            mt={2}
+            // mx={10}
           >
-            <SimpleGrid
-              columns={{ base: 1, md: 4 }}
-              spacing={10}
-              mt={2}
-              // mx={10}
-            >
-              {currentListings?.map((listing, idx) => (
-                <ListingCard key={idx} src={{ ...listing, img: house1 }}>
-                  {" "}
-                </ListingCard>
-              ))}
-            </SimpleGrid>
-          </VStack>
-          <Flex justifyContent={"center"} margin="auto" mt={10}>
-            <Box mt={10}>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+            {currentListings.map((listing, idx) => (
+              <ListingCard key={idx} src={{ ...listing, img: house1, userId: authInfo?.profile?.id }}>
+                {" "}
+              </ListingCard>
+            ))}
+          </SimpleGrid>
+        </VStack>
+        <Flex justifyContent={"center"} margin="auto" mt={10}>
+          <Box mt={10}>
+            {
+              Array.from({ length: totalPages }, (_, i) => i + 1).map(
                 (pageNumber) => (
                   <Button
                     key={pageNumber}
                     mx={2}
                     colorScheme={pageNumber === currentPage ? "blue" : "gray"}
-                    onClick={() => this.handlePageChange(pageNumber)}
+                    onClick={() => handlePageChange(pageNumber)}
                   >
                     {pageNumber}
                   </Button>
                 )
-              )}
-            </Box>
-          </Flex>
-          <Box m={10}></Box>
-        </Box>
+              )
+            }
+          </Box>
+        </Flex>
+        <Box m={10}></Box>
       </Box>
-    );
-  }
+    </Box>
+  );
 }
+export default SearchResult;

@@ -32,6 +32,7 @@ export default function EmailVerification() {
 
   const { state } = useLocation();
   const user = state?.user;
+  const userType = state?.userType;
 
   const navigate = useNavigate();
 
@@ -85,11 +86,13 @@ export default function EmailVerification() {
     } = await verifyUserEmail({
       OTP: otp.join(""),
       userId: user.id,
+      userType
     });
     if (error) return updateNotification("error", error);
 
     updateNotification("success", message);
     localStorage.setItem("auth-token", userResponse.token);
+    localStorage.setItem("user-type", userResponse.userType);
     isAuth();
   };
 

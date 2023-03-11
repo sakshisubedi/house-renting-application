@@ -20,16 +20,18 @@ import logoTxt from '../img/rease.jpg'
 import emptyHeart from '../img/heart.jpg'
 
 // Setting isLoggedIn Status
-import { useAuth, useLandlordAuth } from "../Components/auth/context/hookIndex"
+import { useAuth, useLandlordAuth, useNotification } from "../Components/auth/context/hookIndex"
 import { getUserAllInfoById } from "../services/userApis";
 
 const NavBar = ({ profileURL }) => {
     const { authInfo, handleLogout } = useAuth();
     const { isLoggedIn } = authInfo;
+    const userType = localStorage.getItem('user-type');
     const { landlordInfo, handleLogoutLandlord } = useLandlordAuth();
 
     const navigate = useNavigate();
     const [userData, setUserData] = React.useState(null);
+    const { updateNotification } = useNotification();
 
     useEffect(() => {
       async function getUserData() {
@@ -107,23 +109,48 @@ const NavBar = ({ profileURL }) => {
                             </MenuButton>
                             <MenuList>
                                 
-                                {/* User Authentication */}
+                                {/* User/Landlord Authentication */}
                                 { isLoggedIn ? (
                                     <div>
-                                        <MenuItem 
-                                            onClick={(e) => {
-                                                // route to profile page
-                                                // window.location.href = '/customer/me';
-                                                navigate("/customer/me", {
-                                                    state: {
-                                                        userInfo: userData ?? null,
-                                                    },
-                                                });
-                                            }}>
-                                            Profile
-                                        </MenuItem>
+                                        {
+                                            userType === "landlord" ? (
+                                                <MenuItem 
+                                                    onClick={(e) => {
+                                                        // route to profile page
+                                                        // window.location.href = '/customer/me';
+                                                        navigate("/landlord/me", {
+                                                            state: {
+                                                                userInfo: userData ?? null,
+                                                            },
+                                                        });
+                                                    }}>
+                                                    Profile
+                                                </MenuItem>
+                                            ) : (
+                                                <MenuItem 
+                                                    onClick={(e) => {
+                                                        // route to profile page
+                                                        // window.location.href = '/customer/me';
+                                                        navigate(`/customer/${authInfo?.profile?.id}`, {
+                                                            state: {
+                                                                userInfo: userData ?? null,
+                                                            },
+                                                        });
+                                                    }}>
+                                                    Profile
+                                                </MenuItem>
+                                            )
+                                        }
                                         <MenuDivider />
-                                        <MenuItem onClick={handleLogout}>
+                                        <MenuItem onClick={() => {
+                                            handleLogout();
+                                            updateNotification("success", "Logout successfully");
+                                            navigate("/landing", {
+                                                state: {
+                                                    userInfo: userData ?? null,
+                                                },
+                                            });
+                                        }}>
                                             Log out
                                         </MenuItem>
                                     </div>
@@ -131,7 +158,7 @@ const NavBar = ({ profileURL }) => {
                                     <MenuItem 
                                         onClick={(e) => {
                                             // route to user login
-                                            window.location.href = '/auth/signin';
+                                            window.location.href = '/auth/user/signin';
                                         }}>
                                         User Login
                                     </MenuItem>
@@ -146,7 +173,7 @@ const NavBar = ({ profileURL }) => {
                                     <MenuItem 
                                         onClick={(e) => {
                                             // route to landlord login
-                                            window.location.href = '/landlord/signin';
+                                            window.location.href = '/auth/landlord/signin';
                                         }}>
                                         Landlord Login
                                     </MenuItem>
