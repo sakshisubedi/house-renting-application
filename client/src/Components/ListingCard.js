@@ -20,7 +20,7 @@ import { getIsWishlistedByUser, createWishlistItem, deleteWishlistItem, getWishl
 import { useEffect, useState } from "react";
 import { useAuth } from "./auth/context/hookIndex";
 
-const ListingCard = ({ src }) => {
+const ListingCard = ({ src, getWishlist }) => {
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -47,8 +47,14 @@ const ListingCard = ({ src }) => {
       }
     } else {
       try {
-        await deleteWishlistItem(wishlistInfo?._id);
-        setIsWishlisted(false);
+        const wishlist = wishlistInfo.filter(wishlist => wishlist.listingId === src?._id);
+        if(wishlist.length>0) {
+          await deleteWishlistItem(wishlist[0]._id);
+          setIsWishlisted(false);
+          if(getWishlist) {
+            getWishlist(userId);
+          }
+        }
       } catch (error) {
         toast({
           title: "Failed",
@@ -76,7 +82,7 @@ const ListingCard = ({ src }) => {
     async function getWishlist() {
       const response = await getWishlistByUserId(id);
       if(response?.data) {
-        setWishlistInfo(response.data[0]);
+        setWishlistInfo(response.data);
       }
     }
     isLoggedIn && getWishlist();

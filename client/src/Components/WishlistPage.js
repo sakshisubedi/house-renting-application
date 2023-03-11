@@ -47,6 +47,7 @@ function WishlistPage() {
         isLoggedIn && getUserWishlist(id);
     }, [userId, isLoggedIn, authInfo?.profile?.id, location?.state?.userId]);
 
+
     return (
         userId && <Box>
         <NavBar />
@@ -63,7 +64,7 @@ function WishlistPage() {
                         <Heading>Your Wishlist</Heading>
                         <Center>
                             <SimpleGrid columns={3} spacing={10}>
-                                {wishlistedListings.map( (listing, idx) => (<ListingCard key={idx} src={{...listing, userId: authInfo?.profile?.id} }> </ListingCard>))}
+                                {wishlistedListings.map( (listing, idx) => (<ListingCard key={idx} src={{...listing, userId: authInfo?.profile?.id}} getWishlist={(id) => getUserWishlist(id)}> </ListingCard>))}
                             </SimpleGrid>
                         </Center>
                     </VStack>
