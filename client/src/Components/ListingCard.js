@@ -28,6 +28,7 @@ const ListingCard = ({ src, getWishlist }) => {
   const navigate = useNavigate();
   const toast = useToast();
   const [userId, setUserId] = useState(src?.userId || authInfo?.profile?.id);
+  const userType = localStorage.getItem('user-type');
 
   const handleWishlist = async () => {
     if(!isWishlisted) {
@@ -124,7 +125,7 @@ const ListingCard = ({ src, getWishlist }) => {
             </LinkOverlay>
 
           </Box>
-          {isLoggedIn && <IconButton
+          {(isLoggedIn && userType !== "landlord") && <IconButton
             bg="#FFFFFF"
             icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}
             onClick={(e) => {
