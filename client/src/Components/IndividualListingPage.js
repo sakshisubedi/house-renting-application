@@ -34,144 +34,17 @@ import StarRatings from 'react-star-ratings';
 import { getListingById } from "../services/listingApis";
 import { addRating, getAverageRatingByListingId, getRatingByUserId, updateRating } from "../services/ratingApis";
 import { getLandlordInfoById } from "../services/landlordApis";
-import { getInterestedPeopleByListingId, getIsWishlistedByUser, createWishlistItem, deleteWishlistItem } from "../services/wishlistApis";
-import { getUserAllInfoById } from "../services/userApis";
 import InterestedPeopleList from "./InterestedPeopleList";
 import DetailedProfile from "./DetailedProfile";
 import { useAuth } from "../Components/auth/context/hookIndex"
 import { addComment, deleteComment, getCommentsByListingId } from "../services/commentApis";
-import { getUserPublicInfoById } from "../services/userApis";
-import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getWishlistByUserId } from "../services/wishlistApis";
+import { getUserPublicInfoById} from "../services/userApis";
+import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getWishlistByUserId, getInterestedPeopleByListingId } from "../services/wishlistApis";
 
 function IndividualListingPage() {
 
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
-
-  // need to get actual data from PASSED PARAMS IN STATE or API CALLS
-
-  // let wishlistedPeople = [
-  //   {
-  //     email: {
-  //       isPublic: false,
-  //       data: "kbillingsley0@house.gov",
-  //     },
-  //     age: {
-  //       isPublic: false,
-  //       data: 27,
-  //     },
-  //     occupation: {
-  //       isPublic: false,
-  //       data: "Help Desk Technician",
-  //     },
-  //     _id: "63ffd73c35d9bd7fb39d9fa3",
-  //     name: "Kora Billingsley",
-  //     isVerified: true,
-  //     pronoun: "She/Her",
-  //     preferredMoveInDate: "2023-03-30T07:00:00.000Z",
-  //     preferPet: false,
-  //     isLookingForFlatmate: false,
-  //     profilePicture: null,
-  //     createdAt: "2023-03-01T22:52:44.079Z",
-  //     updatedAt: "2023-03-01T22:52:44.079Z",
-  //   },
-  //   {
-  //     email: {
-  //       isPublic: false,
-  //       data: "cwhichelow1@usnews.com",
-  //     },
-  //     age: {
-  //       isPublic: false,
-  //       data: 28,
-  //     },
-  //     occupation: {
-  //       isPublic: false,
-  //       data: "Pharmacist",
-  //     },
-  //     _id: "63ffd7cb35d9bd7fb39d9fa5",
-  //     name: "Chico Whichelow",
-  //     isVerified: true,
-  //     pronoun: "He/Him",
-  //     preferredMoveInDate: "2023-04-15T07:00:00.000Z",
-  //     preferPet: false,
-  //     isLookingForFlatmate: false,
-  //     profilePicture: null,
-  //     createdAt: "2023-03-01T22:55:07.161Z",
-  //     updatedAt: "2023-03-01T22:55:07.161Z",
-  //   },
-  //   {
-  //     email: {
-  //       isPublic: true,
-  //       data: "abottrill2@unesco.org",
-  //     },
-  //     age: {
-  //       isPublic: true,
-  //       data: 25,
-  //     },
-  //     occupation: {
-  //       isPublic: true,
-  //       data: "Compensation Analyst",
-  //     },
-  //     _id: "63ffd80035d9bd7fb39d9fa7",
-  //     name: "Ashton Bottrill",
-  //     isVerified: true,
-  //     pronoun: "He/Him",
-  //     preferredMoveInDate: "2023-04-05T07:00:00.000Z",
-  //     preferPet: true,
-  //     isLookingForFlatmate: false,
-  //     profilePicture: null,
-  //     createdAt: "2023-03-01T22:56:00.991Z",
-  //     updatedAt: "2023-03-01T22:56:00.991Z",
-  //   },
-  //   {
-  //     email: {
-  //       isPublic: false,
-  //       data: "cfearnill3@yale.edu",
-  //     },
-  //     age: {
-  //       isPublic: true,
-  //       data: 24,
-  //     },
-  //     occupation: {
-  //       isPublic: true,
-  //       data: "Graphic Designer",
-  //     },
-  //     _id: "63ffd86235d9bd7fb39d9fa9",
-  //     name: "Chris Fearnill",
-  //     isVerified: true,
-  //     pronoun: "He/Him",
-  //     preferredMoveInDate: null,
-  //     preferPet: false,
-  //     isLookingForFlatmate: false,
-  //     profilePicture: null,
-  //     createdAt: "2023-03-01T22:57:38.273Z",
-  //     updatedAt: "2023-03-01T22:57:38.273Z",
-  //   },
-  //   {
-  //     email: {
-  //       isPublic: true,
-  //       data: "mlording4@comsenz.com",
-  //     },
-  //     age: {
-  //       isPublic: true,
-  //       data: 24,
-  //     },
-  //     occupation: {
-  //       isPublic: true,
-  //       data: "Computer Systems Analyst I",
-  //     },
-  //     _id: "63ffd8be35d9bd7fb39d9fab",
-  //     name: "Morgen Lording",
-  //     isVerified: true,
-  //     pronoun: "He/Him",
-  //     preferredMoveInDate: "2023-03-25T07:00:00.000Z",
-  //     preferPet: false,
-  //     isLookingForFlatmate: false,
-  //     profilePicture: null,
-  //     createdAt: "2023-03-01T22:59:10.446Z",
-  //     updatedAt: "2023-03-01T22:59:10.446Z",
-  //   },
-  // ];
 
   const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
   const [currentRating, setCurrentRating] = useState(null); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
@@ -179,11 +52,10 @@ function IndividualListingPage() {
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [landlordInfo, setLandlordInfo] = useState(null);
-  const [wishlistedPeople, setWishlistedPeople] = useState([]);
-  const [wishlistId, setWishListId] = useState("");
   const [commentInfo, setCommentInfo] = useState(null);
   const [commentText, setCommentText] = React.useState(null);
   const [wishlistInfo, setWishlistInfo] = useState(null);
+  const [interestedPeople, setInterestedPeople] = useState([]);
 
   const toast = useToast();
 
@@ -193,29 +65,17 @@ function IndividualListingPage() {
   useEffect(() => {
     let listingId = location.pathname.split("/").pop();
 
-    async function getWishlisted() {
-      const response = await getIsWishlistedByUser(userId, listingId);
-    if (!response?.error) { // traverse listing id to get listing data
-      if (response.data == false) {
-        setIsWishlisted(false);
-      } else {
-        setIsWishlisted(true);
-        setWishListId(response.data._id);
-      }
-    }
-    }
-
     async function getListing() {
       const response = await getListingById(listingId);
-      if (response?.data) {
+      if(response?.data) {
         setListingInfo(response.data);
         getLandlordInfo(response.data.landlordId);
       }
     }
-
+    
     async function getAverageRating() {
       const response = await getAverageRatingByListingId(listingId);
-      if (response?.data && response.data.length > 0) {
+      if(response?.data && response.data.length>0) {
         setAverageRating(response.data[0].averageRating);
         setReviewCount(response.data[0].reviewCount);
       }
@@ -223,78 +83,54 @@ function IndividualListingPage() {
 
     async function getLandlordInfo(landlordId) {
       const response = await getLandlordInfoById(landlordId);
-      if (response?.data) {
+      if(response?.data) {
         setLandlordInfo(response.data);
       }
     }
 
     async function getCurrentRating() {
       const response = await getRatingByUserId(userId, listingId);
-      if (response?.data && response.data.length > 0) {
+      if(response?.data && response.data.length>0) {
         setCurrentRating(response.data[0]);
       }
     }
-
-    
-
-    async function isWishlistedByUser() {
-      const response = await getIsWishlistedByUser(userId, listingId);
-      if(!response.data) {
-        setIsWishlisted(response.data);
-      } else {
-        setIsWishlisted(true);
-      }
-    }
-    isWishlistedByUser();
-
-    async function getWishlist() {
-      const response = await getWishlistByUserId(userId);
-      if(response?.data) {
-        setWishlistInfo(response.data[0]);
-      }
-    }
-    getWishlist();
-
-    
-
-    async function isWishlistedByUser() {
-      const response = await getIsWishlistedByUser(userId, listingId);
-      if(!response.data) {
-        setIsWishlisted(response.data);
-      } else {
-        setIsWishlisted(true);
-      }
-    }
-    isWishlistedByUser();
-
-    async function getWishlist() {
-      const response = await getWishlistByUserId(userId);
-      if(response?.data) {
-        setWishlistInfo(response.data[0]);
-      }
-    }
-    getWishlist();
 
     async function getInterestedPeople() {
       const response = await getInterestedPeopleByListingId(listingId);
       var people = []
       if (response?.data) {
         for (const wishlist of response.data) {
-          const user = await getUserAllInfoById(wishlist.userId);
+          const user = await getUserPublicInfoById(wishlist.userId);
           if (!user?.error && wishlist.userId != userId) {
             people.push(user.data);
           }
         }
       }
-      setWishlistedPeople(people);
+      setInterestedPeople(people);
+    }
+    
+
+    async function isWishlistedByUser() {
+      const response = await getIsWishlistedByUser(userId, listingId);
+      if(!response.data) {
+        setIsWishlisted(response.data);
+      } else {
+        setIsWishlisted(true);
+      }
+    }
+    isWishlistedByUser();
+
+    async function getWishlist() {
+      const response = await getWishlistByUserId(userId);
+      if(response?.data) {
+        setWishlistInfo(response.data[0]);
+      }
     }
     getWishlist();
 
-    getWishlisted();
     getListing();
     getAverageRating();
     getCurrentRating();
-    getInterestedPeople();
     getComments(listingId);
     isWishlistedByUser();
   }, [location, userId])
@@ -412,118 +248,85 @@ function IndividualListingPage() {
     }
   };
 
-  let wishlistItem = {
-    listingId: location.pathname.split("/").pop(),
-    userId: userId,
-  };
-
-  const handleClick = () => {
-    setIsWishlisted(current => !current);
-    if (isWishlisted) {
-      try {
-        deleteWishlistItem(wishlistId);
-      } catch (error) {
-        toast({
-          title: "Failed",
-          description: error,
-          status: "error",
-          position: "top-right"
-        });
-      }
-    } else {
-      try {
-        createWishlistItem(wishlistItem)
-      } catch (error) {
-        toast({
-          title: "Failed",
-          description: error,
-          status: "error",
-          position: "top-right"
-        });
-      }
-    }
-  };
-
   return (
     // && userId
     listingInfo && landlordInfo  && (
       <Box>
-        <NavBar />
-        <Box my={50} ml={150} mr={150}>
-          <HStack spacing={5}>
-            <Box>
-              <VStack spacing={5} align={"left"}>
-                <Heading size={"2xl"}>{listingInfo.name}</Heading>
-                <Text fontSize={"xl"}>{listingInfo.address}</Text>
-                <HStack>
-                  <Box fontSize={"xl"}>Rent Price :</Box>
+      <NavBar />
+      <Box my={50} ml={150} mr={150}>
+        <HStack spacing={5}>
+          <Box>
+            <VStack spacing={5} align={"left"}>
+              <Heading size={"2xl"}>{listingInfo.name}</Heading>
+              <Text fontSize={"xl"}>{listingInfo.address}</Text>
+              <HStack>
+                <Box fontSize={"xl"}>Rent Price :</Box>
+                <Box
+                  color="#3062D5"
+                  fontWeight="bold"
+                  letterSpacing="wide"
+                  fontSize="2xl"
+                >
+                  ${listingInfo.rent}
                   <Box
+                    as="span"
                     color="#3062D5"
-                    fontWeight="bold"
-                    letterSpacing="wide"
-                    fontSize="2xl"
+                    fontWeight="semibold"
+                    fontSize="sm"
                   >
-                    ${listingInfo.rent}
-                    <Box
-                      as="span"
-                      color="#3062D5"
-                      fontWeight="semibold"
-                      fontSize="sm"
-                    >
-                      /month
-                    </Box>
+                    /month
                   </Box>
-                </HStack>
-              </VStack>
-            </Box>
-            <Spacer />
-            <Box>
-              <VStack spacing={5} align={"center"}>
-                <HStack spacing={2}>
-                  <StarIcon color={"#F6E05E"} boxSize={"30px"} />
-                  <Text fontWeight={"bold"} fontSize={"3xl"}>
-                    {averageRating}
-                  </Text>
-                  {/* NEED TO GET CORRECT VALUE HERE */}
-                  <Text>({reviewCount} reviews)</Text>
-                </HStack>
-                <IconButton
-                  bg={"white"}
-                  style={{ backgroundColor: "transparent" }}
-                  icon={
-                    <Image
-                      boxSize={16}
-                      src={isWishlisted ? favIcon : emptyHeart}
-                      alt="wishlist button"
-                    />
-                  }
-                  onClick={() => {
-                    // ADD/REMOVE FROM WISHLIST
+                </Box>
+              </HStack>
+            </VStack>
+          </Box>
+          <Spacer />
+          <Box>
+            <VStack spacing={5} align={"center"}>
+              <HStack spacing={2}>
+                <StarIcon color={"#F6E05E"} boxSize={"30px"} />
+                <Text fontWeight={"bold"} fontSize={"3xl"}>
+                  {averageRating}
+                </Text>
+                {/* NEED TO GET CORRECT VALUE HERE */}
+                <Text>({reviewCount} reviews)</Text>
+              </HStack>
+              <IconButton
+                bg={"white"}
+                style={{ backgroundColor: "transparent" }}
+                icon={
+                  <Image
+                    boxSize={16}
+                    src={isWishlisted ? favIcon : emptyHeart}
+                    alt="wishlist button"
+                  />
+                }
+                onClick={() => {
+                  // ADD/REMOVE FROM WISHLIST
 
-                    // CHANGING ICON SOURCE IMG
-                    // handleWishlist();
-                    handleClick();
-                  }}
-                />
-              </VStack>
-            </Box>
-          </HStack>
-          <Box
-            mt={5}
-            h={300}
-            border="2px"
-            borderColor="gray.300"
-            borderRadius={"2xl"}
-          >
-            {/* IMAGES */}
-            {/* <HStack p={1} spacing={5}>
+                  // CHANGING ICON SOURCE IMG
+                  handleWishlist();
+                }}
+              />
+            </VStack>
+          </Box>
+        </HStack>
+        <Box
+          mt={5}
+          h={300}
+          border="2px"
+          borderColor="gray.300"
+          borderRadius={"2xl"}
+        >
+          {/* IMAGES */}
+          {/* <HStack p={1} spacing={5}>
             <Image rounded={"2xl"} src={listingData.img ?? null} />
             <Spacer/>
             <Image rounded={"2xl"} src={listingData.img ?? null} />
           </HStack> */}
         </Box>
         <HStack spacing={5} align={"top"}>
-          <VStack spacing={5} w={"75%"} align={"left"}>
+          <VStack spacing={5} w={"75%"}>
             <Box mt={5} w={"full"}>
               <HStack
                 spacing={5}
@@ -556,7 +359,6 @@ function IndividualListingPage() {
                   </Text>
                 </VStack>
               </HStack>
-            </Box>
               <Heading my={5} size={"lg"}>
                 Overview
               </Heading>
@@ -683,52 +485,53 @@ function IndividualListingPage() {
                   ))}
                 </Box>
               </Box>
-            </VStack>
-            <Spacer />
-            <VStack spacing={5} w={"25%"}>
-              <Box
-                mt={5}
-                w={"full"}
-                border="2px"
-                borderColor="gray.300"
-                borderRadius={"2xl"}
-                p={5}
-                style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
+            </Box>
+          </VStack>
+          <Spacer />
+          <VStack spacing={5} w={"25%"}>
+            <Box
+              mt={5}
+              w={"full"}
+              border="2px"
+              borderColor="gray.300"
+              borderRadius={"2xl"}
+              p={5}
+              style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
             >
-                <VStack spacing={5}>
-                  <HStack spacing={10} w={"full"}>
-                    <Avatar name={landlordInfo.name} />
-                    <Text fontWeight={"bold"} align={"right"} noOfLines={1}>
-                      {landlordInfo.name}
-                    </Text>
-                  </HStack>
-                  <HStack spacing={10} w={"full"}>
-                    <EmailIcon />
-                    <Text noOfLines={1}>{landlordInfo.email}</Text>
-                  </HStack>
-                  <HStack spacing={10} w={"full"}>
-                    <PhoneIcon />
-                    <Text noOfLines={1}>{landlordInfo.phoneNo}</Text>
-                  </HStack>
-                </VStack>
-              </Box>
-              <Box
-                mt={5}
-                // h={300}
-                w={"full"}
-                border="2px"
-                borderColor="gray.300"
-                borderRadius={"2xl"}
-                py={5}
-                px={2}
-                style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
+              <VStack spacing={5}>
+                <HStack spacing={10} w={"full"}>
+                  <Avatar name={landlordInfo.name} />
+                  <Text fontWeight={"bold"} align={"right"} noOfLines={1}>
+                    {landlordInfo.name}
+                  </Text>
+                </HStack>
+                <HStack spacing={10} w={"full"}>
+                  <EmailIcon />
+                  <Text noOfLines={1}>{landlordInfo.email}</Text>
+                </HStack>
+                <HStack spacing={10} w={"full"}>
+                  <PhoneIcon />
+                  <Text noOfLines={1}>{landlordInfo.phoneNo}</Text>
+                </HStack>
+              </VStack>
+            </Box>
+            <Box
+              mt={5}
+              // h={300}
+              w={"full"}
+              border="2px"
+              borderColor="gray.300"
+              borderRadius={"2xl"}
+              py={5}
+              px={2}
+              style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
             >
-                <Text fontWeight={"bold"} textAlign={"center"}>
-                  People who have wishlisted this
-                </Text>
-                <Divider borderWidth={"3px"} my={2} />
-                {/* WISHLISTED PEOPLE */}
-                {wishlistedPeople.length == 0 ?
+              <Text fontWeight={"bold"} textAlign={"center"}>
+                People who have wishlisted this
+              </Text>
+              <Divider borderWidth={"3px"} my={2} />
+              {/* WISHLISTED PEOPLE */}
+              {interestedPeople.length == 0 ?
                   (<Box
                   py={2}
                   px={3}>
@@ -743,7 +546,7 @@ function IndividualListingPage() {
                         overflowY={isLoggedIn ? "auto" : "hidden"}
                         overflowX={"hidden"}
                       >
-                        {wishlistedPeople.map((person, ind) => (
+                        {interestedPeople.map((person, ind) => (
                           <Box key={ind} w={"full"}>
                             <HStack px={2}>
                               <Avatar name={person.name} size={"sm"} />
@@ -757,7 +560,7 @@ function IndividualListingPage() {
                                 <Text blur={"md"} fontWeight={"bold"}>{person.name}</Text>
                                 <Divider borderWidth={"2px"} />
                                 <HStack spacing={2}>
-                                  {person.age.isPublic ? (
+                                  {person.age ? (
                                     <Text>{person.age.data}</Text>
                                   ) : (
                                     <BiHide size={"1.5rem"} />
@@ -776,16 +579,23 @@ function IndividualListingPage() {
                       <Divider borderWidth={"3px"} />
                       <Flex mt={2}>
                         <Spacer />
-                        <InterestedPeopleList wishlistedPeople={wishlistedPeople}l={isLoggedIn}/>
+                        <InterestedPeopleList wishlistedPeople={interestedPeople} l={isLoggedIn}/>
                         <Spacer />
                       </Flex>
                     </Box>
                   )}
-              </Box>
-            </VStack>
-          </HStack>
-        </Box>
+
+              <Divider borderWidth={"3px"} />
+              <Flex mt={2}>
+                <Spacer />
+                <InterestedPeopleList l={isLoggedIn}/>
+                <Spacer />
+              </Flex>
+            </Box>
+          </VStack>
+        </HStack>
       </Box>
+    </Box>
     )
   );
 }
