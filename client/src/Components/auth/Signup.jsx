@@ -6,6 +6,7 @@ import CustomLink from "./CustomLink";
 import FormInput from "./FormInput";
 import Submit from "./Submit";
 import NavBar from "../NavBar"
+import { useToast } from "@chakra-ui/react";
 
 export const isValidEmail = (email) => {
   const isValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -29,7 +30,7 @@ const validateUserInfo = ({ name, email, password }) => {
   return { ok: true };
 };
 
-export default function Signup() {
+export default function Signup({userType}) {
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: {
@@ -37,6 +38,7 @@ export default function Signup() {
       data: ""
     },
     password: "",
+    userType: userType
   });
 
   const navigate = useNavigate();
@@ -44,6 +46,7 @@ export default function Signup() {
   const { isLoggedIn } = authInfo;
 
   const { updateNotification } = useNotification();
+  const toast = useToast();
 
   const handleChange = ({ target }) => {
     const { value, name } = target;
@@ -67,10 +70,12 @@ export default function Signup() {
     if (!ok) return updateNotification("error", error);
 
     const response = await newUser(userInfo);
-    if (response.error) return console.log(response.error);
+    if (response.error) {
+      return updateNotification("error", response.error);
+    }
 
     navigate("/auth/verification", {
-      state: { user: response.user },
+      state: { user: response.user, userType },
       replace: true,
     });
   };
@@ -87,7 +92,7 @@ export default function Signup() {
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
             <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
-              USER SIGN UP
+              {userType === "customer" ? "USER" : "LANDLORD"} SIGN UP
             </h1>
             <FormInput
               value={name}
@@ -117,7 +122,7 @@ export default function Signup() {
                 style={{fontSize: "12px", fontWeight: "400"}}>
               <p className="pr-1"
                   style={{color: "#4B4B4B", paddingRight: "3px"}}>Alreay a user?</p>
-              <CustomLink to="/auth/signin">LOGIN</CustomLink>
+              <span style={{fontWeight: 600}}><CustomLink to={userType === "customer" ? "/auth/user/signin" : "/auth/landlord/signin"}>LOGIN</CustomLink></span>
             </div>
           </form>
       </div>

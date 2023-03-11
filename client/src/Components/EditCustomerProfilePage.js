@@ -23,6 +23,7 @@ import NavBar from "./NavBar";
 
 // Get current login user
 import { useAuth } from "../Components/auth/context/hookIndex"
+// import { useLocation } from "react-router-dom";
 
 
 function EditCustomerProfilePage() {
@@ -74,7 +75,7 @@ function EditCustomerProfilePage() {
       }
     }
     getUserData(userId);
-  }, []);
+  }, [userId]);
 
   let tempUserData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
 

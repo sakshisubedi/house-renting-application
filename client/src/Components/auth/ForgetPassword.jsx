@@ -12,7 +12,7 @@ export const isValidEmail = (email) => {
   return isValid.test(email);
 };
 
-export default function ForgetPassword() {
+export default function ForgetPassword({userType}) {
   const [email, setEmail] = useState("");
 
   const { updateNotification } = useNotification();
@@ -27,7 +27,7 @@ export default function ForgetPassword() {
     if (!isValidEmail(email))
       return updateNotification("error", "Invalid email!");
 
-    const { error, message } = await forgetPassword(email);
+    const { error, message } = await forgetPassword(email, userType);
     if (error) return updateNotification("error", error);
     updateNotification("success", message);
   };
@@ -51,8 +51,8 @@ export default function ForgetPassword() {
             <Submit value="Send Link" />
 
             <div className="flex justify-between">
-              <CustomLink to="/auth/signin">Sign in</CustomLink>
-              <CustomLink to="/auth/signup">Sign up</CustomLink>
+              <CustomLink to={userType === "customer" ? "/auth/user/signin": "/auth/landlord/signin"}>Sign in</CustomLink>
+              <CustomLink to={userType === "customer" ? "/auth/user/signup": "/auth/landlord/signup"}>Sign up</CustomLink>
             </div>
           </form>
       </div>

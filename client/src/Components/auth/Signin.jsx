@@ -23,13 +23,14 @@ const validateUserInfo = ({ email, password }) => {
   return { ok: true };
 };
 
-export default function Signin() {
+export default function Signin({userType}) {
   const [userInfo, setUserInfo] = useState({
     email: {
       isPublic: false,
       data: ""
     },
     password: "",
+    userType: userType
   });
 
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export default function Signin() {
     const { ok, error } = validateUserInfo(userInfo);
 
     if (!ok) return updateNotification("error", error);
-    handleLogin(userInfo.email, userInfo.password);
+    handleLogin(userInfo.email, userInfo.password, userInfo.userType);
   };
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function Signin() {
           {/* Card size */}
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
             <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
-              USER LOGIN
+              {userType === "customer" ? "USER" : "LANDLORD"} LOGIN
             </h1>
             <FormInput
               value={userInfo.email.data}
@@ -92,7 +93,7 @@ export default function Signin() {
 
             <div className="flex justify-end"
                   style={{margin: "2px"}}>
-              <CustomLink to="/auth/forget-password">Forget password?</CustomLink>
+              <CustomLink to={userType === "customer" ? "/auth/user/forget-password" : "/auth/landlord/forget-password"}>Forget password?</CustomLink>
             </div>
 
             <Submit value="LOGIN" busy={isPending} />
@@ -102,7 +103,7 @@ export default function Signin() {
               <p style={{color: "#4B4B4B", paddingRight: "3px"}}>
                 Don't have an account?
               </p>
-              <CustomLink to="/auth/signup">SIGN UP</CustomLink>
+              <span style={{fontWeight: 600}}><CustomLink to={userType === "customer" ? "/auth/user/signup" : "/auth/landlord/signup"}>SIGN UP</CustomLink></span>
             </div>
           </form>
       </div>
