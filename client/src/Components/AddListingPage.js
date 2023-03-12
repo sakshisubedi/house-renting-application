@@ -6,6 +6,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  // Image,
   Box,
   Button,
   VStack,
@@ -203,9 +204,22 @@ function AddListingPage() {
                 borderRadius={"2xl"}
                 p={10}
                 fontWeight="bold"
+                display="flex"
+                flexWrap="wrap"
+                // justifyContent="center"
               >
                 {" "}
-                {media.length > 0 ? `${media.length} file(s) uploaded` : "  "}
+                {/* {media.length > 0 ? `${media.length} file(s) uploaded` : "  "} */}
+                {/* {media.map((image, index) => (
+                  <Box key={index} mb={5}>
+                    ${image}
+                  </Box>
+                ))} */}
+                {media.map((image, index) => (
+                  <Box key={index} mb={5}>
+                    <Image src={image} maxH={200} maxW={200} />
+                  </Box>
+                ))}
               </Box>
               {/*  */}
               {popup && (
@@ -243,6 +257,28 @@ function AddListingPage() {
               >
                 Upload Images/Videos
               </Button>
+              {/* <Box mt={5} w={"100%"}> */}
+              {/* <FormLabel>Images/Videos (Up to 10)</FormLabel> */}
+              {/* <Box
+                  border="2px"
+                  borderColor="gray.300"
+                  borderRadius={"2xl"}
+                  p={10}
+                  fontWeight="bold"
+                  display="flex"
+                  flexWrap="wrap"
+                  justifyContent="space-between"
+                >
+                  {media.map((image, index) => (
+                    <Box key={index} mb={5}>
+                      <Image src={image} maxH={200} maxW={200} />
+                    </Box>
+                  ))}
+                </Box> */}
+              {/* <Button mt={5} onClick={showPopup}> */}
+              {/* Upload Images */}
+              {/* </Button> */}
+              {/* </Box> */}
               <FormLabel w={"100%"} fontSize={"3xl"}>
                 Parameters
               </FormLabel>

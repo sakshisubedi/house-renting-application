@@ -1,4 +1,11 @@
 import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Box,
   Button,
   VStack,
@@ -53,6 +60,39 @@ function IndividualListingPage() {
     hasPet: true,
     postalCode: "92092",
     timestamp: Date(),
+  };
+  const [popup, setPopup] = React.useState(false);
+  const [media, setMedia] = React.useState([]);
+  const [selectedImages, setSelectedImages] = React.useState([]);
+
+  const uploadImages = () => {
+    setMedia(selectedImages);
+    setPopup(false);
+  };
+
+  const showPopup = () => {
+    setPopup(true);
+  };
+
+  const closePopup = () => {
+    setPopup(false);
+  };
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files.length > 0) {
+      let images = [];
+      for (let i = 0; i < event.target.files.length; i++) {
+        let img = event.target.files[i];
+        let reader = new FileReader();
+        reader.readAsDataURL(img);
+        reader.onload = () => {
+          images.push(reader.result);
+          // this.setState({
+          //   images: images,
+          // });
+          setSelectedImages(images);
+        };
+      }
+    }
   };
 
   const [desc, setDesc] = React.useState(tempData.desc ?? null);
@@ -187,10 +227,40 @@ function IndividualListingPage() {
                       <IconButton
                         colorScheme={"blue"}
                         icon={<AttachmentIcon />}
-                        onClick={() => {
-                          // ADD IMAGES POPUP
-                        }}
+                        // onClick={() => {
+                        //   // ADD IMAGES POPUP
+                        //   //
+                        // }}
+                        onClick={showPopup}
                       />
+                      {popup && (
+                        <Modal isOpen={popup} onClose={closePopup}>
+                          <ModalOverlay />
+                          <ModalContent>
+                            <ModalHeader>Select Image(s)</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                              <FormControl>
+                                <input
+                                  type="file"
+                                  name="myImage"
+                                  onChange={onImageChange}
+                                  multiple
+                                />
+                              </FormControl>
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button
+                                colorScheme="blue"
+                                mr={3}
+                                onClick={uploadImages}
+                              >
+                                Save
+                              </Button>
+                            </ModalFooter>
+                          </ModalContent>
+                        </Modal>
+                      )}
                       <Button
                         type="submit"
                         variant="solid"
