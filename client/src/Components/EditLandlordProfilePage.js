@@ -53,7 +53,10 @@ function EditLandlordProfilePage() {
         setPhone(response.data.phoneNo);
       }
     }
+    getLandlordInfo(landlordId);
+  }, [landlordId]);
 
+  useEffect(()=>{
     async function getListingMetadata(listingId) {
       const response = await getAverageRatingByListingId(listingId);
       if (response?.data && response.data.length>0) {
@@ -75,9 +78,8 @@ function EditLandlordProfilePage() {
         setListingsInfo(response.data);
       }
     }
-    getLandlordInfo(landlordId);
     getListingsInfo(landlordId);
-  }, [landlordId]);
+  }, [listingsInfo]);
 
   let tempLandlordInfo = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     name: "Anthe Braybrooke",
@@ -266,6 +268,7 @@ function EditLandlordProfilePage() {
                 w={100}
                 onClick={() => {
                   // Navigate to add listing Page
+                  window.location.href = '/listing'
                 }}
               >
                 Add Listing

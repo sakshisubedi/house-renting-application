@@ -91,7 +91,7 @@ function AddListingPage() {
       // landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
       landlordId: landlordId,
       description: desc,
-      media: [],
+      media: media,
       bedrooms: parseInt(bedrooms),
       bathrooms: parseInt(bathrooms),
       squareFeet: parseInt(area),
@@ -129,7 +129,7 @@ function AddListingPage() {
         <Box>
           <form
             onSubmit={(e) => {
-              // e.preventDefault();
+              e.preventDefault();
               try {
                 addListing(landlordInfo._id);
                 toast({
@@ -245,7 +245,7 @@ function AddListingPage() {
                         type="number"
                         placeholder="Listing Price..."
                         defaultValue={price}
-                        w="50 %"
+                        w="50%"
                         onChange={(e) => setPrice(e.target.value)}
                       />
                     </HStack>
