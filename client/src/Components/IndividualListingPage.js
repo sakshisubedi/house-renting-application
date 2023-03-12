@@ -39,137 +39,12 @@ import DetailedProfile from "./DetailedProfile";
 import { useAuth } from "../Components/auth/context/hookIndex"
 import { addComment, deleteComment, getCommentsByListingId } from "../services/commentApis";
 import { getUserPublicInfoById } from "../services/userApis";
-import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getWishlistByUserId } from "../services/wishlistApis";
+import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getInterestedPeopleByListingId } from "../services/wishlistApis";
 
 function IndividualListingPage() {
 
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
-
-  // need to get actual data from PASSED PARAMS IN STATE or API CALLS
-
-  let wishlistedPeople = [
-    {
-      email: {
-        isPublic: false,
-        data: "kbillingsley0@house.gov",
-      },
-      age: {
-        isPublic: false,
-        data: 27,
-      },
-      occupation: {
-        isPublic: false,
-        data: "Help Desk Technician",
-      },
-      _id: "63ffd73c35d9bd7fb39d9fa3",
-      name: "Kora Billingsley",
-      isVerified: true,
-      pronoun: "She/Her",
-      preferredMoveInDate: "2023-03-30T07:00:00.000Z",
-      preferPet: false,
-      isLookingForFlatmate: false,
-      profilePicture: null,
-      createdAt: "2023-03-01T22:52:44.079Z",
-      updatedAt: "2023-03-01T22:52:44.079Z",
-    },
-    {
-      email: {
-        isPublic: false,
-        data: "cwhichelow1@usnews.com",
-      },
-      age: {
-        isPublic: false,
-        data: 28,
-      },
-      occupation: {
-        isPublic: false,
-        data: "Pharmacist",
-      },
-      _id: "63ffd7cb35d9bd7fb39d9fa5",
-      name: "Chico Whichelow",
-      isVerified: true,
-      pronoun: "He/Him",
-      preferredMoveInDate: "2023-04-15T07:00:00.000Z",
-      preferPet: false,
-      isLookingForFlatmate: false,
-      profilePicture: null,
-      createdAt: "2023-03-01T22:55:07.161Z",
-      updatedAt: "2023-03-01T22:55:07.161Z",
-    },
-    {
-      email: {
-        isPublic: true,
-        data: "abottrill2@unesco.org",
-      },
-      age: {
-        isPublic: true,
-        data: 25,
-      },
-      occupation: {
-        isPublic: true,
-        data: "Compensation Analyst",
-      },
-      _id: "63ffd80035d9bd7fb39d9fa7",
-      name: "Ashton Bottrill",
-      isVerified: true,
-      pronoun: "He/Him",
-      preferredMoveInDate: "2023-04-05T07:00:00.000Z",
-      preferPet: true,
-      isLookingForFlatmate: false,
-      profilePicture: null,
-      createdAt: "2023-03-01T22:56:00.991Z",
-      updatedAt: "2023-03-01T22:56:00.991Z",
-    },
-    {
-      email: {
-        isPublic: false,
-        data: "cfearnill3@yale.edu",
-      },
-      age: {
-        isPublic: true,
-        data: 24,
-      },
-      occupation: {
-        isPublic: true,
-        data: "Graphic Designer",
-      },
-      _id: "63ffd86235d9bd7fb39d9fa9",
-      name: "Chris Fearnill",
-      isVerified: true,
-      pronoun: "He/Him",
-      preferredMoveInDate: null,
-      preferPet: false,
-      isLookingForFlatmate: false,
-      profilePicture: null,
-      createdAt: "2023-03-01T22:57:38.273Z",
-      updatedAt: "2023-03-01T22:57:38.273Z",
-    },
-    {
-      email: {
-        isPublic: true,
-        data: "mlording4@comsenz.com",
-      },
-      age: {
-        isPublic: true,
-        data: 24,
-      },
-      occupation: {
-        isPublic: true,
-        data: "Computer Systems Analyst I",
-      },
-      _id: "63ffd8be35d9bd7fb39d9fab",
-      name: "Morgen Lording",
-      isVerified: true,
-      pronoun: "He/Him",
-      preferredMoveInDate: "2023-03-25T07:00:00.000Z",
-      preferPet: false,
-      isLookingForFlatmate: false,
-      profilePicture: null,
-      createdAt: "2023-03-01T22:59:10.446Z",
-      updatedAt: "2023-03-01T22:59:10.446Z",
-    },
-  ];
 
   const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
   const [currentRating, setCurrentRating] = useState(null); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
@@ -180,6 +55,7 @@ function IndividualListingPage() {
   const [commentInfo, setCommentInfo] = useState(null);
   const [commentText, setCommentText] = React.useState(null);
   const [wishlistInfo, setWishlistInfo] = useState(null);
+  const [interestedPeople, setInterestedPeople] = useState([]);
 
   const toast = useToast();
 
@@ -230,11 +106,26 @@ function IndividualListingPage() {
       }
     }
 
+    async function getInterestedPeople() {
+      const response = await getInterestedPeopleByListingId(listingId);
+      var people = []
+      if (response?.data) {
+        for (const wishlist of response.data) {
+          const user = await getUserPublicInfoById(wishlist.userId);
+          if (!user?.error && wishlist.userId != userId) {
+            people.push(user.data[0]);
+          }
+        }
+      }
+      setInterestedPeople(people);
+    }
+
     getListing();
     isLoggedIn && getAverageRating();
     isLoggedIn && getCurrentRating();
     getComments(listingId);
     isLoggedIn && isWishlistedByUser(listingId);
+    getInterestedPeople();
   }, [location, userId, isLoggedIn])
 
   const getComments = async (listingId) => {
@@ -381,6 +272,7 @@ function IndividualListingPage() {
               <IconButton
                 bg={"white"}
                 style={{ backgroundColor: "transparent" }}
+                isDisabled={!isLoggedIn}
                 icon={
                   <Image
                     boxSize={16}
@@ -480,6 +372,7 @@ function IndividualListingPage() {
                 borderColor="gray.300"
                 borderRadius={"2xl"}
                 p={2}
+                style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
               >
                 <form>
                   <FormControl id="commentText"></FormControl>
@@ -487,6 +380,9 @@ function IndividualListingPage() {
                     placeholder="Leave a Comment..."
                     variant={"filled"}
                     mb={2}
+                    // defaultValue={comm}
+                    isDisabled={!isLoggedIn}
+                    // onChange={(e) => setComm(e.target.value)}
                     defaultValue={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                   />
@@ -496,6 +392,7 @@ function IndividualListingPage() {
                       <IconButton
                         colorScheme={"blue"}
                         icon={<AttachmentIcon />}
+                        isDisabled={!isLoggedIn}
                         onClick={() => {
                           // ADD IMAGES POPUP
                         }}
@@ -505,6 +402,7 @@ function IndividualListingPage() {
                         variant="solid"
                         colorScheme="blue"
                         w={100}
+                        isDisabled={!isLoggedIn}
                         onClick={(e) => {
                           e.preventDefault();
                           // ADD NEW COMMENT
@@ -625,49 +523,63 @@ function IndividualListingPage() {
               </Text>
               <Divider borderWidth={"3px"} my={2} />
               {/* WISHLISTED PEOPLE */}
-              <VStack
-                spacing={2}
-                h={300}
-                overflowY={isLoggedIn ? "auto" : "hidden"}
-                overflowX={"hidden"}
-              >
-                {wishlistedPeople.map((person, ind) => (
-                  <Box key={ind} w={"full"}>
-                    <HStack px={2}>
-                      <Avatar name={person.name} size={"sm"} />
-                      <Spacer />
+              {interestedPeople.length == 0 ?
+                  (<Box
+                  py={2}
+                  px={3}>
+                    <Text>Oops...currently there is no user interested in this listing.</Text>
+                  </Box>)
+                  :
+                  (
+                    <Box>
                       <VStack
-                        fontSize={"sm"}
                         spacing={2}
-                        align={"left"}
-                        w={"60%"}
+                        h={300}
+                        overflowY={isLoggedIn ? "auto" : "hidden"}
+                        overflowX={"hidden"}
                       >
-                        <Text blur={"md"} fontWeight={"bold"}>{person.name}</Text>
-                        <Divider borderWidth={"2px"} />
-                        <HStack spacing={2}>
-                          {person.age.isPublic ? (
-                            <Text>{person.age.data}</Text>
-                          ) : (
-                            <BiHide size={"1.5rem"}/>
-                          )}
-                          <Spacer />
-                          <Text>{person.pronoun}</Text>
-                          {/* <Text>
-                              {a.occupation.isPublic ? a.occupation.data : null}
-                            </Text> */}
-                        </HStack>
+                        {interestedPeople.map((person, ind) => (
+                          <Box key={ind} w={"full"}>
+                            <HStack px={2}>
+                              <Avatar name={person.name} size={"sm"} />
+                              <Spacer />
+                              <VStack
+                                fontSize={"sm"}
+                                spacing={2}
+                                align={"left"}
+                                w={"60%"}
+                              >
+                                <Text blur={"md"} fontWeight={"bold"}>{person.name}</Text>
+                                <Divider borderWidth={"2px"} />
+                                <HStack spacing={2}>
+                                  {person.age ? (
+                                    <Text>{person.age.data}</Text>
+                                  ) : (
+                                    <BiHide size={"1.5rem"} />
+                                  )}
+                                  <Spacer />
+                                  <Text>{person.pronoun}</Text>
+                                </HStack>
+                              </VStack>
+                              <Spacer />
+                              <DetailedProfile p={person} l={isLoggedIn}></DetailedProfile>
+                            </HStack>
+                            <Divider borderWidth={"2px"} my={2} />
+                          </Box>
+                        ))}
                       </VStack>
-                      <Spacer />
-                      <DetailedProfile p={person} l={isLoggedIn}></DetailedProfile>
-                    </HStack>
-                    <Divider borderWidth={"2px"} my={2} />
-                  </Box>
-                ))}
-              </VStack>
+                      <Divider borderWidth={"3px"} />
+                      <Flex mt={2}>
+                        <Spacer />
+                        <InterestedPeopleList wishlistedPeople={interestedPeople} l={isLoggedIn}/>
+                        <Spacer />
+                      </Flex>
+                    </Box>
+                  )}
               <Divider borderWidth={"3px"} />
               <Flex mt={2}>
                 <Spacer />
-                <InterestedPeopleList l={isLoggedIn}/>
+                <InterestedPeopleList wishlistedPeople={interestedPeople} l={isLoggedIn}/>
                 <Spacer />
               </Flex>
             </Box>
