@@ -186,6 +186,17 @@ function IndividualListingPage() {
   const location = useLocation();
   const [userId, setUserId] = useState(location?.state?.userId || authInfo?.profile?.id);
 
+  async function isWishlistedByUser(listingId) {
+    const response = await getIsWishlistedByUser(userId, listingId);
+    if(!response.data) {
+      setIsWishlisted(response.data);
+      setWishlistInfo(null);
+    } else {
+      setIsWishlisted(true);
+      setWishlistInfo(response.data);
+    }
+  }
+
   useEffect(() => {
     let listingId = location.pathname.split("/").pop();
 
@@ -219,32 +230,12 @@ function IndividualListingPage() {
       }
     }
 
-    
-
-    async function isWishlistedByUser() {
-      const response = await getIsWishlistedByUser(userId, listingId);
-      if(!response.data) {
-        setIsWishlisted(response.data);
-      } else {
-        setIsWishlisted(true);
-      }
-    }
-    isWishlistedByUser();
-
-    async function getWishlist() {
-      const response = await getWishlistByUserId(userId);
-      if(response?.data) {
-        setWishlistInfo(response.data[0]);
-      }
-    }
-    getWishlist();
-
     getListing();
-    getAverageRating();
-    getCurrentRating();
+    isLoggedIn && getAverageRating();
+    isLoggedIn && getCurrentRating();
     getComments(listingId);
-    isWishlistedByUser();
-  }, [location, userId])
+    isLoggedIn && isWishlistedByUser(listingId);
+  }, [location, userId, isLoggedIn])
 
   const getComments = async (listingId) => {
     const response = await getCommentsByListingId(listingId);
@@ -260,7 +251,6 @@ function IndividualListingPage() {
           listingId: location.pathname.split("/").pop(),
           userId: userId
         });
-        setIsWishlisted(true);
       } catch (error) {
         toast({
           title: "Failed",
@@ -272,7 +262,6 @@ function IndividualListingPage() {
     } else {
       try {
         await deleteWishlistItem(wishlistInfo?._id);
-        setIsWishlisted(false);
       } catch (error) {
         toast({
           title: "Failed",
@@ -282,6 +271,7 @@ function IndividualListingPage() {
         });
       }
     }
+    await isWishlistedByUser(location.pathname.split("/").pop());
   }
 
   const handleComment = async () => {
