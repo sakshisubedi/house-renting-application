@@ -284,12 +284,11 @@ const forgetPassword = (models) => {
     } else {
       resetPasswordUrl = `http://localhost:3000/auth/user/reset-password?token=${token}&id=${user._id}`;
     }
-    
-    console.log("resetPasswordUrl------", resetPasswordUrl);
   
+    
     var templateParams = {
       to_name: user.name,
-      to_email: user.email.data,
+      to_email: userType === "landlord" ? user.email : user.email.data,
       message: resetPasswordUrl,
     };
     emailjs

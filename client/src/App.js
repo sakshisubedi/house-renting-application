@@ -19,12 +19,6 @@ import EmailVerification from "./Components/auth/EmailVerification";
 import ForgetPassword from "./Components/auth/ForgetPassword";
 import Signin from "./Components/auth/Signin";
 import Signup from "./Components/auth/Signup";
-import LandlordConfirmPassword from "./Components/auth/LandlordConfirmPassword";
-import LandlordEmailVerification from "./Components/auth/LandlordEmailVerification";
-import LandlordForgetPassword from "./Components/auth/LandlordForgetPassword";
-import LandlordSignin from "./Components/auth/LandlordSignin";
-import LandlordSignup from "./Components/auth/LandlordSignup";
-import InterestedPeopleList from "./Components/InterestedPeopleList";
 
 function App() {
   return (
@@ -39,7 +33,7 @@ function App() {
             element={<EditCustomerProfilePage />}
           />
           <Route
-            path="/landlord/me"
+            path="/landlord/:id"
             element={<EditLandlordProfilePage />}
           />
           <Route path="/listing" element={<AddListingPage />} />
@@ -54,11 +48,6 @@ function App() {
           <Route path="/auth/landlord/forget-password" element={<ForgetPassword userType="landlord" />} />
           <Route path="/auth/user/reset-password" element={<ConfirmPassword userType="customer" />} />
           <Route path="/auth/landlord/reset-password" element={<ConfirmPassword userType="landlord" />} />
-          {/* <Route path="/landlord/signin" element={<LandlordSignin />} />
-          <Route path="/landlord/signup" element={<LandlordSignup />} /> */}
-          {/* <Route path="/landlord/verification" element={<LandlordEmailVerification />} /> */}
-          {/* <Route path="/landlord/forget-password" element={<LandlordForgetPassword />} />
-          <Route path="/landlord/reset-password" element={<LandlordConfirmPassword />} /> */}
           <Route path='*' element={<Navigate to='/landing' />} />
 
           {/* Authentication part */}

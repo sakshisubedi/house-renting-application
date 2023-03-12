@@ -22,15 +22,15 @@ import React, { useEffect } from "react";
 import NavBar from "./NavBar";
 import LandlordViewCard from "./LandlordViewCard";
 import house1 from "../img/house1.jpg";
-import { useLandlordAuth } from "../Components/auth/context/hookIndex";
+import { useAuth } from "../Components/auth/context/hookIndex";
 import { getLandlordInfoById } from "../services/landlordApis";
 import { getListingByLandlordId } from "../services/listingApis";
 import { getAverageRatingByListingId } from "../services/ratingApis";
 
 function EditLandlordProfilePage() {
-  const { landlordInfo } = useLandlordAuth();
-  const landlordId = landlordInfo.profile?.id;
-  const [landlordData, setLandlordInfo] = React.useState(null);
+  const { authInfo } = useAuth();
+  const landlordId = authInfo.profile?.id;
+  const [landlordInfo, setLandlordInfo] = React.useState(null);
   const [listingsInfo, setListingsInfo] = React.useState(null);
 
   const [name, setName] = React.useState(null);
@@ -81,7 +81,7 @@ function EditLandlordProfilePage() {
     getListingsInfo(landlordId);
   }, [listingsInfo]);
 
-  let tempLandlordData = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+  let tempLandlordInfo = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
     name: "Anthe Braybrooke",
     email: "abraybrookej@amazon.com",
     password: "test123",
@@ -110,20 +110,20 @@ function EditLandlordProfilePage() {
     petFriendly: "allowed",
     postalCode: 920092,
   };
-  // const [desc, setDesc] = React.useState(landlordData.introduction ?? null);
-  // const [pronouns, setPronouns] = React.useState(landlordData.pronoun ?? null);
-  // const [age, setAge] = React.useState(landlordData.age ?? null);
-  // const [phone, setPhone] = React.useState(landlordData.phoneNo ?? null);
+  // const [desc, setDesc] = React.useState(landlordInfo.introduction ?? null);
+  // const [pronouns, setPronouns] = React.useState(landlordInfo.pronoun ?? null);
+  // const [age, setAge] = React.useState(landlordInfo.age ?? null);
+  // const [phone, setPhone] = React.useState(landlordInfo.phoneNo ?? null);
 
-  const updateLandlordData = async () => {
-    landlordData.introduction = desc === "" ? null : desc;
-    landlordData.pronoun = pronouns === "" ? null : pronouns;
-    landlordData.age = age === "" ? null : parseInt(age);
-    landlordData.phoneNo = phone === "" ? null : phone;
-    landlordData.updatedAt = new Date().toISOString();
-    // console.log(landlordData, "landlord data");
+  const updateLandlordInfo = async () => {
+    landlordInfo.introduction = desc === "" ? null : desc;
+    landlordInfo.pronoun = pronouns === "" ? null : pronouns;
+    landlordInfo.age = age === "" ? null : parseInt(age);
+    landlordInfo.phoneNo = phone === "" ? null : phone;
+    landlordInfo.updatedAt = new Date().toISOString();
+    // console.log(landlordInfo, "landlord data");
 
-    const response = await updateLandlord(landlordData, landlordData._id); // NEED TO ENTER DYNAMIC LANDLORD ID
+    const response = await updateLandlord(landlordInfo, landlordInfo._id); // NEED TO ENTER DYNAMIC LANDLORD ID
     if(response?.error) {
       toast({
         title: "Failed",
@@ -178,7 +178,7 @@ function EditLandlordProfilePage() {
                 onClick={(e) => {
                   e.preventDefault();
                   try {
-                    updateLandlordData();
+                    updateLandlordInfo();
                     // toast({
                     //   title: "Success",
                     //   description: "Changes Saved",

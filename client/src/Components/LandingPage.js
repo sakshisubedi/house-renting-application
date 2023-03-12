@@ -37,7 +37,6 @@ export default function IndividualListingPage() {
   }, []);
 
   const handlePagination = (listings, pageNo) => {
-    console.log((pageNo-1)*listingsPerPage, pageNo*listingsPerPage);
     setCurrentListings(listings.data.slice((pageNo-1)*listingsPerPage, pageNo*listingsPerPage));
   }
 

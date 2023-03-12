@@ -25,14 +25,12 @@ import React, { useEffect } from "react";
 import { createListing } from "../services/listingApis";
 import NavBar from "./NavBar";
 import { getLandlordInfoById } from "../services/landlordApis";
-import { useLandlordAuth } from "../Components/auth/context/hookIndex";
 
 function AddListingPage() {
   const toast = useToast();
 
-  const { landlordInfo } = useLandlordAuth();
   const landlordId = landlordInfo.profile?.id;
-  const [landlordData, setLandlordInfo] = React.useState(null);
+  const [landlordInfo, setLandlordInfo] = React.useState(null);
 
   useEffect(()=>{
     async function getLandlordInfo(landlordId) {
@@ -133,14 +131,13 @@ function AddListingPage() {
             onSubmit={(e) => {
               e.preventDefault();
               try {
-                addListing(landlordData._id);
-                window.location.href = '/landlord/me';
-                // toast({
-                //   title: "Success",
-                //   description: "Changes Saved",
-                //   status: "success",
-                //   position: "top-right",
-                // });
+                addListing(landlordInfo._id);
+                toast({
+                  title: "Success",
+                  description: "Changes Saved",
+                  status: "success",
+                  position: "top-right",
+                });
               } catch (error) {
                 toast({
                   title: "Failed",
