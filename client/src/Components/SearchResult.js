@@ -51,7 +51,7 @@ const SearchResult = ({ src }) => {
   };
 
   return (
-    currentListings && authInfo?.profile?.id && <Box>
+    currentListings && <Box>
       <NavBar profileURL={"https://i.stack.imgur.com/l60Hf.png"}></NavBar>
       <Box>
         <Heading ml={8} mt={5} pl={10} pt={5} pr={5} textAlign="left">

@@ -37,19 +37,19 @@ export default function LandlordAuthProvider({ children }) {
     const token = localStorage.getItem("auth-token");
     if (!token) return;
 
-    setAuthInfo({ ...landlordInfo, isPending: true });
-    const { error, user } = await getIsAuthLandlord(token);
-    if (error) {
-      updateNotification("error", error);
-      return setAuthInfo({ ...landlordInfo, isPending: false, error });
-    }
+    // setAuthInfo({ ...landlordInfo, isPending: true });
+    // const { error, user } = await getIsAuthLandlord(token);
+    // if (error) {
+    //   updateNotification("error", error);
+    //   return setAuthInfo({ ...landlordInfo, isPending: false, error });
+    // }
 
-    setAuthInfo({
-      profile: { ...user },
-      isLoggedIn: true,
-      isPending: false,
-      error: "",
-    });
+    // setAuthInfo({
+    //   profile: { ...user },
+    //   isLoggedIn: true,
+    //   isPending: false,
+    //   error: "",
+    // });
   };
 
   const handleLogoutLandlord = () => {

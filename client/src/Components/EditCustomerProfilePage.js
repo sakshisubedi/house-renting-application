@@ -23,6 +23,7 @@ import NavBar from "./NavBar";
 
 // Get current login user
 import { useAuth } from "../Components/auth/context/hookIndex"
+import { useLocation } from "react-router-dom";
 // import { useLocation } from "react-router-dom";
 
 
@@ -31,7 +32,8 @@ function EditCustomerProfilePage() {
   const { authInfo } = useAuth();
   const userName = authInfo.profile?.name;
   const userEmail = authInfo.profile?.email;
-  const userId = authInfo.profile?.id;
+  const location = useLocation();
+  const [userId, setUserId] = React.useState(location.pathname.split("/").pop() || authInfo?.profile?.id);
 
   const [userData, setUserData] = React.useState(null);
   const [name, setName] = React.useState(null);
@@ -55,6 +57,8 @@ function EditCustomerProfilePage() {
   // const location = useLocation();
   // console.log(location.state, "here", authInfo)
   useEffect(() => {
+    const id = location.pathname.split("/").pop() || authInfo?.profile?.id;
+    setUserId(id);
     async function getUserData(userId) {
       const response = await getUserAllInfoById(userId);
       if (response?.data) {
@@ -74,67 +78,9 @@ function EditCustomerProfilePage() {
         setPetsPref(response.data.preferPet);
       }
     }
-    getUserData(userId);
-  }, [userId]);
+    getUserData(id);
+  }, [userId, location, authInfo]);
 
-  let tempUserData = { // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
-
-    email: {
-      isPublic: true,
-      data: userEmail,
-    },
-    age: {
-      isPublic: true,
-      data: 25,
-    },
-    occupation: {
-      isPublic: true,
-      data: "Compensation Analyst",
-    },
-    _id: userId,
-    name: userName,
-    isVerified: true,
-    pronoun: "He/Him",
-    preferredMoveInDate: "2023-04-05T07:00:00.000Z",
-    preferPet: true,
-    isLookingForFlatmate: false,
-    profilePicture: null,
-    createdAt: "2023-03-01T22:56:00.991Z",
-    updatedAt: "2023-03-01T22:56:00.991Z",
-  };
- 
-
-
-  
-  // let userData = location.state.userInfo ?? tempUserData;
-  // console.log(userData)
-  // const [userData, setUserData] = React.useState(tempUserData);
-
-  // const [email, setEmail] = React.useState(userData.email.data);
-  // const [emailPublicFlag, setEmailPublicFlag] = React.useState(userData.email.isPublic.toString());
-  // const [desc, setDesc] = React.useState(userData.desc ?? null);
-  // const [pronouns, setPronouns] = React.useState(userData.pronoun ?? null);
-  // const [age, setAge] = React.useState(userData.age.data ?? null);
-  // const [agePublicFlag, setAgePublicFlag] = React.useState(
-  //   userData.age.isPublic.toString()
-  // );
-  // const [occupation, setOccupation] = React.useState(
-  //   userData.occupation.data ?? null
-  // );
-  // const [occupationPublicFlag, setOccupationPublicFlag] =
-  //   React.useState(userData.occupation.isPublic.toString());
-  // // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
-  // const [datePref, setDatePref] = React.useState((userData.preferredMoveInDate) ? new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) : null);
-  // // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
-
-  // const [housematesBool, setHousematesBool] = React.useState(
-  //   userData.isLookingForFlatmate ?? null
-  // );
-  // // const [roommatePrefs, setRoommatePrefs] = React.useState(
-  // //   userData.roommatePrefs ?? null
-  // // );
-  // const [petsPref, setPetsPref] = React.useState(userData.preferPet ?? null);
-  // console.log(userData)
   const updateUserData = async () => {
     userData.email.isPublic = emailPublicFlag === "true" ?? null;
     // userData.desc = desc === "" ? null : desc;

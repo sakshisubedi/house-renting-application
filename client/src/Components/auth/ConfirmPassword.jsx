@@ -6,7 +6,7 @@ import Submit from "./Submit";
 import { resetPassword, verifyPasswordResetToken } from "./auth";
 import { useNotification } from "./context/hookIndex";
 
-export default function ConfirmPassword() {
+export default function ConfirmPassword({userType}) {
   const [password, setPassword] = useState({
     one: "",
     two: "",
@@ -62,6 +62,7 @@ export default function ConfirmPassword() {
       newPassword: password.one,
       userId: id,
       token,
+      userType
     });
 
     if (error) return updateNotification("error", error);
