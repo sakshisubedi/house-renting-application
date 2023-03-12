@@ -17,53 +17,106 @@ import {
   RadioGroup,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
+import { updateUser, getUserAllInfoById } from "../services/userApis";
 import NavBar from "./NavBar";
+
+// Get current login user
+import { useAuth } from "../Components/auth/context/hookIndex"
+import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
+
 
 function EditCustomerProfilePage() {
   // need to get actual data from db
+  const { authInfo } = useAuth();
+  const userName = authInfo.profile?.name;
+  const userEmail = authInfo.profile?.email;
+  const location = useLocation();
+  const [userId, setUserId] = React.useState(location.pathname.split("/").pop() || authInfo?.profile?.id);
 
-  let tempData = {
-    name: "Pratyush Karmakar",
-    email: "pkarmakar@ucsd.edu",
-  };
+  const [userData, setUserData] = React.useState(null);
+  const [name, setName] = React.useState(null);
+  const [email, setEmail] = React.useState(null);
+  const [emailPublicFlag, setEmailPublicFlag] = React.useState(null);
+  const [desc, setDesc] = React.useState(null);
+  const [pronouns, setPronouns] = React.useState(null);
+  const [age, setAge] = React.useState(null);
+  const [agePublicFlag, setAgePublicFlag] = React.useState(null);
+  const [occupation, setOccupation] = React.useState(null);
+  const [occupationPublicFlag, setOccupationPublicFlag] = React.useState(null);
+  // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
+  const [datePref, setDatePref] = React.useState(null);
+  // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
 
-  const [emailPublicFlag, setEmailPublicFlag] = React.useState("false");
-  const [desc, setDesc] = React.useState(tempData.desc ?? null);
-  const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
-  const [age, setAge] = React.useState(tempData.age ?? null);
-  const [agePublicFlag, setAgePublicFlag] = React.useState("false");
-  const [occupation, setOccupation] = React.useState(
-    tempData.occupation ?? null
-  );
-  const [occupationPublicFlag, setOccupationPublicFlag] = React.useState("false");
-  const [datePref, setDatePref] = React.useState(tempData.datePref ?? null);
-  const [spacePref, setSpacePref] = React.useState(tempData.spacePref ?? null);
-  const [housematesBool, setHousematesBool] = React.useState(
-    tempData.housematesBool ?? null
-  );
-  const [roommatePrefs, setRoommatePrefs] = React.useState(
-    tempData.roommatePrefs ?? null
-  );
-  const [petsPref, setPetsPref] = React.useState(tempData.petsPref ?? null);
+  const [housematesBool, setHousematesBool] = React.useState(null);
+  // const [roommatePrefs, setRoommatePrefs] = React.useState(
+  //   userData.roommatePrefs ?? null
+  // );
+  const [petsPref, setPetsPref] = React.useState(null);
+  // const location = useLocation();
+  // console.log(location.state, "here", authInfo)
+  useEffect(() => {
+    const id = location.pathname.split("/").pop() || authInfo?.profile?.id;
+    setUserId(id);
+    async function getUserData(userId) {
+      const response = await getUserAllInfoById(userId);
+      if (response?.data) {
+        // console.log(response.data, "user data recd");
+        setUserData(response.data);
+        setName(response.data.name);
+        setEmail(response.data.email.data);
+        setEmailPublicFlag(response.data.email.isPublic.toString());
+        setDesc(response.data.desc ?? null);
+        setPronouns(response.data.pronoun);
+        setAge(response.data.age.data);
+        setAgePublicFlag(response.data.age.isPublic.toString());
+        setOccupation(response.data.occupation.data);
+        setOccupationPublicFlag(response.data.occupation.isPublic.toString());
+        setDatePref(new Date(response.data.preferredMoveInDate).toISOString().substring(0, 10));
+        setHousematesBool(response.data.isLookingForFlatmate);
+        setPetsPref(response.data.preferPet);
+      }
+    }
+    getUserData(id);
+  }, [userId, location, authInfo]);
 
-  const updateUserData = () => {
-    tempData.emailPublicFlag = (emailPublicFlag === "true") ?? null;
-    tempData.desc = desc === "" ? null : desc;
-    tempData.pronouns = pronouns === "" ? null : pronouns;
-    tempData.age = age === "" ? null : parseInt(age);
-    tempData.agePublicFlag = (agePublicFlag === "true") ?? null;
-    tempData.occupation = occupation === "" ? null : occupation;
-    tempData.occupationPublicFlag = (occupationPublicFlag === "true") ?? null;
-    tempData.datePref = datePref === "" ? null : Date(datePref);
-    tempData.spacePref = spacePref === "" ? null : spacePref;
-    tempData.housematesBool = housematesBool === "" ? null : (housematesBool === "true");
-    tempData.roommatePrefs = roommatePrefs === "" ? null : roommatePrefs;
-    tempData.petsPref = petsPref === "" ? null : (petsPref === "true");
-    console.log(tempData, "user data");
+  const updateUserData = async () => {
+    userData.email.isPublic = emailPublicFlag === "true" ?? null;
+    // userData.desc = desc === "" ? null : desc;
+    userData.pronoun = pronouns === "" ? null : pronouns;
+    userData.age.data = age === "" ? null : parseInt(age);
+    userData.age.isPublic = agePublicFlag === "true" ?? null;
+    userData.occupation.data = occupation === "" ? null : occupation;
+    userData.occupation.isPublic = occupationPublicFlag === "true" ?? null;
+    userData.preferredMoveInDate = datePref === "" ? null : new Date(datePref);
+    // userData.spacePref = spacePref === "" ? null : spacePref;
+    userData.isLookingForFlatmate =
+      housematesBool === "" ? null : housematesBool === "true";
+    // userData.roommatePrefs = roommatePrefs === "" ? null : roommatePrefs;
+    userData.preferPet = petsPref === "" ? null : petsPref === "true";
+    userData.preferredMoveInDate =
+      userData.preferredMoveInDate.toISOString() ?? null;
+    userData.updatedAt = new Date().toISOString();
+    // console.log(userData, "user data upd");
 
-    // need to transform tempData into proper DB schema format
-    // SAVE TO DB
+
+    const response = await updateUser(userData, userData._id);
+    if(response?.error) {
+      toast({
+        title: "Failed",
+        description: response?.error,
+        status: "error",
+        position: "top-right",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Successfully updated user profile",
+        status: "success",
+        position: "top-right",
+      });
+    }
   };
 
   const toast = useToast();
@@ -74,10 +127,9 @@ function EditCustomerProfilePage() {
       <Box my={100} ml={250} mr={250}>
         <Box>
           <HStack spacing={5} mb={10}>
-            <Avatar size="2xl" name={tempData.name} src={null} />
+            <Avatar size="2xl" name={name} />
             <VStack spacing={5} align="left" pl={50} w="100%">
-              <Heading>{tempData.name}</Heading>
-              {/* <Input mr={5} defaultValue={tempData.name ?? null} placeholder="Enter First and Last Name here..."  /> */}
+              <Heading>{name}</Heading>
               <Textarea
                 type="text"
                 placeholder="Short self intro..."
@@ -99,19 +151,21 @@ function EditCustomerProfilePage() {
                 colorScheme="blue"
                 w={100}
                 onClick={(e) => {
-                  // e.preventDefault();
+                  e.preventDefault();
                   try {
                     updateUserData();
-                    toast({
-                      title: "Success",
-                      description: "Changes Saved",
-                      status: "success",
-                    });
+                    // toast({
+                    //   title: "Success",
+                    //   description: "Changes Saved",
+                    //   status: "success",
+                    //   position: "top-right"
+                    // });
                   } catch (error) {
                     toast({
                       title: "Failed",
                       description: error,
                       status: "error",
+                      position: "top-right",
                     });
                   }
                 }}
@@ -129,7 +183,7 @@ function EditCustomerProfilePage() {
                     <Input
                       type="email"
                       placeholder="johndoe@gmail.com"
-                      defaultValue={tempData.email}
+                      defaultValue={email}
                       w="full"
                       isDisabled
                     />
@@ -159,9 +213,9 @@ function EditCustomerProfilePage() {
                     w="50%"
                     onChange={(e) => setPronouns(e.target.value)}
                   >
-                    <option value="He/Him/His">He/Him/His</option>
-                    <option value="She/Her/Hers">She/Her/Hers</option>
-                    <option value="They/Them/Their">They/Them/Their</option>
+                    <option value="He/Him">He/Him</option>
+                    <option value="She/Her">She/Her</option>
+                    <option value="They/Them">They/Them</option>
                   </Select>
                 </HStack>
               </FormControl>
@@ -237,7 +291,7 @@ function EditCustomerProfilePage() {
                   />
                 </HStack>
               </FormControl>
-              <FormControl id="desiredSpace">
+              {/* <FormControl id="desiredSpace">
                 <HStack>
                   <VStack w="50%" align="left">
                     <FormLabel>Desired Space</FormLabel>
@@ -254,7 +308,7 @@ function EditCustomerProfilePage() {
                     onChange={(e) => setSpacePref(e.target.value)}
                   />
                 </HStack>
-              </FormControl>
+              </FormControl> */}
               <FormControl id="housematesBool">
                 <HStack>
                   <FormLabel w="50%">Looking for Housemates</FormLabel>
@@ -270,7 +324,7 @@ function EditCustomerProfilePage() {
                   </Select>
                 </HStack>
               </FormControl>
-              <FormControl id="roommatePref">
+              {/* <FormControl id="roommatePref">
                 <HStack>
                   <VStack w="50%" align="left">
                     <FormLabel>Roommate Preferences</FormLabel>
@@ -286,7 +340,7 @@ function EditCustomerProfilePage() {
                     onChange={(e) => setRoommatePrefs(e.target.value)}
                   />
                 </HStack>
-              </FormControl>
+              </FormControl> */}
               <FormControl id="petsBool">
                 <HStack>
                   <FormLabel w="50%">Open to having pets</FormLabel>

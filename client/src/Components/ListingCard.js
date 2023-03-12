@@ -9,64 +9,132 @@ import {
   LinkOverlay,
   IconButton,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import heart from '../img/Union.svg'
 import emptyHeart from '../img/emptyHeartButton.svg'
+import house from '../img/house1.jpg'
+import { getIsWishlistedByUser, createWishlistItem, deleteWishlistItem, getWishlistByUserId } from '../services/wishlistApis';
+import { useEffect, useState } from "react";
+import { useAuth } from "./auth/context/hookIndex";
 
-const ListingCard = ({ src }) => {
-    const [like, setLike] = React.useState("true");
+const ListingCard = ({ src, getWishlist }) => {
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistInfo, setWishlistInfo] = useState(null);
+  const navigate = useNavigate();
+  const toast = useToast();
+  const [userId, setUserId] = useState(src?.userId || authInfo?.profile?.id);
+  const userType = localStorage.getItem('user-type');
 
-    const navigate = useNavigate();
+  const handleWishlist = async () => {
+    if(!isWishlisted) {
+      try {
+        await createWishlistItem({
+          listingId: src?._id,
+          userId: userId
+        });
+        setIsWishlisted(true);
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    } else {
+      try {
+        const wishlist = wishlistInfo.filter(wishlist => wishlist.listingId === src?._id);
+        if(wishlist.length>0) {
+          await deleteWishlistItem(wishlist[0]._id);
+          setIsWishlisted(false);
+          if(getWishlist) {
+            getWishlist(userId);
+          }
+        }
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    }
+  }
 
-    const handleClick = () => {
-        setLike(current => !current);
-      };
+  useEffect(() => {
+    const id = src?.userId || authInfo?.profile?.id;
+    setUserId(id);
+    async function isWishlistedByUser() {
+      const response = await getIsWishlistedByUser(id, src?._id);
+      if(!response.data) {
+        setIsWishlisted(response.data);
+      } else {
+        setIsWishlisted(true);
+      }
+    }
+    isLoggedIn && isWishlistedByUser();
 
-    return (
-        <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
-            <Image objectFit='fill' w="100%" src={src.img} alt="card image" />
-            <Box p='4'>
-                <HStack>
-                    <Box
-                        color='#3062D5'
-                        fontWeight='bold'
-                        letterSpacing='wide'
-                        fontSize='xl'
-                    >
-                        ${src.rent}
-                        <Box as='span' color='#3062D5' fontWeight='semibold' fontSize='sm'>
-                            /month
-                        </Box>
-                    </Box>
-                </HStack>
+    async function getWishlist() {
+      const response = await getWishlistByUserId(id);
+      if(response?.data) {
+        setWishlistInfo(response.data);
+      }
+    }
+    isLoggedIn && getWishlist();
+  }, [userId, isLoggedIn, authInfo?.profile?.id, src?.userId, src?._id]);
 
-                <Flex justifyContent="space-between" alignContent="center">
-                    <Box
-                        fontWeight='bold'
-                        lineHeight='tight'
-                        noOfLines={1}
-                        fontSize='3xl'
-                    >
-                        <LinkOverlay onClick={(e) => {
-                            navigate("/individualListingPage");
-                        }}> 
-                        {/* route to detailed listing page */}
-                            {src.name}
-                        </LinkOverlay>
+  return (
+    <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
+      <Image objectFit='fill' w="100%" src={house} alt="card image" />
+      <Box p='4'>
+        <HStack>
+          <Box
+            color='#3062D5'
+            fontWeight='bold'
+            letterSpacing='wide'
+            fontSize='xl'
+          >
+            ${src.rent}
+            <Box as='span' color='#3062D5' fontWeight='semibold' fontSize='sm'>
+              /month
+            </Box>
+          </Box>
+        </HStack>
 
-                    </Box>
-                    <IconButton
-                        bg="#FFFFFF"
-                        icon={<Image src={like ? heart : emptyHeart} boxSize={30} alt="heart" />}
-                        onClick={(e) => {
-                            // cancel wishlist
-                            e.preventDefault();
-                            handleClick();
-                        }}
-                    />
-                </Flex>
+        <Flex justifyContent="space-between" alignContent="center">
+          <Box
+            fontWeight='bold'
+            lineHeight='tight'
+            noOfLines={1}
+            fontSize='3xl'
+          >
+            <LinkOverlay as={"button"} onClick={() => {
+              navigate(`/listing/${src?._id}`, {
+                  state: {
+                      userId: userId,
+                  },
+              });
+            }}>
+              {src.name}
+            </LinkOverlay>
+
+          </Box>
+          {(isLoggedIn && userType !== "landlord") && <IconButton
+            bg="#FFFFFF"
+            icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}
+            onClick={(e) => {
+              // cancel wishlist
+              e.preventDefault();
+              handleWishlist();
+            }}
+          />}
+        </Flex>
 
         <Box color="#505050" lineHeight="tight" noOfLines={1}>
           {src.address}
@@ -77,13 +145,12 @@ const ListingCard = ({ src }) => {
         <Box
           color="gray.500"
           fontWeight="semibold"
-          letterSpacing="wide"
           fontSize="xs"
           textTransform="uppercase"
           ml="2"
           p={3}
         >
-          <SimpleGrid columns={3} spacing={5}>
+          <SimpleGrid columns={3} spacing={3}>
             <Text>{src.bedrooms} beds</Text>
             <Text>{src.bathrooms} baths</Text>
             <Text>{src.squareFeet} sqft</Text>

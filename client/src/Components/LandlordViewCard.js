@@ -17,7 +17,16 @@ import heart from "../img/Union.svg";
 import star from "../img/rating_star.jpg";
 import delete1 from "../img/delete.jpg";
 import edit from "../img/edit.jpg";
+import { useNavigate } from "react-router-dom";
+import { deleteListing } from "../services/listingApis";
+
 const LandlordViewCard = ({ src }) => {
+  const navigate = useNavigate();
+  
+  async function deleteCurrentListing(listing_id){
+    await deleteListing(listing_id);
+  }
+
   return (
     <LinkBox
       borderRadius={15}
@@ -98,7 +107,8 @@ const LandlordViewCard = ({ src }) => {
                       />
                     }
                     onClick={(e) => {
-                      e.preventDefault();
+                      // e.preventDefault();
+                      deleteCurrentListing(src._id)
                     }}
                   />
                 </Box>
@@ -107,8 +117,9 @@ const LandlordViewCard = ({ src }) => {
                     width="5px"
                     icon={
                       <Image
-                        width="100%"
-                        objectFit="cover"
+                        width="75%"
+                        h="85%"
+                        objectFit="fill"
                         src={delete1}
                         alt="logo"
                       />
@@ -134,18 +145,16 @@ const LandlordViewCard = ({ src }) => {
                 w="80%"
                 mr={20}
               >
-                <SimpleGrid columns={5} spacing={1} w="100%">
+                <SimpleGrid columns={4} spacing={1} w="100%">
                   <Box>BedRooms</Box>
                   <Box>Bathrooms</Box>
                   <Box>SquareFeet</Box>
                   <Box>Pets</Box>
-                  <Box>Parameter 5</Box>
 
                   <Text>{src.bedrooms} beds</Text>
                   <Text>{src.bathrooms} baths</Text>
                   <Text>{src.squareFeet} sqft</Text>
                   <Text>{src.petFriendly}</Text>
-                  <Text> Value</Text>
                 </SimpleGrid>
               </Box>
               <Box mt={7} w="8%">
@@ -156,6 +165,9 @@ const LandlordViewCard = ({ src }) => {
                   backgroundColor="white"
                   border="2px"
                   borderRadius={10}
+                  onClick={()=>{
+                    navigate(`/listing/${src._id}`);
+                  }}
                 >
                   View
                 </Button>

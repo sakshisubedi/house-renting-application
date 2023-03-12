@@ -6,7 +6,7 @@ import Submit from "./Submit";
 import { resetPassword, verifyPasswordResetToken } from "./auth";
 import { useNotification } from "./context/hookIndex";
 
-export default function ConfirmPassword() {
+export default function ConfirmPassword({userType}) {
   const [password, setPassword] = useState({
     one: "",
     two: "",
@@ -62,6 +62,7 @@ export default function ConfirmPassword() {
       newPassword: password.one,
       userId: id,
       token,
+      userType
     });
 
     if (error) return updateNotification("error", error);
@@ -82,7 +83,7 @@ export default function ConfirmPassword() {
       </div>
     );
 
-  if (!isValid)
+  if (isValid)
     return (
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
           <h1 className="text-4xl font-semibold text-black">

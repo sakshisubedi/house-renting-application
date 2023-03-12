@@ -17,17 +17,82 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
-import React from "react";
+import { updateLandlord } from "../services/landlordApis";
+import React, { useEffect } from "react";
 import NavBar from "./NavBar";
 import LandlordViewCard from "./LandlordViewCard";
 import house1 from "../img/house1.jpg";
-import ListingCard from "./ListingCard";
-function EditLandlordProfilePage() {
-  // need to get actual data from db
+import { useAuth } from "../Components/auth/context/hookIndex";
+import { getLandlordInfoById } from "../services/landlordApis";
+import { getListingByLandlordId } from "../services/listingApis";
+import { getAverageRatingByListingId } from "../services/ratingApis";
 
-  let tempData = {
-    name: "Pratyush Karmakar",
-    email: "pkarmakar@ucsd.edu",
+function EditLandlordProfilePage() {
+  const { authInfo } = useAuth();
+  const landlordId = authInfo.profile?.id;
+  const [landlordInfo, setLandlordInfo] = React.useState(null);
+  const [listingsInfo, setListingsInfo] = React.useState(null);
+
+  const [name, setName] = React.useState(null);
+  const [email, setEmail] = React.useState(null);
+  const [desc, setDesc] = React.useState(null);
+  const [pronouns, setPronouns] = React.useState(null);
+  const [age, setAge] = React.useState(null);
+  const [phone, setPhone] = React.useState(null);
+
+  useEffect(()=>{
+    async function getLandlordInfo(landlordId) {
+      const response = await getLandlordInfoById(landlordId);
+      if(response?.data) {
+        setLandlordInfo(response.data);
+        setName(response.data.name);
+        setEmail(response.data.email);
+        setDesc(response.data.introduction);
+        setPronouns(response.data.pronoun);
+        setAge(response.data.age);
+        setPhone(response.data.phoneNo);
+      }
+    }
+
+    async function getListingMetadata(listingId) {
+      const response = await getAverageRatingByListingId(listingId);
+      if (response?.data && response.data.length>0) {
+        return response;
+      }
+    }
+
+    async function getListingsInfo(landlordId) {
+      const response = await getListingByLandlordId(landlordId);
+      // console.log(response.data);
+      if(response?.data && response.data.length>0) {
+        response.data.forEach(async listing => {
+          const response1 = await getListingMetadata(listing._id);
+          if (response1) {
+            listing["rating"] = response1.data[0].averageRating ?? 0;
+            listing["reviewCount"] = response1.data[0].reviewCount ?? 0;
+          }
+        });
+        setListingsInfo(response.data);
+      }
+    }
+    getLandlordInfo(landlordId);
+    getListingsInfo(landlordId);
+  }, [landlordId]);
+
+  let tempLandlordInfo = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
+    name: "Anthe Braybrooke",
+    email: "abraybrookej@amazon.com",
+    password: "test123",
+    isVerified: true,
+    pronoun: "They/Them",
+    age: 27,
+    phoneNo: "1234567890",
+    introduction: "some test self intro",
+    profilePicture: null,
+    _id: "640656792b0fe156679a8bc2",
+    createdAt: "2023-03-06T21:09:13.377Z",
+    updatedAt: "2023-03-06T21:09:13.377Z",
+    __v: 0,
   };
   let tempListing = {
     img: house1,
@@ -43,20 +108,35 @@ function EditLandlordProfilePage() {
     petFriendly: "allowed",
     postalCode: 920092,
   };
-  const [desc, setDesc] = React.useState(tempData.desc ?? null);
-  const [pronouns, setPronouns] = React.useState(tempData.pronouns ?? null);
-  const [age, setAge] = React.useState(tempData.age ?? null);
-  const [phone, setPhone] = React.useState(tempData.phone ?? null);
+  // const [desc, setDesc] = React.useState(landlordInfo.introduction ?? null);
+  // const [pronouns, setPronouns] = React.useState(landlordInfo.pronoun ?? null);
+  // const [age, setAge] = React.useState(landlordInfo.age ?? null);
+  // const [phone, setPhone] = React.useState(landlordInfo.phoneNo ?? null);
 
-  const updateUserData = () => {
-    tempData.desc = desc === "" ? null : desc;
-    tempData.pronouns = pronouns === "" ? null : pronouns;
-    tempData.age = age === "" ? null : parseInt(age);
-    tempData.phone = phone === "" ? null : phone;
-    console.log(tempData, "landlord data");
+  const updateLandlordInfo = async () => {
+    landlordInfo.introduction = desc === "" ? null : desc;
+    landlordInfo.pronoun = pronouns === "" ? null : pronouns;
+    landlordInfo.age = age === "" ? null : parseInt(age);
+    landlordInfo.phoneNo = phone === "" ? null : phone;
+    landlordInfo.updatedAt = new Date().toISOString();
+    // console.log(landlordInfo, "landlord data");
 
-    // need to transform tempData into proper DB schema format
-    // SAVE TO DB
+    const response = await updateLandlord(landlordInfo, landlordInfo._id); // NEED TO ENTER DYNAMIC LANDLORD ID
+    if(response?.error) {
+      toast({
+        title: "Failed",
+        description: response?.error,
+        status: "error",
+        position: "top-right"
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Successfully updated landlord profile",
+        status: "success",
+        position: "top-right"
+      });
+    }
   };
 
   const toast = useToast();
@@ -67,10 +147,10 @@ function EditLandlordProfilePage() {
       <Box my={100} ml={250} mr={250}>
         <Box>
           <HStack spacing={5} mb={10}>
-            <Avatar size="2xl" name={tempData.name} src={null} />
+            <Avatar size="2xl" name={name} />
             <VStack spacing={5} align="left" pl={50} w="100%">
               <Flex>
-                <Heading mr={5}>{tempData.name}</Heading>
+                <Heading mr={5}>{name}</Heading>
                 <CheckCircleIcon boxSize={7} color={"blue.500"} />
               </Flex>
               <Textarea
@@ -94,19 +174,21 @@ function EditLandlordProfilePage() {
                 colorScheme="blue"
                 w={100}
                 onClick={(e) => {
-                  // e.preventDefault();
+                  e.preventDefault();
                   try {
-                    updateUserData();
-                    toast({
-                      title: "Success",
-                      description: "Changes Saved",
-                      status: "success",
-                    });
+                    updateLandlordInfo();
+                    // toast({
+                    //   title: "Success",
+                    //   description: "Changes Saved",
+                    //   status: "success",
+                    //   position: "top-right"
+                    // });
                   } catch (error) {
                     toast({
                       title: "Failed",
                       description: error,
                       status: "error",
+                      position: "top-right"
                     });
                   }
                 }}
@@ -123,7 +205,7 @@ function EditLandlordProfilePage() {
                   <Input
                     type="email"
                     placeholder="johndoe@gmail.com"
-                    defaultValue={tempData.email}
+                    defaultValue={email}
                     w="50%"
                     isDisabled
                   />
@@ -141,9 +223,9 @@ function EditLandlordProfilePage() {
                     w="50%"
                     onChange={(e) => setPronouns(e.target.value)}
                   >
-                    <option value="He/Him/His">He/Him/His</option>
-                    <option value="She/Her/Hers">She/Her/Hers</option>
-                    <option value="They/Them/Their">They/Them/Their</option>
+                    <option value="He/Him">He/Him</option>
+                    <option value="She/Her">She/Her</option>
+                    <option value="They/Them">They/Them</option>
                   </Select>
                 </HStack>
               </FormControl>
@@ -191,9 +273,17 @@ function EditLandlordProfilePage() {
             </Flex>
             <Box mt={10}>
               {/* <LandlordViewCard></LandlordViewCard> */}
-              <LandlordViewCard ard src={tempListing}>
+              {listingsInfo?.map((listing, ind) => (
+                <Box key={ind}>
+                  <LandlordViewCard ard src={listing}>
+                    {" "}
+                  </LandlordViewCard>
+                  <br/>
+                </Box>
+              ))}
+              {/* <LandlordViewCard ard src={tempListing}>
                 {" "}
-              </LandlordViewCard>
+              </LandlordViewCard> */}
               {/* All listings go here */}
             </Box>
           </Box>

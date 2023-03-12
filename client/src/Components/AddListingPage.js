@@ -1,4 +1,11 @@
 import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Box,
   Button,
   VStack,
@@ -14,14 +21,26 @@ import {
   RadioGroup,
   Radio,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { createListing } from "../services/listingApis";
-
 import NavBar from "./NavBar";
-// import axios from "axios";
+import { getLandlordInfoById } from "../services/landlordApis";
 
 function AddListingPage() {
   const toast = useToast();
+
+  const landlordId = landlordInfo.profile?.id;
+  const [landlordInfo, setLandlordInfo] = React.useState(null);
+
+  useEffect(()=>{
+    async function getLandlordInfo(landlordId) {
+      const response = await getLandlordInfoById(landlordId);
+      if(response?.data) {
+        setLandlordInfo(response.data);
+      }
+    }
+    getLandlordInfo(landlordId);
+  }, [landlordId]);
 
   const [name, setName] = React.useState();
   const [price, setPrice] = React.useState();
@@ -33,64 +52,72 @@ function AddListingPage() {
   const [pets, setPets] = React.useState();
   const [desc, setDesc] = React.useState();
 
-  const updateListingData = () => {
-    const newListing = {};
-    newListing.name = name;
-    newListing.price = parseInt(price);
-    newListing.address = address;
-    newListing.zipcode = parseInt(zipcode);
-    newListing.bedrooms = bedrooms ? parseInt(bedrooms) : undefined;
-    newListing.bathrooms = bathrooms ? parseInt(bathrooms) : undefined;
-    newListing.area = area ? parseInt(area) : undefined;
-    newListing.pets = pets ? (pets === "true") : undefined;
-    newListing.desc = desc;
-    console.log("new listing = ", newListing);
+  const [media, setMedia] = React.useState([]);
+  const [selectedImages, setSelectedImages] = React.useState([]);
+  const [popup, setPopup] = React.useState(false);
 
-    // need to transform tempData into proper DB schema format
-    // SAVE TO DB
-
-    // axios
-    //   .post("http://localhost:4000/api/v1/listing", newListing, {
-    //     method: "POST",
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //   });
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files.length > 0) {
+      let images = [];
+      for (let i = 0; i < event.target.files.length; i++) {
+        let img = event.target.files[i];
+        let reader = new FileReader();
+        reader.readAsDataURL(img);
+        reader.onload = () => {
+          images.push(reader.result);
+          setSelectedImages(images);
+        };
+      }
+    }
+  };
+  const uploadImages = () => {
+    setMedia(selectedImages);
+    setPopup(false);
   };
 
+  const showPopup = () => {
+    setPopup(true);
+  };
 
-  const addListing = async () => {
+  const closePopup = () => {
+    setPopup(false);
+  };
+
+  const addListing = async (landlordId) => {
     const newListing = {
       name: name,
       address: address,
       rent: parseInt(price),
-      landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
+      // landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
+      landlordId: landlordId,
       description: desc,
       media: [],
       bedrooms: parseInt(bedrooms),
       bathrooms: parseInt(bathrooms),
       squareFeet: parseInt(area),
-      hasPet: pets ? (pets === "true") : false,
-      postalCode: zipcode
-    }
-    
-    console.log("new listing = ", newListing);
+      hasPet: pets ? pets === "true" : false,
+      postalCode: zipcode,
+    };
+
+    // console.log("new listing = ", newListing);
 
     const response = await createListing(newListing);
-    if(response?.error) {
+    if (response?.error) {
       toast({
         title: "Failed",
         description: response?.error,
         status: "error",
+        position: "top-right",
       });
     } else {
       toast({
         title: "Success",
         description: "Successfully added listing",
         status: "success",
+        position: "top-right",
       });
     }
-  }
+  };
 
   return (
     <Box>
@@ -104,18 +131,19 @@ function AddListingPage() {
             onSubmit={(e) => {
               // e.preventDefault();
               try {
-                // updateListingData();
-                addListing();
+                addListing(landlordInfo._id);
                 toast({
                   title: "Success",
                   description: "Changes Saved",
                   status: "success",
+                  position: "top-right",
                 });
               } catch (error) {
                 toast({
                   title: "Failed",
                   description: error,
                   status: "error",
+                  position: "top-right",
                 });
               }
             }}
@@ -143,30 +171,59 @@ function AddListingPage() {
                   />
                 </HStack>
               </FormControl>
-              <FormControl id="media">
-                <FormLabel w={"100%"}>Images/Videos (Up to 10)</FormLabel>
-                <Box
-                  w={"100%"}
-                  h={200}
-                  border="2px"
-                  borderColor="gray.300"
-                  borderRadius={"2xl"}
-                >
-                  {/* IMAGES */}
-                </Box>
-                <Button
-                  variant="solid"
-                  colorScheme="blue"
-                  w={200}
-                  mt={5}
-                  float={"right"}
-                  onClick={() => {
-                    // Uploading images workflow?
-                  }}
-                >
-                  Upload Images/Videos
-                </Button>
-              </FormControl>
+              {/*  */}
+              <FormLabel w={"100%"}>Images/Videos (Up to 10)</FormLabel>
+              <Box
+                w={"100%"}
+                h={200}
+                border="2px"
+                borderColor="gray.300"
+                borderRadius={"2xl"}
+                p={10}
+                fontWeight="bold"
+                ml="auto"
+              >
+                {" "}
+                {media.length > 0 ? `${media.length} file(s) uploaded` : "  "}
+              </Box>
+              {/*  */}
+              {popup && (
+                <Modal isOpen={popup} onClose={closePopup}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Select Image(s)</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <FormControl>
+                        <input
+                          type="file"
+                          name="myImage"
+                          onChange={onImageChange}
+                          multiple
+                        />
+                      </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button colorScheme="blue" mr={3} onClick={uploadImages}>
+                        Save
+                      </Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
+              )}
+              <Button
+                variant="solid"
+                colorScheme="blue"
+                align="right"
+                w={200}
+                mt={5}
+                float={"right"}
+                onClick={showPopup}
+                ml="auto"
+              >
+                Upload Images/Videos
+              </Button>
+              {/*  */}
               <FormLabel w={"100%"} fontSize={"3xl"}>
                 Parameters
               </FormLabel>
@@ -188,7 +245,7 @@ function AddListingPage() {
                         type="number"
                         placeholder="Listing Price..."
                         defaultValue={price}
-                        w="50%"
+                        w="50 %"
                         onChange={(e) => setPrice(e.target.value)}
                       />
                     </HStack>

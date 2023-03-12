@@ -3,13 +3,10 @@ import {
   Button,
   VStack,
   FormControl,
-  FormLabel,
-  Input,
   Textarea,
   HStack,
   Avatar,
   Heading,
-  Select,
   Image,
   ButtonGroup,
   Flex,
@@ -21,24 +18,34 @@ import {
 } from "@chakra-ui/react";
 import {
   AttachmentIcon,
+  CheckCircleIcon,
+  DeleteIcon,
   EmailIcon,
   PhoneIcon,
   StarIcon,
 } from "@chakra-ui/icons";
+import { BiHide, BiLike, BiReply } from "react-icons/bi";
 import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import favIcon from "../img/Union.svg";
 import emptyHeart from "../img/emptyHeartButton.svg";
 import { useLocation } from "react-router-dom";
-import { BiHide } from "react-icons/bi";
 import StarRatings from 'react-star-ratings';
 import { getListingById } from "../services/listingApis";
-import { getAverageRatingByListingId } from "../services/ratingApis";
+import { addRating, getAverageRatingByListingId, getRatingByUserId, updateRating } from "../services/ratingApis";
 import { getLandlordInfoById } from "../services/landlordApis";
 import InterestedPeopleList from "./InterestedPeopleList";
 import DetailedProfile from "./DetailedProfile";
+import { useAuth } from "../Components/auth/context/hookIndex"
+import { addComment, deleteComment, getCommentsByListingId } from "../services/commentApis";
+import { getUserPublicInfoById } from "../services/userApis";
+import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getWishlistByUserId } from "../services/wishlistApis";
 
 function IndividualListingPage() {
+
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
+
   // need to get actual data from PASSED PARAMS IN STATE or API CALLS
 
   let wishlistedPeople = [
@@ -165,23 +172,33 @@ function IndividualListingPage() {
   ];
 
   const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
-  const [currentRating, setCurrentRating] = useState(0); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
+  const [currentRating, setCurrentRating] = useState(null); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
   const [listingInfo, setListingInfo] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
   const [landlordInfo, setLandlordInfo] = useState(null);
-
-  const changeCurrentRating = (value) => {
-    setCurrentRating(value);
-    // UPDATE DB USING RATING API
-  };
+  const [commentInfo, setCommentInfo] = useState(null);
+  const [commentText, setCommentText] = React.useState(null);
+  const [wishlistInfo, setWishlistInfo] = useState(null);
 
   const toast = useToast();
 
   const location = useLocation();
+  const [userId, setUserId] = useState(location?.state?.userId || authInfo?.profile?.id);
+
+  async function isWishlistedByUser(listingId) {
+    const response = await getIsWishlistedByUser(userId, listingId);
+    if(!response.data) {
+      setIsWishlisted(response.data);
+      setWishlistInfo(null);
+    } else {
+      setIsWishlisted(true);
+      setWishlistInfo(response.data);
+    }
+  }
 
   useEffect(() => {
-    const listingId = location.pathname.split("/").pop();
+    let listingId = location.pathname.split("/").pop();
 
     async function getListing() {
       const response = await getListingById(listingId);
@@ -193,7 +210,6 @@ function IndividualListingPage() {
     
     async function getAverageRating() {
       const response = await getAverageRatingByListingId(listingId);
-      console.log(response);
       if(response?.data && response.data.length>0) {
         setAverageRating(response.data[0].averageRating);
         setReviewCount(response.data[0].reviewCount);
@@ -207,12 +223,121 @@ function IndividualListingPage() {
       }
     }
 
+    async function getCurrentRating() {
+      const response = await getRatingByUserId(userId, listingId);
+      if(response?.data && response.data.length>0) {
+        setCurrentRating(response.data[0]);
+      }
+    }
+
     getListing();
-    getAverageRating();
-  }, [location])
+    isLoggedIn && getAverageRating();
+    isLoggedIn && getCurrentRating();
+    getComments(listingId);
+    isLoggedIn && isWishlistedByUser(listingId);
+  }, [location, userId, isLoggedIn])
+
+  const getComments = async (listingId) => {
+    const response = await getCommentsByListingId(listingId);
+    if(response?.data && response.data.length>0) {
+      setCommentInfo(response.data);
+    }
+  }
+
+  const handleWishlist = async () => {
+    if(!isWishlisted) {
+      try {
+        await createWishlistItem({
+          listingId: location.pathname.split("/").pop(),
+          userId: userId
+        });
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    } else {
+      try {
+        await deleteWishlistItem(wishlistInfo?._id);
+      } catch (error) {
+        toast({
+          title: "Failed",
+          description: error,
+          status: "error",
+          position: "top-right"
+        });
+      }
+    }
+    await isWishlistedByUser(location.pathname.split("/").pop());
+  }
+
+  const handleComment = async () => {
+    if(commentText.trim() !== "") {
+      const listingId = location.pathname.split("/").pop();
+      const comment = {
+        listingId,
+        userId: userId,
+        comment: commentText
+      }
+      console.log(comment)
+      const response = await addComment(comment);
+      await getComments(listingId);
+      if(response?.error) {
+        toast({
+          title: "Failed",
+          description: response?.error,
+          status: "error",
+          position: "top-right"
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Successfully added new comment",
+          status: "success",
+          position: "top-right"
+        });
+      }
+    }
+    setCommentText(null);
+  }
+
+  async function deleteComm(comm_id){
+    await deleteComment(comm_id);
+    await getComments(location.pathname.split("/").pop());
+  }
+
+  const changeCurrentRating = async (value) => {
+    if (!currentRating) {
+      // create new rating
+      // console.log("here", location.pathname.split("/").pop())
+      const rating = {
+        userId: userId, // NEED TO ADD CURRENT USER ID
+        listingId: location.pathname.split("/").pop(),
+        rating: value
+      };
+      // console.log("req", rating)
+      const response = await addRating(rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    } else {
+      // update rating
+      const rating = {
+        rating: value
+      };
+      const response = await updateRating(currentRating._id, rating);
+      if (response?.data) {
+        setCurrentRating(response.data)
+      }
+    }
+  };
 
   return (
-    listingInfo && landlordInfo && (
+    // && userId
+    listingInfo && landlordInfo  && (
       <Box>
       <NavBar />
       <Box my={50} ml={150} mr={150}>
@@ -267,7 +392,7 @@ function IndividualListingPage() {
                   // ADD/REMOVE FROM WISHLIST
 
                   // CHANGING ICON SOURCE IMG
-                  setIsWishlisted(!isWishlisted);
+                  handleWishlist();
                 }}
               />
             </VStack>
@@ -282,9 +407,9 @@ function IndividualListingPage() {
         >
           {/* IMAGES */}
           {/* <HStack p={1} spacing={5}>
-            <Image rounded={"2xl"} src={tempData.img ?? null} />
+            <Image rounded={"2xl"} src={listingData.img ?? null} />
             <Spacer/>
-            <Image rounded={"2xl"} src={tempData.img ?? null} />
+            <Image rounded={"2xl"} src={listingData.img ?? null} />
           </HStack> */}
         </Box>
         <HStack spacing={5} align={"top"}>
@@ -330,18 +455,22 @@ function IndividualListingPage() {
                   Add a Star Rating
                 </Heading>
                 {/* Rating stars */}
-                <StarRatings
-                  name="rating"
-                  numberOfStars={5}
-                  starRatedColor={"#F6E05E"}
-                  starEmptyColor={"#E2E8F0"}
-                  starHoverColor={"#F6E05E"}
-                  starDimension={"30px"}
-                  rating={currentRating}
-                  changeRating={(value)=>{
-                    changeCurrentRating(value);
-                  }}
-                />
+                {isLoggedIn ?
+                  <StarRatings
+                    name="rating"
+                    numberOfStars={5}
+                    starRatedColor={"#F6E05E"}
+                    starEmptyColor={"#E2E8F0"}
+                    starHoverColor={"#F6E05E"}
+                    starDimension={"30px"}
+                    // rating={currentRating}
+                    rating={currentRating ? currentRating.rating : 0}
+                    changeRating={(value)=>{
+                      changeCurrentRating(value);
+                    }}
+                  /> :
+                  <Text fontSize={20} fontWeight={"light"}>Login to add your rating!</Text>
+                }
               </HStack>
               <Heading my={5} size={"lg"}>
                 Comments
@@ -350,16 +479,18 @@ function IndividualListingPage() {
                 border="2px"
                 borderColor="gray.300"
                 borderRadius={"2xl"}
-                p={5}
+                p={2}
               >
                 <form>
                   <FormControl id="commentText"></FormControl>
                   <Textarea
                     placeholder="Leave a Comment..."
                     variant={"filled"}
-                    mb={5}
+                    mb={2}
+                    defaultValue={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
                   />
-                  <Flex mb={5}>
+                  <Flex mb={3}>
                     <Spacer />
                     <ButtonGroup>
                       <IconButton
@@ -377,6 +508,22 @@ function IndividualListingPage() {
                         onClick={(e) => {
                           e.preventDefault();
                           // ADD NEW COMMENT
+                          try {
+                            handleComment();
+                            // toast({
+                            //   title: "Success",
+                            //   description: "Changes Saved",
+                            //   status: "success",
+                            //   position: "top-right"
+                            // });
+                          } catch (error) {
+                            toast({
+                              title: "Failed",
+                              description: error,
+                              status: "error",
+                              position: "top-right"
+                            });
+                          }
                         }}
                       >
                         Post
@@ -384,8 +531,53 @@ function IndividualListingPage() {
                     </ButtonGroup>
                   </Flex>
                 </form>
-                <Divider borderWidth={"2px"} mb={5} />
-                <Box>{/* COMMENTS */}</Box>
+                <Divider borderWidth={"2px"} mb={3} />
+                <Box>
+                  {/* COMMENTS */}
+                  {commentInfo?.map((comment, ind) => (
+                    <Box key={ind}>
+                      <HStack spacing={2} px={3}>
+                        <Avatar name={comment.user.name} size={"sm"}/>
+                        <Text fontWeight={"bold"} fontSize={"2xl"}>{comment.user.name}</Text>
+                        <Spacer />
+                        <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
+                        <BiReply ml={5} size={30} color={"#3182CE"} onClick={()=>{}}/>
+                        <IconButton icon={<DeleteIcon boxSize={5}/>} variant={"link"} colorScheme={"blue"} onClick={()=>{
+                          deleteComm(comment._id)
+                        }}/>
+                      </HStack>
+                      <Text ml={10} fontSize={"lg"}>{comment.comment}</Text>
+                      <Divider borderWidth={"3px"} my={2}/>
+                      {comment.reply.length>0 && Object.keys(comment.reply[0]).length>0 ?
+                        <>
+                          <Box ml={"2rem"}>
+                            {/* REPLY BOX */}
+                            {
+                              comment.reply.map((reply, idx) => (
+                                <>
+                                  <HStack spacing={2} px={3} key={idx}>
+                                    <Avatar name={reply.user.name} size={"xs"}/>
+                                    <Text fontWeight={"bold"} fontSize={"xl"}>{reply.user.name}</Text>
+                                    <CheckCircleIcon boxSize={4} color={"blue.500"} />
+                                    <Spacer />
+                                    <BiLike size={25} color={"#3182CE"} onClick={()=>{}}/>
+                                    <IconButton icon={<DeleteIcon boxSize={5}/>} variant={"link"} colorScheme={"blue"} onClick={()=>{
+                                      deleteComm(reply._id)
+                                    }}/>
+                                  </HStack>
+                                  <Text ml={10} fontSize={"md"}>{reply.comment}</Text>
+                                </>
+                              ))
+                            }
+                            
+                          </Box>
+                          <Divider borderWidth={"3px"} my={2}/>
+                        </>
+                      : <br/>
+                      }
+                    </Box>
+                  ))}
+                </Box>
               </Box>
             </Box>
           </VStack>
@@ -398,6 +590,7 @@ function IndividualListingPage() {
               borderColor="gray.300"
               borderRadius={"2xl"}
               p={5}
+              style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
             >
               <VStack spacing={5}>
                 <HStack spacing={10} w={"full"}>
@@ -423,17 +616,19 @@ function IndividualListingPage() {
               border="2px"
               borderColor="gray.300"
               borderRadius={"2xl"}
-              p={5}
+              py={5}
+              px={2}
+              style={{ filter:  isLoggedIn ? "none" : "blur(5px)" }}
             >
               <Text fontWeight={"bold"} textAlign={"center"}>
-                People who also wishlisted this
+                People who have wishlisted this
               </Text>
               <Divider borderWidth={"3px"} my={2} />
               {/* WISHLISTED PEOPLE */}
               <VStack
                 spacing={2}
                 h={300}
-                overflowY={"auto"}
+                overflowY={isLoggedIn ? "auto" : "hidden"}
                 overflowX={"hidden"}
               >
                 {wishlistedPeople.map((person, ind) => (
@@ -447,13 +642,13 @@ function IndividualListingPage() {
                         align={"left"}
                         w={"60%"}
                       >
-                        <Text blur={"md"}>{person.name}</Text>
-                        <Divider borderWidth={"1px"} />
+                        <Text blur={"md"} fontWeight={"bold"}>{person.name}</Text>
+                        <Divider borderWidth={"2px"} />
                         <HStack spacing={2}>
                           {person.age.isPublic ? (
                             <Text>{person.age.data}</Text>
                           ) : (
-                            <BiHide />
+                            <BiHide size={"1.5rem"}/>
                           )}
                           <Spacer />
                           <Text>{person.pronoun}</Text>
@@ -463,16 +658,16 @@ function IndividualListingPage() {
                         </HStack>
                       </VStack>
                       <Spacer />
-                      <DetailedProfile p={person}></DetailedProfile>
+                      <DetailedProfile p={person} l={isLoggedIn}></DetailedProfile>
                     </HStack>
-                    <Divider borderWidth={"2px"} />
+                    <Divider borderWidth={"2px"} my={2} />
                   </Box>
                 ))}
               </VStack>
               <Divider borderWidth={"3px"} />
               <Flex mt={2}>
                 <Spacer />
-                <InterestedPeopleList />
+                <InterestedPeopleList l={isLoggedIn}/>
                 <Spacer />
               </Flex>
             </Box>

@@ -1,9 +1,17 @@
 import axios from "axios";
+import env from "../../environment";
+const BASE_URL = env.BASE_URL;
 
-const client = axios.create({ baseURL: "http://localhost:4000/api/v1/login/" });
+// local test
+// const client = axios.create({ baseURL: "http://localhost:4000/api/v1/login" });
+// const landlord = axios.create({ baseURL: "http://localhost:4000/api/v1/landlord" });
+
+const client = axios.create({ baseURL: `${BASE_URL}/api/v1/login` });
+const landlord = axios.create({ baseURL: `${BASE_URL}/api/v1/landlord` });
 
 export default client;
 
+// user server
 export const newUser = async (userInfo) => {
   try {
     const { data } = await client.post("/create", userInfo);
@@ -40,12 +48,13 @@ export const signInUser = async (userInfo) => {
   }
 };
 
-export const getIsAuth = async (token) => {
+export const getIsAuth = async (token, userType) => {
   try {
     const { data } = await client.get("/is-auth", {
       headers: {
         Authorization: "Bearer " + token,
         accept: "application/json",
+        userType
       },
     });
     return data;
@@ -57,13 +66,13 @@ export const getIsAuth = async (token) => {
   }
 };
 
-export const forgetPassword = async (data) => {
+export const forgetPassword = async (email, userType) => {
   try {
-    const { emailData } = await client.post("/forget-password", { email: {data} });
-    return emailData;
+    const { data } = await client.post("/forget-password", { email, userType });
+    return data;
   } catch (error) {
     const { response } = error;
-    if (response?.emailData) return response.emailData;
+    if (response?.data) return response.data;
 
     return { error: error.message || error };
   }
@@ -100,6 +109,114 @@ export const resendEmailVerificationToken = async (userId) => {
   try {
     const { data } = await client.post(
       "/resend-email-verification-token",
+      { userId }
+    );
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+// landlord server
+export const newLandlord = async (userInfo) => {
+  try {
+    const { data } = await landlord.post("/create-landlord", userInfo);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+export const verifyLandlordEmail = async (userInfo) => {
+  try {
+    const { data } = await landlord.post("/verify-email-landlord", userInfo);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+export const signInLandlord = async (userInfo) => {
+  try {
+    const { data } = await landlord.post("/sign-in-landlord", userInfo);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+export const getIsAuthLandlord = async (token) => {
+  try {
+    const { data } = await landlord.get("/is-auth-landlord", {
+      headers: {
+        Authorization: "Bearer " + token,
+        accept: "application/json",
+      },
+    });
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+export const forgetPasswordLandlord = async (email) => {
+  try {
+    const { data } = await landlord.post("/forget-password-landlord", { email });
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+export const verifyPasswordResetTokenLandlord = async (token, userId) => {
+  try {
+    const { data } = await landlord.post("/verify-pass-reset-token-landlord", {
+      token,
+      userId,
+    });
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+export const resetPasswordLandlord = async (passwordInfo) => {
+  try {
+    const { data } = await landlord.post("/reset-password-landlord", passwordInfo);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+export const resendEmailVerificationTokenLandlord = async (userId) => {
+  try {
+    const { data } = await landlord.post(
+      "/resend-email-verification-token-landlord",
       { userId }
     );
     return data;

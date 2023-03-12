@@ -4,65 +4,73 @@ import {
     Heading,
     Center,
     SimpleGrid,
+    useToast,
 } from "@chakra-ui/react";
 import React from "react";
 import ListingCard from "./ListingCard";
-import house1 from '../img/house1.jpg'
+import house1 from '../img/house1.jpg';
 import NavBar from "./NavBar";
-
+import EmptyWishlist from "./EmptyWishlist";
+import { getWishlistByUserId } from '../services/wishlistApis';
+import { getListingById } from "../services/listingApis";
+import { useEffect, useState } from "react";
+import { useAuth } from "./auth/context/hookIndex";
+import { useLocation } from "react-router-dom";
 
 function WishlistPage() {
     // need to get actual data from db
+    const { authInfo } = useAuth();
+    const { isLoggedIn } = authInfo;
+    const location = useLocation();
+    const [userId, setUserId] = useState(location?.state?.userId || authInfo?.profile?.id);
 
-    // const tempData = {
-    //   name: "Jin Huangfu",
-    //   desc: "hi",
-    //   email: "jhuangfu@ucsd.edu",
-    //   pronouns: "She/Her/Hers",
-    //   age: 23,
-    //   occupation: "student",
-    //   datePref: "4 month",
-    //   spacePref: "1bd/1ba",
-    //   housematesBool: "No",
-    //   roommatePrefs: "prefs",
-    //   petsPref: "Yes",
-    // };
+    const [wishlistedListings, setwishlistedListings] = useState([]);
 
-    let tempData = {
-        name: "Jin Huangfu",
-        profile: 'https://i.stack.imgur.com/l60Hf.png',
-    };
+    const getUserWishlist = async (userId) => {
+        const response = await getWishlistByUserId(userId);
+        var listings = [];
+        if (!response?.error) { // traverse listing id to get listing data
+            for (const listingId of response.data) {
+                const listingDetail = await getListingById(listingId.listingId);
+                if (response?.error) { continue; }
+                else {
+                    listings.push(listingDetail.data);
+                }
+            }
+        }
+        setwishlistedListings(listings);
+    }
 
-    let tempListing = {
-        img: house1,
-        name: "Listing 1",
-        address: "Unit 1202, 4067 Miramar St, La Jolla, CA 92092",
-        bedrooms: 3,
-        bathrooms: 2,
-        rent: '1900',
-        reviewCount: 34,
-        rating: 3.3,
-        squareFeet: 1200,
-    };
+    useEffect(() => {
+        const id = location?.state?.userId || authInfo?.profile?.id;
+        setUserId(id);
+        isLoggedIn && getUserWishlist(id);
+    }, [userId, isLoggedIn, authInfo?.profile?.id, location?.state?.userId]);
+
 
     return (
-        <Box>
-            {/* <NavBar /> */}
-            <NavBar profileURL = {tempData.profile}></NavBar>
-            <Box my={50} ml={200} mr={200}>
-                <Center >
-                    {/* empty listing page */}
-                    {/* <EmptyWishlist></EmptyWishlist> */}
+        userId && <Box>
+        <NavBar />
+        <Box my={50} ml={200} mr={200}>
+            {wishlistedListings.length == 0 ?
+                (
+                    <Center>
+                        <EmptyWishlist></EmptyWishlist>
+                    </Center>
+                )
+                :
+                (
                     <VStack align="left" spacing={30}>
                         <Heading>Your Wishlist</Heading>
-                        <SimpleGrid columns={3} spacing={10}>
-                            <ListingCard src={tempListing}> </ListingCard>
-                        </SimpleGrid>
+                        <Center>
+                            <SimpleGrid columns={3} spacing={10}>
+                                {wishlistedListings.map( (listing, idx) => (<ListingCard key={idx} src={{...listing, userId: authInfo?.profile?.id}} getWishlist={(id) => getUserWishlist(id)}> </ListingCard>))}
+                            </SimpleGrid>
+                        </Center>
                     </VStack>
-                </Center>
-
-            </Box>
+                )}
         </Box>
+    </Box>
     );
 }
 
