@@ -44,10 +44,13 @@ const updateListing = (models) => {
 const getListings = (models) => {
     return async (req, res, next) => {
         try {
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numListings = parseInt(req.query.numListings)
+            const offset = numListings * (pageNum - 1)
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.find().select({ __v: 0 })
+                data: await models.listing.find().skip(offset).limit(numListings).select({ __v: 0 })
             })
         } catch (error) {
             return res.status(500).json({
@@ -129,10 +132,13 @@ const deleteListing = (models) => {
 const getListingByRating = (models) => {
     return async (req, res, next) => {
         try {
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numListings = parseInt(req.query.numListings)
+            const offset = numListings * (pageNum - 1)
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.find().sort('-rating').select({ __v: 0 })
+                data: await models.listing.find().sort('-rating').skip(offset).limit(numListings).select({ __v: 0 })
             })
         } catch (error) {
             return res.status(500).json({
@@ -216,6 +222,7 @@ const getAverageRatingForAllListingByLandlordId = (models) => {
 }
 
 // get all listings depending on the search parameter
+// TODO: pagination
 const getListingBySearchParameter = (models) => {
     return async (req, res, next) => {
         try {
@@ -248,6 +255,10 @@ const getListingBySearchParameter = (models) => {
             if("hasPet" in req.query) {
                 findQuery["hasPet"] = req.query.hasPet === "true"
             }
+
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numListings = parseInt(req.query.numListings)
+            const offset = numListings * (pageNum - 1)
 
             const pipeline = [
                 {
@@ -283,7 +294,7 @@ const getListingBySearchParameter = (models) => {
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.aggregate(pipeline)
+                data: await models.listing.aggregate(pipeline).skip(offset).limit(numListings)
             })
         } catch (error) {
             return res.status(500).json({
