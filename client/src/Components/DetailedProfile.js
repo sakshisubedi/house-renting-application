@@ -98,9 +98,9 @@ const DetailedProfile = ({ p, l }) => {
                                                     >
                                                         Email
                                                     </Box>
-                                                    {p.email.isPublic ? (
+                                                    {p.email ? (
                                                         <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
-                                                            {' '}{p.email.data}
+                                                            {' '}{p.email}
                                                         </Box>
                                                     ) : (<BiHide size={"1.5rem"} />)}
                                                 </VStack>
@@ -131,9 +131,9 @@ const DetailedProfile = ({ p, l }) => {
                                                     >
                                                         Age
                                                     </Box>
-                                                    {p.age.isPublic ? (
+                                                    {p.age ? (
                                                         <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
-                                                            {' '}{p.age.data}
+                                                            {' '}{p.age}
                                                         </Box>
                                                     ) : (<BiHide size={"1.5rem"} />)}
                                                 </VStack>
@@ -148,9 +148,9 @@ const DetailedProfile = ({ p, l }) => {
                                                     >
                                                         Occupation
                                                     </Box>
-                                                    {p.occupation.isPublic ? (
+                                                    {p.occupation ? (
                                                         <Box as='span' fontWeight='normal' fontSize='md' textAlign={"center"}>
-                                                            {' '}{p.occupation.data}
+                                                            {' '}{p.occupation}
                                                         </Box>
                                                     ) : (<BiHide size={"1.5rem"} />)}
                                                 </VStack>
