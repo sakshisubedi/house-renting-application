@@ -105,6 +105,19 @@ export default function Signin({userType}) {
               </p>
               <span style={{fontWeight: 600}}><CustomLink to={userType === "customer" ? "/auth/user/signup" : "/auth/landlord/signup"}>SIGN UP</CustomLink></span>
             </div>
+
+            {/* Switch user or landlord login */}
+            <div className="flex justify-center"
+                  style={{fontSize: "12px", fontWeight: "400"}}>
+              <p style={{color: "#4B4B4B", paddingRight: "3px"}}>
+                {userType === "customer" ? "Want to sign in as a landlord?" : "Want to sign in as a user?"}
+              </p>
+              { userType === "customer" ? (
+                <span onClick={(e) => {window.location.href = "/auth/landlord/signin"}} style={{fontWeight: 600}}><CustomLink>SIGN IN</CustomLink></span>
+              ) : (
+                <span onClick={(e) => {window.location.href = "/auth/user/signin"}} style={{fontWeight: 600}}><CustomLink>SIGN IN</CustomLink></span>
+              )}
+            </div>
           </form>
       </div>
     </div>
