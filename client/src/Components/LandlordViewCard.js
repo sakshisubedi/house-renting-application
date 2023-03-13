@@ -1,3 +1,11 @@
+/*
+ * Filename: LandlordViewCard.js
+ * 
+ * This file defines the card that displays key details about a specific listing. The card
+ * is used on the landlord profile page to display a single listing created by the landlord,
+ * and there can be multiple of these cards displayed together.
+ */
+
 import {
   Box,
   Image,

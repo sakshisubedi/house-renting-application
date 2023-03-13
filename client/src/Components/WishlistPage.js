@@ -1,3 +1,12 @@
+/*
+ * Filename: WishlistPage.js
+ * 
+ * This file defines the wishlist screen for the user where they can view all their
+ * favorited listings. It displays the wishlisted listings using ListingCards in a grid 
+ * format, and each of these listings can be unfavorited from this screen, or navigated 
+ * to by clicking the card.
+ */
+
 import {
     Box,
     VStack,
