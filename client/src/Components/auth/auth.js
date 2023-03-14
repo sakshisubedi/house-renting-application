@@ -2,7 +2,7 @@ import axios from "axios";
 import env from "../../environment";
 const BASE_URL = env.BASE_URL;
 
-// local test
+// Local test url
 // const client = axios.create({ baseURL: "http://localhost:4000/api/v1/login" });
 // const landlord = axios.create({ baseURL: "http://localhost:4000/api/v1/landlord" });
 
@@ -11,7 +11,8 @@ const landlord = axios.create({ baseURL: `${BASE_URL}/api/v1/landlord` });
 
 export default client;
 
-// user server
+// User server
+// Create a new user on sign-up page with user's credentials, and return the data to server; return error when we failed. 
 export const newUser = async (userInfo) => {
   try {
     const { data } = await client.post("/create", userInfo);
@@ -24,6 +25,7 @@ export const newUser = async (userInfo) => {
   }
 };
 
+// Veryify user's email after a new user is created, and return the data to server; return error when we failed. 
 export const verifyUserEmail = async (userInfo) => {
   try {
     const { data } = await client.post("/verify-email", userInfo);
@@ -36,6 +38,7 @@ export const verifyUserEmail = async (userInfo) => {
   }
 };
 
+// Handle the signed-in user's credentials, and return the data to server; return error when we failed. 
 export const signInUser = async (userInfo) => {
   try {
     const { data } = await client.post("/sign-in", userInfo);
@@ -48,6 +51,8 @@ export const signInUser = async (userInfo) => {
   }
 };
 
+// Get user's status after a user is logged in, and return the data to server; return error when we failed. 
+// Thanks to Sakshi for adding the userType parameter to optimize the duplicated structure of landlord. 
 export const getIsAuth = async (token, userType) => {
   try {
     const { data } = await client.get("/is-auth", {
@@ -66,6 +71,7 @@ export const getIsAuth = async (token, userType) => {
   }
 };
 
+// Handle user's forget password request, and return the email and data to server; return error when we failed. 
 export const forgetPassword = async (email, userType) => {
   try {
     const { data } = await client.post("/forget-password", { email, userType });
@@ -78,6 +84,7 @@ export const forgetPassword = async (email, userType) => {
   }
 };
 
+// Handle verifying if the token is valid, and return the data to server; return error when we failed. 
 export const verifyPasswordResetToken = async (token, userId) => {
   try {
     const { data } = await client.post("/verify-pass-reset-token", {
@@ -93,6 +100,7 @@ export const verifyPasswordResetToken = async (token, userId) => {
   }
 };
 
+// Handle user's reset password request, and return password credentials to server; return error when we failed. 
 export const resetPassword = async (passwordInfo) => {
   try {
     const { data } = await client.post("/reset-password", passwordInfo);
@@ -105,6 +113,7 @@ export const resetPassword = async (passwordInfo) => {
   }
 };
 
+// Handle user's resending otp request, and return the data to server; return error when we failed. 
 export const resendEmailVerificationToken = async (userId) => {
   try {
     const { data } = await client.post(
@@ -120,7 +129,8 @@ export const resendEmailVerificationToken = async (userId) => {
   }
 };
 
-// landlord server
+// Landlord server
+// Create a new landlord on sign-up page with landlord's credentials, and return the data to server; return error when we failed. 
 export const newLandlord = async (userInfo) => {
   try {
     const { data } = await landlord.post("/create-landlord", userInfo);
@@ -133,6 +143,7 @@ export const newLandlord = async (userInfo) => {
   }
 };
 
+// Veryify landlord's email after a new landlord is created, and return the data to server; return error when we failed. 
 export const verifyLandlordEmail = async (userInfo) => {
   try {
     const { data } = await landlord.post("/verify-email-landlord", userInfo);
@@ -145,6 +156,7 @@ export const verifyLandlordEmail = async (userInfo) => {
   }
 };
 
+// Handle the signed-in landlord's credentials, and return the data to server; return error when we failed. 
 export const signInLandlord = async (userInfo) => {
   try {
     const { data } = await landlord.post("/sign-in-landlord", userInfo);
@@ -157,6 +169,7 @@ export const signInLandlord = async (userInfo) => {
   }
 };
 
+// Get landlord's status after a landlord is logged in, and return the data to server; return error when we failed. 
 export const getIsAuthLandlord = async (token) => {
   try {
     const { data } = await landlord.get("/is-auth-landlord", {
@@ -174,6 +187,7 @@ export const getIsAuthLandlord = async (token) => {
   }
 };
 
+// Handle landlord's forget password request, and return the email and data to server; return error when we failed. 
 export const forgetPasswordLandlord = async (email) => {
   try {
     const { data } = await landlord.post("/forget-password-landlord", { email });
@@ -186,6 +200,7 @@ export const forgetPasswordLandlord = async (email) => {
   }
 };
 
+// Handle verifying if the token is valid, and return the data to server; return error when we failed. 
 export const verifyPasswordResetTokenLandlord = async (token, userId) => {
   try {
     const { data } = await landlord.post("/verify-pass-reset-token-landlord", {
@@ -201,6 +216,7 @@ export const verifyPasswordResetTokenLandlord = async (token, userId) => {
   }
 };
 
+// Handle landlord's reset password request, and return password credentials to server; return error when we failed. 
 export const resetPasswordLandlord = async (passwordInfo) => {
   try {
     const { data } = await landlord.post("/reset-password-landlord", passwordInfo);
@@ -213,6 +229,7 @@ export const resetPasswordLandlord = async (passwordInfo) => {
   }
 };
 
+// Handle landlord's resending otp request, and return the data to server; return error when we failed. 
 export const resendEmailVerificationTokenLandlord = async (userId) => {
   try {
     const { data } = await landlord.post(

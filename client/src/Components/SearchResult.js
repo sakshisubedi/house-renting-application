@@ -66,17 +66,25 @@ const SearchResult = ({ src }) => {
         <Heading ml={8} mt={5} pl={10} pt={5} pr={5} textAlign="left">
           Showing results for “Location”...
         </Heading>
-        <FilterRow search={handleSearch} />
+        <Flex
+          justifyContent="space-between"
+          alignItems="flex-start"
+          pl={10}
+          pr={5}
+          pt={5}
+          ml={8}
+        >
+          <FilterRow search={handleSearch} />
+        </Flex>
 
       </Box>
       <Box margin="auto" pt={3} pl={10}>
         <VStack
-          spacing={25}
+          spacing={30}
           justifyContent="space-between"
           alignItems="flex-start"
           margin="auto"
           ml={8}
-          mr={8}
         >
           <SimpleGrid
             columns={{ base: 1, md: 4 }}

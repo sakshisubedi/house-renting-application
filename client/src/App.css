@@ -36,13 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.search-filter:focus-visible{
-  border-color: white !important;
-  box-shadow: none !important;
-}
-
-.css-1dsxu8j:focus-visible {
-  border-color: #CBD5E0 !important;
-  box-shadow: 0 0 0 1px #CBD5E0 !important;
-}

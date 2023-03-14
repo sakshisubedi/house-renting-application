@@ -1,6 +1,8 @@
 import React from "react";
 import { ImSpinner3 } from "react-icons/im";
 
+
+// Submit button style
 export default function Submit({ value, busy }) {
   return (
     <button

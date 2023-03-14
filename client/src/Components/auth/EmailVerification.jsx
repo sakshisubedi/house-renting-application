@@ -5,9 +5,11 @@ import { useAuth, useNotification } from "./context/hookIndex";
 import Submit from "./Submit";
 import NavBar from "../NavBar"
 
+// OTP input length setting
 const OTP_LENGTH = 6;
 let currentOTPIndex;
 
+// Check if the input format is correct
 const isValidOTP = (otp) => {
   let valid = false;
 
@@ -19,10 +21,12 @@ const isValidOTP = (otp) => {
   return valid;
 };
 
+// Thanks to Sakshi for adding the userType parameter to optimize the duplicated structure of landlord. 
 export default function EmailVerification() {
   const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(""));
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
+  // Get current user's verifing status
   const { isAuth, authInfo } = useAuth();
   const { isLoggedIn, profile } = authInfo;
   const isVerified = profile?.isVerified;
@@ -36,6 +40,7 @@ export default function EmailVerification() {
 
   const navigate = useNavigate();
 
+  // Jump to next input field
   const focusNextInputField = (index) => {
     setActiveOtpIndex(index + 1);
   };
@@ -57,6 +62,7 @@ export default function EmailVerification() {
     setOtp([...newOtp]);
   };
 
+  // Handle user's resend otp request via resendEmailVerificationToken API
   const handleOTPResend = async () => {
     const { error, message } = await resendEmailVerificationToken(user.id);
 
@@ -72,6 +78,7 @@ export default function EmailVerification() {
     }
   };
 
+  // First validate otp format, then use verifyUserEmail API to send use's credentials to server on submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -109,8 +116,10 @@ export default function EmailVerification() {
     <div>
       <NavBar />
 
+      {/* Background color and position of verification card */}
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
-          {/* Verification Header */}
+
+          {/* Verification card and header */}
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6"}>
             <div>
               <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
