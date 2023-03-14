@@ -38,7 +38,9 @@ const ListingCard = ({ src, getWishlist }) => {
   const [userId, setUserId] = useState(src?.userId || authInfo?.profile?.id);
   const userType = localStorage.getItem('user-type');
 
+  // handle the situation when the user clicks the "like" button on listing card
   const handleWishlist = async () => {
+    // if previously not wishlisted, create the wishlist item and add to database
     if(!isWishlisted) {
       try {
         await createWishlistItem({
@@ -55,7 +57,9 @@ const ListingCard = ({ src, getWishlist }) => {
         });
       }
     } else {
+    // if previously wishlisted, delete the wishlist in the database
       try {
+        // filter the wishlist item of current listing
         const wishlist = wishlistInfo.filter(wishlist => wishlist.listingId === src?._id);
         if(wishlist.length>0) {
           await deleteWishlistItem(wishlist[0]._id);
@@ -78,6 +82,8 @@ const ListingCard = ({ src, getWishlist }) => {
   useEffect(() => {
     const id = src?.userId || authInfo?.profile?.id;
     setUserId(id);
+
+    // get whether the listing is wishlited by the user
     async function isWishlistedByUser() {
       const response = await getIsWishlistedByUser(id, src?._id);
       if(!response.data) {
@@ -88,6 +94,7 @@ const ListingCard = ({ src, getWishlist }) => {
     }
     isLoggedIn && isWishlistedByUser();
 
+    // get the wishlist of current user (contains all wishlisted listings)
     async function getWishlist() {
       const response = await getWishlistByUserId(id);
       if(response?.data) {
@@ -133,11 +140,12 @@ const ListingCard = ({ src, getWishlist }) => {
             </LinkOverlay>
 
           </Box>
+
+          {/* show the "like" button only when the user is logged in and not a landlord */}
           {(isLoggedIn && userType !== "landlord") && <IconButton
             bg="#FFFFFF"
             icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}
             onClick={(e) => {
-              // cancel wishlist
               e.preventDefault();
               handleWishlist();
             }}
