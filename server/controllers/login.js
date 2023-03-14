@@ -54,6 +54,7 @@ const signIn = (models) => {
   return async (req, res, next) => {
     const { email: {data}, password, userType } = req.body;
 
+    // userType === "landlord" indicates the landlord is requesting to signin else user is requesting to signin
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findOne({ 'email': data });
@@ -79,6 +80,7 @@ const create = (models) => {
   return async (req, res, next) => {
     const { name, email: {data}, password, userType } = req.body;
 
+    // userType === "landlord" indicates the landlord is requesting to create new landlord else user is requesting to create new user
     let oldUser;
     if(userType === "landlord") {
       oldUser = await models.landlord.findOne({ 'email': data });
@@ -139,6 +141,7 @@ const verifyEmail = (models) => {
   return async (req, res, next) => {
     const { userId, OTP, userType } = req.body;
     if (!isValidObjectId(userId)) return sendError(res, "Invalid user");
+    // userType === "landlord" indicates the landlord is requesting to verify its email else user is requesting to verify its email
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findById(userId);
@@ -254,6 +257,7 @@ const forgetPassword = (models) => {
 
     if (!email) return sendError(res, "Email is missing!");
 
+    // userType === "landlord" indicates the landlord is requesting forget password else user is requesting forget password
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findOne({ 'email': email });
@@ -314,6 +318,7 @@ const resetPassword = (models) => {
   return async (req, res, next) => {
     const { newPassword, userId, userType } = req.body;
     
+    // userType === "landlord" indicates the landlord is requesting to reset password else user is requesting to reset password
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findById(userId)
@@ -371,6 +376,7 @@ const isAuth = (models) => {
       const { userId } = decode;
     
       // Check if user is found
+      // userType === "landlord" indicates the landlord is requesting to check whether it is logged in else user is requesting to check whether it is logged in 
       let user;
       if(req.headers.usertype === "landlord") {
         user = await models.landlord.findById(userId);

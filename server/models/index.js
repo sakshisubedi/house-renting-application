@@ -15,6 +15,7 @@ module.exports = async ({$env}) => {
 
     try {
         mongoose.set("strictQuery", true);
+        // connect to mongodb
         connection = await mongoose.connect($env.DB_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true
@@ -23,6 +24,8 @@ module.exports = async ({$env}) => {
             throw new Error('Mongo Client not initialized');
         }
         console.log("Connected to Mongo DB", $env.DB_NAME);
+
+        // retrieve models
         const comment = connection.model('Comment', commentSchema);
         const landlord = connection.model('Landlord', landlordSchema);
         const like = connection.model('Like', likeSchema);
@@ -30,8 +33,9 @@ module.exports = async ({$env}) => {
         const rating = connection.model('Rating', ratingSchema);
         const user = connection.model('User', userSchema);
         const wishlist = connection.model('Wishlist', wishlistSchema);
-        const emailVerificationToken = connection.model('emailVerificationToken', emailVerificationTokenSchema)
-        const passwordResetToken = connection.model('passwordResetToken', passwordResetTokenSchema)
+        const emailVerificationToken = connection.model('emailVerificationToken', emailVerificationTokenSchema);
+        const passwordResetToken = connection.model('passwordResetToken', passwordResetTokenSchema);
+
         const model = {
             comment,
             landlord,
@@ -43,7 +47,7 @@ module.exports = async ({$env}) => {
             emailVerificationToken,
             passwordResetToken
         }
-        // populate db
+        // populate db with dummy data
         // loadDummyData(model);
         return model;
     } catch (error) {
