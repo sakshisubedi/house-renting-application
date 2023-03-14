@@ -22,6 +22,7 @@ import {
   Text,
   Divider,
   IconButton,
+  Link,
 } from "@chakra-ui/react";
 import {
   AttachmentIcon,
@@ -58,11 +59,12 @@ import { getUserPublicInfoById } from "../services/userApis";
 import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getInterestedPeopleByListingId } from "../services/wishlistApis";
 
 function IndividualListingPage() {
+  // Fetching auth info of logged in user
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
 
-  const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
-  const [currentRating, setCurrentRating] = useState(null); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [currentRating, setCurrentRating] = useState(null);
   const [listingInfo, setListingInfo] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
@@ -245,21 +247,21 @@ function IndividualListingPage() {
     setCommentText(null);
   };
 
+  // Delete comment from DB
   async function deleteComm(comm_id) {
     await deleteComment(comm_id);
     await getComments(location.pathname.split("/").pop());
   }
 
+  // Update rating of current listing by current user
   const changeCurrentRating = async (value) => {
     if (!currentRating) {
       // create new rating
-      // console.log("here", location.pathname.split("/").pop())
       const rating = {
-        userId: userId, // NEED TO ADD CURRENT USER ID
+        userId: userId,
         listingId: location.pathname.split("/").pop(),
         rating: value,
       };
-      // console.log("req", rating)
       const response = await addRating(rating);
       if (response?.data) {
         setCurrentRating(response.data);
@@ -317,7 +319,6 @@ function IndividualListingPage() {
                   <Text fontWeight={"bold"} fontSize={"3xl"}>
                     {averageRating}
                   </Text>
-                  {/* NEED TO GET CORRECT VALUE HERE */}
                   <Text>({reviewCount} reviews)</Text>
                 </HStack>
                 <IconButton
@@ -341,6 +342,7 @@ function IndividualListingPage() {
               </VStack>
             </Box>
           </HStack>
+          {/* IMAGES BOX */}
           <Box
             mt={5}
             h={300}
@@ -348,15 +350,10 @@ function IndividualListingPage() {
             borderColor="gray.300"
             borderRadius={"2xl"}
           >
-            {/* IMAGES */}
-            {/* <HStack p={1} spacing={5}>
-            <Image rounded={"2xl"} src={listingData.img ?? null} />
-            <Spacer/>
-            <Image rounded={"2xl"} src={listingData.img ?? null} />
-          </HStack> */}
           </Box>
           <HStack spacing={5} align={"top"}>
             <VStack spacing={5} w={"75%"}>
+              {/* LISTING METADATA */}
               <Box mt={5} w={"full"}>
                 <HStack
                   spacing={5}
@@ -371,17 +368,14 @@ function IndividualListingPage() {
                     <Text>Bedrooms</Text>
                     <Text fontWeight={"bold"}>{listingInfo.bedrooms}</Text>
                   </VStack>
-                  {/* <Spacer /> */}
                   <VStack spacing={2} w={"25%"}>
                     <Text>Bathrooms</Text>
                     <Text fontWeight={"bold"}>{listingInfo.bathrooms}</Text>
                   </VStack>
-                  {/* <Spacer /> */}
                   <VStack spacing={2} w={"25%"}>
                     <Text>Area</Text>
                     <Text fontWeight={"bold"}>{listingInfo.squareFeet}</Text>
                   </VStack>
-                  {/* <Spacer /> */}
                   <VStack spacing={2} w={"25%"}>
                     <Text>Pets</Text>
                     <Text fontWeight={"bold"}>
@@ -406,7 +400,6 @@ function IndividualListingPage() {
                       starEmptyColor={"#E2E8F0"}
                       starHoverColor={"#F6E05E"}
                       starDimension={"30px"}
-                      // rating={currentRating}
                       rating={currentRating ? currentRating.rating : 0}
                       changeRating={(value) => {
                         changeCurrentRating(value);
@@ -414,7 +407,7 @@ function IndividualListingPage() {
                     />
                   ) : (
                     <Text fontSize={20} fontWeight={"light"}>
-                      Login to add your rating!
+                      <Link colorScheme={"blue"} href="/auth/user/signin" >Login</Link> to add your rating!
                     </Text>
                   )}
                 </HStack>
@@ -434,9 +427,7 @@ function IndividualListingPage() {
                       placeholder="Leave a Comment..."
                       variant={"filled"}
                       mb={2}
-                      // defaultValue={comm}
                       isDisabled={!isLoggedIn}
-                      // onChange={(e) => setComm(e.target.value)}
                       defaultValue={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
                     />
@@ -447,9 +438,6 @@ function IndividualListingPage() {
                           colorScheme={"blue"}
                           icon={<AttachmentIcon />}
                           isDisabled={!isLoggedIn}
-                          // onClick={() => {
-                          //   // ADD IMAGES POPUP
-                          // }}
                           onClick={showPopup}
                         />
                         {popup && (
@@ -491,12 +479,6 @@ function IndividualListingPage() {
                             // ADD NEW COMMENT
                             try {
                               handleComment();
-                              // toast({
-                              //   title: "Success",
-                              //   description: "Changes Saved",
-                              //   status: "success",
-                              //   position: "top-right"
-                              // });
                             } catch (error) {
                               toast({
                                 title: "Failed",
@@ -601,6 +583,7 @@ function IndividualListingPage() {
           </VStack>
           <Spacer />
           <VStack spacing={5} w={"25%"}>
+            {/* LANDLORD INFO BOX */}
             <Box
               mt={5}
               w={"full"}
@@ -629,7 +612,6 @@ function IndividualListingPage() {
             </Box>
             <Box
               mt={5}
-              // h={300}
               w={"full"}
               border="2px"
               borderColor="gray.300"
