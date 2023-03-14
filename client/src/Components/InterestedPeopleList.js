@@ -1,3 +1,13 @@
+/*
+ * Filename: InterestedPeopleList.js
+ * 
+ * This file defines the modal that displays a list of user profiles of
+ * the users who have wishlisted the corresponding listing. It displays
+ * the users' names, age (if selected to be public), occupation (if public)
+ * and gender. There is also a View All button that will display the
+ * DetailedProfile view of the selected user.
+ */
+
 import {
     Modal,
     ModalOverlay,

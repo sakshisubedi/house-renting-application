@@ -1,3 +1,11 @@
+/*
+ * Filename: LandingPage.js
+ * 
+ * This file defines the landing page of the application. It features a starting search bar
+ * where the user can input a postal code to search by, and also recommends some listings to
+ * start which, which are the currently most highly rated listings.
+ */
+
 import {
   Box,
   VStack,

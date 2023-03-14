@@ -1,3 +1,13 @@
+/*
+ * Filename: EditLandlordProfilePage.js
+ * 
+ * This file defines the authenticated landlord's profile page, and allows them to update
+ * their own information at their discretion. Unlike the customer's profile page, this profile
+ * page requires mainly basic information and contact information of the landlord, and also 
+ * displays their listings, so a user of the app can see all the active listings this 
+ * landlord has open.
+ */
+
 import {
   Box,
   Button,
@@ -26,13 +36,16 @@ import { useAuth } from "../Components/auth/context/hookIndex";
 import { getLandlordInfoById } from "../services/landlordApis";
 import { getListingByLandlordId } from "../services/listingApis";
 import { getAverageRatingByListingId } from "../services/ratingApis";
+import { useLocation } from "react-router-dom";
 
 function EditLandlordProfilePage() {
+  // Fetching auth info of logged in landlord
   const { authInfo } = useAuth();
-  const landlordId = authInfo.profile?.id;
+  const location = useLocation();
+  const [landlordId, setLandlordId] = React.useState(location.pathname.split("/").pop() || authInfo?.profile?.id);
+
   const [landlordInfo, setLandlordInfo] = React.useState(null);
   const [listingsInfo, setListingsInfo] = React.useState(null);
-
   const [name, setName] = React.useState(null);
   const [email, setEmail] = React.useState(null);
   const [desc, setDesc] = React.useState(null);
@@ -41,6 +54,10 @@ function EditLandlordProfilePage() {
   const [phone, setPhone] = React.useState(null);
 
   useEffect(()=>{
+    const id = location.pathname.split("/").pop() || authInfo?.profile?.id;
+    setLandlordId(id);
+
+    // Fetching all info of current landlord
     async function getLandlordInfo(landlordId) {
       const response = await getLandlordInfoById(landlordId);
       if(response?.data) {
@@ -53,8 +70,8 @@ function EditLandlordProfilePage() {
         setPhone(response.data.phoneNo);
       }
     }
-    getLandlordInfo(landlordId);
-  }, [landlordId]);
+    getLandlordInfo(id);
+  }, [landlordId, location, authInfo]);
 
   useEffect(()=>{
     async function getListingMetadata(listingId) {
@@ -64,6 +81,7 @@ function EditLandlordProfilePage() {
       }
     }
 
+    // Fetching all listings of current landlord
     async function getListingsInfo(landlordId) {
       const response = await getListingByLandlordId(landlordId);
       // console.log(response.data);
@@ -81,49 +99,16 @@ function EditLandlordProfilePage() {
     getListingsInfo(landlordId);
   }, [listingsInfo]);
 
-  let tempLandlordInfo = {  // NEED TO GET DYNAMIC USER DATA FROM LOCATION PROPS
-    name: "Anthe Braybrooke",
-    email: "abraybrookej@amazon.com",
-    password: "test123",
-    isVerified: true,
-    pronoun: "They/Them",
-    age: 27,
-    phoneNo: "1234567890",
-    introduction: "some test self intro",
-    profilePicture: null,
-    _id: "640656792b0fe156679a8bc2",
-    createdAt: "2023-03-06T21:09:13.377Z",
-    updatedAt: "2023-03-06T21:09:13.377Z",
-    __v: 0,
-  };
-  let tempListing = {
-    img: house1,
-    name: "Palm Harbor",
-    address: "4067 Miramar St, La Jolla, CA 92092",
-    rent: "1900",
-    reviewCount: 34,
-    rating: 3.3,
-    // parameters...
-    bedrooms: 3,
-    bathrooms: 2,
-    squareFeet: 1200,
-    petFriendly: "allowed",
-    postalCode: 920092,
-  };
-  // const [desc, setDesc] = React.useState(landlordInfo.introduction ?? null);
-  // const [pronouns, setPronouns] = React.useState(landlordInfo.pronoun ?? null);
-  // const [age, setAge] = React.useState(landlordInfo.age ?? null);
-  // const [phone, setPhone] = React.useState(landlordInfo.phoneNo ?? null);
-
+  // Updating info of current landlord
   const updateLandlordInfo = async () => {
     landlordInfo.introduction = desc === "" ? null : desc;
     landlordInfo.pronoun = pronouns === "" ? null : pronouns;
     landlordInfo.age = age === "" ? null : parseInt(age);
     landlordInfo.phoneNo = phone === "" ? null : phone;
     landlordInfo.updatedAt = new Date().toISOString();
-    // console.log(landlordInfo, "landlord data");
+    // console.log(landlordInfo, "landlord data upd");
 
-    const response = await updateLandlord(landlordInfo, landlordInfo._id); // NEED TO ENTER DYNAMIC LANDLORD ID
+    const response = await updateLandlord(landlordInfo, landlordInfo._id);
     if(response?.error) {
       toast({
         title: "Failed",
@@ -179,12 +164,6 @@ function EditLandlordProfilePage() {
                   e.preventDefault();
                   try {
                     updateLandlordInfo();
-                    // toast({
-                    //   title: "Success",
-                    //   description: "Changes Saved",
-                    //   status: "success",
-                    //   position: "top-right"
-                    // });
                   } catch (error) {
                     toast({
                       title: "Failed",
@@ -221,7 +200,7 @@ function EditLandlordProfilePage() {
                   </VStack>
                   <Select
                     placeholder="Select option"
-                    defaultValue={pronouns}
+                    value={pronouns}
                     w="50%"
                     onChange={(e) => setPronouns(e.target.value)}
                   >
@@ -257,6 +236,7 @@ function EditLandlordProfilePage() {
               </FormControl>
             </VStack>
           </form>
+          {/* LISTINGS BOX */}
           <Box mt={10}>
             <Flex>
               <Heading>Your Listings</Heading>
@@ -275,7 +255,6 @@ function EditLandlordProfilePage() {
               </Button>
             </Flex>
             <Box mt={10}>
-              {/* <LandlordViewCard></LandlordViewCard> */}
               {listingsInfo?.map((listing, ind) => (
                 <Box key={ind}>
                   <LandlordViewCard ard src={listing}>
@@ -284,10 +263,6 @@ function EditLandlordProfilePage() {
                   <br/>
                 </Box>
               ))}
-              {/* <LandlordViewCard ard src={tempListing}>
-                {" "}
-              </LandlordViewCard> */}
-              {/* All listings go here */}
             </Box>
           </Box>
         </Box>

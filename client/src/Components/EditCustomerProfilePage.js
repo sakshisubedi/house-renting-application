@@ -1,3 +1,12 @@
+/*
+ * Filename: EditCustomerProfilePage.js
+ * 
+ * This file defines the authenticated customer's profile page, and allows them to update
+ * their own information at their discretion. It also allows them to change if they want
+ * their email, age, and occupation to be public. The public information inputted on this
+ * page can be seen by others on this application.
+ */
+
 import {
   Box,
   Button,
@@ -20,18 +29,12 @@ import {
 import React, { useEffect } from "react";
 import { updateUser, getUserAllInfoById } from "../services/userApis";
 import NavBar from "./NavBar";
-
-// Get current login user
 import { useAuth } from "../Components/auth/context/hookIndex"
 import { useLocation } from "react-router-dom";
-// import { useLocation } from "react-router-dom";
-
 
 function EditCustomerProfilePage() {
-  // need to get actual data from db
+  // Fetching auth info of logged in user
   const { authInfo } = useAuth();
-  const userName = authInfo.profile?.name;
-  const userEmail = authInfo.profile?.email;
   const location = useLocation();
   const [userId, setUserId] = React.useState(location.pathname.split("/").pop() || authInfo?.profile?.id);
 
@@ -40,25 +43,20 @@ function EditCustomerProfilePage() {
   const [email, setEmail] = React.useState(null);
   const [emailPublicFlag, setEmailPublicFlag] = React.useState(null);
   const [desc, setDesc] = React.useState(null);
-  const [pronouns, setPronouns] = React.useState(null);
+  const [pronouns, setPronouns] = React.useState("");
   const [age, setAge] = React.useState(null);
   const [agePublicFlag, setAgePublicFlag] = React.useState(null);
   const [occupation, setOccupation] = React.useState(null);
   const [occupationPublicFlag, setOccupationPublicFlag] = React.useState(null);
-  // const [datePref, setDatePref] = React.useState(new Date(userData.preferredMoveInDate).toISOString().substring(0, 10) ?? null);
   const [datePref, setDatePref] = React.useState(null);
-  // const [spacePref, setSpacePref] = React.useState(userData.spacePref ?? null);
+  const [housematesBool, setHousematesBool] = React.useState("");
+  const [petsPref, setPetsPref] = React.useState("");
 
-  const [housematesBool, setHousematesBool] = React.useState(null);
-  // const [roommatePrefs, setRoommatePrefs] = React.useState(
-  //   userData.roommatePrefs ?? null
-  // );
-  const [petsPref, setPetsPref] = React.useState(null);
-  // const location = useLocation();
-  // console.log(location.state, "here", authInfo)
   useEffect(() => {
     const id = location.pathname.split("/").pop() || authInfo?.profile?.id;
     setUserId(id);
+
+    // Fetching all info of current user
     async function getUserData(userId) {
       const response = await getUserAllInfoById(userId);
       if (response?.data) {
@@ -81,25 +79,20 @@ function EditCustomerProfilePage() {
     getUserData(id);
   }, [userId, location, authInfo]);
 
+  // Updating info of current user
   const updateUserData = async () => {
     userData.email.isPublic = emailPublicFlag === "true" ?? null;
-    // userData.desc = desc === "" ? null : desc;
     userData.pronoun = pronouns === "" ? null : pronouns;
     userData.age.data = age === "" ? null : parseInt(age);
     userData.age.isPublic = agePublicFlag === "true" ?? null;
     userData.occupation.data = occupation === "" ? null : occupation;
     userData.occupation.isPublic = occupationPublicFlag === "true" ?? null;
     userData.preferredMoveInDate = datePref === "" ? null : new Date(datePref);
-    // userData.spacePref = spacePref === "" ? null : spacePref;
-    userData.isLookingForFlatmate =
-      housematesBool === "" ? null : housematesBool === "true";
-    // userData.roommatePrefs = roommatePrefs === "" ? null : roommatePrefs;
+    userData.isLookingForFlatmate = housematesBool === "" ? null : housematesBool === "true";
     userData.preferPet = petsPref === "" ? null : petsPref === "true";
-    userData.preferredMoveInDate =
-      userData.preferredMoveInDate.toISOString() ?? null;
+    userData.preferredMoveInDate = userData.preferredMoveInDate.toISOString() ?? null;
     userData.updatedAt = new Date().toISOString();
     // console.log(userData, "user data upd");
-
 
     const response = await updateUser(userData, userData._id);
     if(response?.error) {
@@ -154,12 +147,6 @@ function EditCustomerProfilePage() {
                   e.preventDefault();
                   try {
                     updateUserData();
-                    // toast({
-                    //   title: "Success",
-                    //   description: "Changes Saved",
-                    //   status: "success",
-                    //   position: "top-right"
-                    // });
                   } catch (error) {
                     toast({
                       title: "Failed",
@@ -189,7 +176,7 @@ function EditCustomerProfilePage() {
                     />
                     <RadioGroup
                       colorScheme={"blue"}
-                      defaultValue={emailPublicFlag}
+                      value={emailPublicFlag}
                       onChange={setEmailPublicFlag}
                     >
                       <HStack spacing={10}>
@@ -209,7 +196,7 @@ function EditCustomerProfilePage() {
                   </VStack>
                   <Select
                     placeholder="Select option"
-                    defaultValue={pronouns}
+                    value={pronouns}
                     w="50%"
                     onChange={(e) => setPronouns(e.target.value)}
                   >
@@ -232,7 +219,7 @@ function EditCustomerProfilePage() {
                     />
                     <RadioGroup
                       colorScheme={"blue"}
-                      defaultValue={agePublicFlag}
+                      value={agePublicFlag}
                       onChange={setAgePublicFlag}
                     >
                       <HStack spacing={10}>
@@ -262,7 +249,7 @@ function EditCustomerProfilePage() {
                     />
                     <RadioGroup
                       colorScheme={"blue"}
-                      defaultValue={occupationPublicFlag}
+                      value={occupationPublicFlag}
                       onChange={setOccupationPublicFlag}
                     >
                       <HStack spacing={10}>
@@ -278,9 +265,6 @@ function EditCustomerProfilePage() {
                 <HStack>
                   <VStack w="50%" align="left">
                     <FormLabel>Preferred Move-in Date</FormLabel>
-                    {/* <FormHelperText>
-                      E.g. Two months, one year, etc.
-                    </FormHelperText> */}
                   </VStack>
                   <Input
                     type="date"
@@ -291,68 +275,31 @@ function EditCustomerProfilePage() {
                   />
                 </HStack>
               </FormControl>
-              {/* <FormControl id="desiredSpace">
-                <HStack>
-                  <VStack w="50%" align="left">
-                    <FormLabel>Desired Space</FormLabel>
-                    <FormHelperText>
-                      Number of rooms your new place will ideally have/number of
-                      rooms you’d like to have.
-                    </FormHelperText>
-                  </VStack>
-                  <Textarea
-                    type="text"
-                    placeholder="Two bedroom, One bathroom..."
-                    defaultValue={spacePref}
-                    w="50%"
-                    onChange={(e) => setSpacePref(e.target.value)}
-                  />
-                </HStack>
-              </FormControl> */}
               <FormControl id="housematesBool">
                 <HStack>
                   <FormLabel w="50%">Looking for Housemates</FormLabel>
                   <Select
                     placeholder="Select option"
-                    defaultValue={housematesBool}
+                    value={housematesBool}
                     w="50%"
                     onChange={(e) => setHousematesBool(e.target.value)}
                   >
                     <option value="true">Yes</option>
                     <option value="false">No</option>
-                    {/* <option value="No preference">No preference</option> */}
                   </Select>
                 </HStack>
               </FormControl>
-              {/* <FormControl id="roommatePref">
-                <HStack>
-                  <VStack w="50%" align="left">
-                    <FormLabel>Roommate Preferences</FormLabel>
-                    <FormHelperText>
-                      E.g. Gender, cleanliness, noise, etc.
-                    </FormHelperText>
-                  </VStack>
-                  <Textarea
-                    type="text"
-                    placeholder="No preference..."
-                    defaultValue={roommatePrefs}
-                    w="50%"
-                    onChange={(e) => setRoommatePrefs(e.target.value)}
-                  />
-                </HStack>
-              </FormControl> */}
               <FormControl id="petsBool">
                 <HStack>
                   <FormLabel w="50%">Open to having pets</FormLabel>
                   <Select
                     placeholder="Select option"
-                    defaultValue={petsPref}
+                    value={petsPref}
                     w="50%"
                     onChange={(e) => setPetsPref(e.target.value)}
                   >
                     <option value="true">Yes</option>
                     <option value="false">No</option>
-                    {/* <option value="No preference">No preference</option> */}
                   </Select>
                 </HStack>
               </FormControl>

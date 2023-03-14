@@ -1,3 +1,12 @@
+/*
+ * Filename: SearchResult.js
+ * 
+ * This file defines the search result page component of the app. This utilizes
+ * the FilterRow component to allow the user to search for relevant listings based on
+ * postal code, rent price, number of bed/bathrooms, and pet preference and then 
+ * displays the information in a grid of ListingCards.
+ */
+
 import {
   Box,
   Heading,
@@ -57,25 +66,17 @@ const SearchResult = ({ src }) => {
         <Heading ml={8} mt={5} pl={10} pt={5} pr={5} textAlign="left">
           Showing results for “Location”...
         </Heading>
-        <Flex
-          justifyContent="space-between"
-          alignItems="flex-start"
-          pl={10}
-          pr={5}
-          pt={5}
-          ml={8}
-        >
-          <FilterRow search={handleSearch} />
-        </Flex>
+        <FilterRow search={handleSearch} />
 
       </Box>
       <Box margin="auto" pt={3} pl={10}>
         <VStack
-          spacing={30}
+          spacing={25}
           justifyContent="space-between"
           alignItems="flex-start"
           margin="auto"
           ml={8}
+          mr={8}
         >
           <SimpleGrid
             columns={{ base: 1, md: 4 }}
