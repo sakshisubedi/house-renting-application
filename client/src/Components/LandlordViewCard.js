@@ -116,7 +116,6 @@ const LandlordViewCard = ({ src }) => {
                     }
                     onClick={(e) => {
                       // e.preventDefault();
-                      deleteCurrentListing(src._id)
                     }}
                   />
                 </Box>
@@ -133,7 +132,8 @@ const LandlordViewCard = ({ src }) => {
                       />
                     }
                     onClick={(e) => {
-                      e.preventDefault();
+                      // e.preventDefault();
+                      deleteCurrentListing(src._id);
                     }}
                   />
                 </Box>
@@ -162,7 +162,7 @@ const LandlordViewCard = ({ src }) => {
                   <Text>{src.bedrooms} beds</Text>
                   <Text>{src.bathrooms} baths</Text>
                   <Text>{src.squareFeet} sqft</Text>
-                  <Text>{src.petFriendly}</Text>
+                  <Text>{(src.hasPet) ? "Yes" : "No"}</Text>
                 </SimpleGrid>
               </Box>
               <Box mt={7} w="8%">

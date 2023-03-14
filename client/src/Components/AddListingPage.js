@@ -21,6 +21,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Image,
   Textarea,
   HStack,
   Heading,
@@ -41,10 +42,10 @@ function AddListingPage() {
   const landlordId = landlordInfo.profile?.id;
   const [landlordInfo, setLandlordInfo] = React.useState(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     async function getLandlordInfo(landlordId) {
       const response = await getLandlordInfoById(landlordId);
-      if(response?.data) {
+      if (response?.data) {
         setLandlordInfo(response.data);
       }
     }
@@ -100,7 +101,7 @@ function AddListingPage() {
       // landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
       landlordId: landlordId,
       description: desc,
-      media: [],
+      media: media,
       bedrooms: parseInt(bedrooms),
       bathrooms: parseInt(bathrooms),
       squareFeet: parseInt(area),
@@ -138,7 +139,7 @@ function AddListingPage() {
         <Box>
           <form
             onSubmit={(e) => {
-              // e.preventDefault();
+              e.preventDefault();
               try {
                 addListing(landlordInfo._id);
                 toast({
@@ -191,9 +192,16 @@ function AddListingPage() {
                 p={10}
                 fontWeight="bold"
                 ml="auto"
+                display="flex"
+                flexWrap="wrap"
               >
                 {" "}
-                {media.length > 0 ? `${media.length} file(s) uploaded` : "  "}
+                {media.map((image, index) => (
+                  <Box key={index} mb={5}>
+                    <Image src={image} maxH={180} maxW={200} />
+                  </Box>
+                ))}
+                {/* {media.length > 0 ? `${media.length} file(s) uploaded` : "  "} */}
               </Box>
               {/*  */}
               {popup && (
@@ -254,7 +262,7 @@ function AddListingPage() {
                         type="number"
                         placeholder="Listing Price..."
                         defaultValue={price}
-                        w="50 %"
+                        w="50%"
                         onChange={(e) => setPrice(e.target.value)}
                       />
                     </HStack>
