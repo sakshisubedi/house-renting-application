@@ -1,3 +1,13 @@
+/*
+ * Filename: EditLandlordProfilePage.js
+ * 
+ * This file defines the authenticated landlord's profile page, and allows them to update
+ * their own information at their discretion. Unlike the customer's profile page, this profile
+ * page requires mainly basic information and contact information of the landlord, and also 
+ * displays their listings, so a user of the app can see all the active listings this 
+ * landlord has open.
+ */
+
 import {
   Box,
   Button,

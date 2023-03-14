@@ -1,3 +1,12 @@
+/*
+ * Filename: SearchResult.js
+ * 
+ * This file defines the search result page component of the app. This utilizes
+ * the FilterRow component to allow the user to search for relevant listings based on
+ * postal code, rent price, number of bed/bathrooms, and pet preference and then 
+ * displays the information in a grid of ListingCards.
+ */
+
 import {
   Box,
   Heading,

@@ -1,3 +1,10 @@
+/*
+ * Filename: SearchBar.js
+ * 
+ * This file defines the search bar used in the landing page. It includes a text
+ * input section and an icon to indicate a search field.
+ */
+
 import React, { useEffect, useState } from "react";
 import { Input, IconButton, HStack, Image } from "@chakra-ui/react";
 import search from "../img/search.jpg";

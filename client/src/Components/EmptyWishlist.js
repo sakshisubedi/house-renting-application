@@ -1,3 +1,11 @@
+/*
+ * Filename: EmptyWishlist.js
+ * 
+ * This file defines the screen for the situation that a user does not have any items
+ * in their wishlist. It tells them there is nothing here and includes a button to the 
+ * landing page where they can look for listings to favorite/wishlist.
+ */
+
 import {
     Button,
     VStack,

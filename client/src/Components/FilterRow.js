@@ -1,3 +1,12 @@
+/*
+ * Filename: FilterRow.js
+ * 
+ * This file defines the postal code input section and the dropdown menus on the search page 
+ * that give users the option to filter the search results. Users can filter their search 
+ * results by inputting a postal code, or by choosing ranges of rent price, rating, bedrooms,
+ * bathrooms, and pet preference from the defined dropdowns.
+ */
+
 import {
   Box,
   Input,
