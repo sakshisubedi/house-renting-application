@@ -1,3 +1,12 @@
+/*
+ * Filename: NavBar.js
+ * 
+ * This file defines the navigation bar component of the application. The nav bar
+ * appears at the top of every page of our application, and allows the user to go to
+ * the landing page, their wishlist page (if they are a customer), and their edit
+ * profile page.
+ */
+
 import {
     Box,
     HStack,

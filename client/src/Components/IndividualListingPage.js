@@ -1,3 +1,12 @@
+/*
+ * Filename: IndividualListingPage.js
+ * 
+ * This file defines an individual listing page. It neatly displays the information
+ * about the rental as well as the landlord's name and contact information, and also 
+ * includes a list of people who are also interested in this listing, a place to rate
+ * the rental out of 5 stars, and a comment section.
+ */
+
 import {
   Modal,
   ModalOverlay,

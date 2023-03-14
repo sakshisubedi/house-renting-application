@@ -1,3 +1,12 @@
+/*
+ * Filename: AddListingPage.js
+ *
+ * This file defines the frontend component AddListingPage(), which an authenticated
+ * landlord will use to create a new listing. It defines a page that has multiple fields
+ * to fill out, and upon clicking "Submit" will create the new listing and send a 
+ * request to the server to save this new data into the listing database.
+ */
+
 import {
   Modal,
   ModalOverlay,

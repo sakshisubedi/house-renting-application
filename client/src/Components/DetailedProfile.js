@@ -1,3 +1,11 @@
+/*
+ * Filename: DetailedProfile.js
+ * 
+ * This file defines a modal that displays the detailed information of 
+ * another user. This modal appears upon clicking View on another user's
+ * profile in the interested people list on a listing.
+ */
+
 import {
     Modal,
     ModalOverlay,

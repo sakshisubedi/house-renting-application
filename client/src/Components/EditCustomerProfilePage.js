@@ -1,3 +1,12 @@
+/*
+ * Filename: EditCustomerProfilePage.js
+ * 
+ * This file defines the authenticated customer's profile page, and allows them to update
+ * their own information at their discretion. It also allows them to change if they want
+ * their email, age, and occupation to be public. The public information inputted on this
+ * page can be seen by others on this application.
+ */
+
 import {
   Box,
   Button,

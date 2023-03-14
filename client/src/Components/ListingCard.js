@@ -1,3 +1,11 @@
+/*
+ * Filename: ListingCard.js
+ * 
+ * This file defines a card for general use that displays listing information. This card
+ * is used in the landing page, the search results page, and the wishlist page to display
+ * the relevant listings in a grid layout.
+ */
+
 import {
   Box,
   Image,
