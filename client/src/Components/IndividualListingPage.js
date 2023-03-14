@@ -103,6 +103,7 @@ function IndividualListingPage() {
   const closePopup = () => {
     setPopup(false);
   };
+  //Takes the uploaded image and converts it to base64 string format 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       let images = [];
@@ -112,9 +113,6 @@ function IndividualListingPage() {
         reader.readAsDataURL(img);
         reader.onload = () => {
           images.push(reader.result);
-          // this.setState({
-          //   images: images,
-          // });
           setSelectedImages(images);
         };
       }
@@ -457,8 +455,8 @@ function IndividualListingPage() {
                           icon={<AttachmentIcon />}
                           isDisabled={!isLoggedIn}
                           // onClick={() => {
-                          //   // ADD IMAGES POPUP
                           // }}
+                          // ADD IMAGES POPUP
                           onClick={showPopup}
                         />
                         {popup && (

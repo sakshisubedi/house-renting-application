@@ -1,8 +1,8 @@
 /*
  * Filename: FilterRow.js
- * 
- * This file defines the postal code input section and the dropdown menus on the search page 
- * that give users the option to filter the search results. Users can filter their search 
+ *
+ * This file defines the postal code input section and the dropdown menus on the search page
+ * that give users the option to filter the search results. Users can filter their search
  * results by inputting a postal code, or by choosing ranges of rent price, rating, bedrooms,
  * bathrooms, and pet preference from the defined dropdowns.
  */
@@ -28,7 +28,7 @@ function FilterRow(props) {
     email: "xyz@gmail.com",
   };
 
-
+  // State variables for each filter option
   const [selectedPriceOption, setSelectedPriceOption] = useState(null);
   const handlePriceOptionSelect = (value) => {
     setSelectedPriceOption(value);
@@ -40,7 +40,7 @@ function FilterRow(props) {
   const [baths, setBaths] = React.useState("");
   const [petPref, setPetPref] = React.useState("");
 
-
+  // Function to handle changes to the search input
   const handleInputChange = async (event) => {
     setPostalCode(event.target.value);
     props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
@@ -67,7 +67,6 @@ function FilterRow(props) {
         <Select
           placeholder="Rent"
           h="75px"
-
           defaultValue={rentPrice}
           fontSize="25px"
           border="1px solid #eaebef"
@@ -76,8 +75,14 @@ function FilterRow(props) {
           onChange={(e) => {
             setRentPrice(e.target.value);
 
-            props.search(postalCode, e.target.value, rating, beds, baths, petPref);
-
+            props.search(
+              postalCode,
+              e.target.value,
+              rating,
+              beds,
+              baths,
+              petPref
+            );
           }}
           bg="#eaebef"
         >
@@ -101,7 +106,14 @@ function FilterRow(props) {
           onChange={(e) => {
             setRating(e.target.value);
 
-            props.search(postalCode, rentPrice, e.target.value, beds, baths, petPref);
+            props.search(
+              postalCode,
+              rentPrice,
+              e.target.value,
+              beds,
+              baths,
+              petPref
+            );
           }}
           bg="#eaebef"
         >
@@ -125,8 +137,14 @@ function FilterRow(props) {
           onChange={(e) => {
             setBeds(e.target.value);
 
-            props.search(postalCode, rentPrice, rating, e.target.value, baths, petPref);
-
+            props.search(
+              postalCode,
+              rentPrice,
+              rating,
+              e.target.value,
+              baths,
+              petPref
+            );
           }}
           bg="#eaebef"
         >
@@ -146,10 +164,15 @@ function FilterRow(props) {
           width="180px"
           borderRadius="10px"
           onChange={(e) => {
-
-            setBaths(e.target.value); 
-            props.search(postalCode, rentPrice, rating, beds, e.target.value, petPref);
-
+            setBaths(e.target.value);
+            props.search(
+              postalCode,
+              rentPrice,
+              rating,
+              beds,
+              e.target.value,
+              petPref
+            );
           }}
           bg="#eaebef"
         >
@@ -172,7 +195,14 @@ function FilterRow(props) {
           onChange={(e) => {
             setPetPref(e.target.value);
 
-            props.search(postalCode, rentPrice, rating, beds, baths, e.target.value);
+            props.search(
+              postalCode,
+              rentPrice,
+              rating,
+              beds,
+              baths,
+              e.target.value
+            );
           }}
           bg="#eaebef"
         >
