@@ -45,6 +45,7 @@ const landlordSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // password security
+// Hash the landlord's password by bcrypt
 landlordSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
         this.password = await bcrypt.hash(this.password, 10);
@@ -53,6 +54,7 @@ landlordSchema.pre("save", async function (next) {
     next();
 });
 
+// Compare landlord's hashed password
 landlordSchema.methods.comparePassword = async function (password) {
     const result = await bcrypt.compare(password, this.password);
     return result;
