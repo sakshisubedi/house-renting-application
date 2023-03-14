@@ -44,13 +44,14 @@ const updateListing = (models) => {
 const getListings = (models) => {
     return async (req, res, next) => {
         try {
-            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
-            const numListings = parseInt(req.query.numListings)
-            const offset = numListings * (pageNum - 1)
+            // const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            // const numListings = parseInt(req.query.numListings)
+            // const offset = numListings * (pageNum - 1)
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.find().skip(offset).limit(numListings).select({ __v: 0 })
+                //data: await models.listing.find().skip(offset).limit(numListings).select({ __v: 0 })
+                data: await models.listing.find().select({ __v: 0 })
             })
         } catch (error) {
             return res.status(500).json({
@@ -132,13 +133,14 @@ const deleteListing = (models) => {
 const getListingByRating = (models) => {
     return async (req, res, next) => {
         try {
-            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
-            const numListings = parseInt(req.query.numListings)
-            const offset = numListings * (pageNum - 1)
+            // const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            // const numListings = parseInt(req.query.numListings)
+            // const offset = numListings * (pageNum - 1)
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.find().sort('-rating').skip(offset).limit(numListings).select({ __v: 0 })
+                // data: await models.listing.find().sort('-rating').skip(offset).limit(numListings).select({ __v: 0 })
+                data: await models.listing.find().sort('-rating').select({ __v: 0 })
             })
         } catch (error) {
             return res.status(500).json({
@@ -256,9 +258,9 @@ const getListingBySearchParameter = (models) => {
                 findQuery["hasPet"] = req.query.hasPet === "true"
             }
 
-            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
-            const numListings = parseInt(req.query.numListings)
-            const offset = numListings * (pageNum - 1)
+            // const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            // const numListings = parseInt(req.query.numListings)
+            // const offset = numListings * (pageNum - 1)
 
             const pipeline = [
                 {
@@ -294,7 +296,8 @@ const getListingBySearchParameter = (models) => {
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.listing.aggregate(pipeline).skip(offset).limit(numListings)
+                // data: await models.listing.aggregate(pipeline).skip(offset).limit(numListings)
+                data: await models.listing.aggregate(pipeline)
             })
         } catch (error) {
             return res.status(500).json({
