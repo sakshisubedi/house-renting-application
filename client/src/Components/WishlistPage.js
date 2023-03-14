@@ -27,7 +27,6 @@ import { useAuth } from "./auth/context/hookIndex";
 import { useLocation } from "react-router-dom";
 
 function WishlistPage() {
-    // need to get actual data from db
     const { authInfo } = useAuth();
     const { isLoggedIn } = authInfo;
     const location = useLocation();
@@ -35,6 +34,7 @@ function WishlistPage() {
 
     const [wishlistedListings, setwishlistedListings] = useState([]);
 
+    // Fetch wishlisted listings
     const getUserWishlist = async (userId) => {
         const response = await getWishlistByUserId(userId);
         var listings = [];
@@ -63,12 +63,14 @@ function WishlistPage() {
         <Box my={50} ml={200} mr={200}>
             {wishlistedListings.length == 0 ?
                 (
+                    // If the user hasn't wishlited any listings, show empty wishlist page
                     <Center>
                         <EmptyWishlist></EmptyWishlist>
                     </Center>
                 )
                 :
                 (
+                    // If the user has wishlisted listings, display the listings as listing cards in a gridded format
                     <VStack align="left" spacing={30}>
                         <Heading>Your Wishlist</Heading>
                         <Center>

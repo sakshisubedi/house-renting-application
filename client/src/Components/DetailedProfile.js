@@ -46,7 +46,7 @@ const DetailedProfile = ({ p, l }) => {
                 colorScheme={"blue"}
                 variant={"outline"}
                 size={"xs"}
-                isDisabled={!l}
+                isDisabled={!l} // disable the "View" button for visitor user
                 onClick={onOpen}>
                 View
             </Button>

@@ -42,8 +42,10 @@ function FilterRow(props) {
     props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
   };
 
+  const windowSize = React.useRef([window.innerWidth, window.innerHeight]);
+
   return (
-    <Flex minWidth='max-content' justifyContent='space-between' alignItems='center' gap='2' margin="2% 3% 2% 5%">
+    <Flex w={windowSize.current[0]} justifyContent='space-between' alignItems='center' gap='2' margin="auto">
       <Input 
         placeholder='Search by postal code' 
         type="search"
