@@ -3,7 +3,10 @@ const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
 const crypto = require("crypto");
 
-// utilities
+// Thanks to Sakshi for adding the userType parameter to optimize the duplicated structure of landlord. 
+
+// Utilities
+// Randomly generate an OTP of length of 6
 generateOTP = (otp_length = 6) => {
     let OTP = "";
     for (let i = 1; i <= otp_length; i++) {
@@ -14,9 +17,11 @@ generateOTP = (otp_length = 6) => {
     return OTP;
 };
 
+// Send error with code 401
 sendError = (res, error, statusCode = 401) =>
   res.status(statusCode).json({ error });
 
+// Randomly generate a hex code for verification purpose of length of 30
 generateRandomByte = () => {
   return new Promise((resolve, reject) => {
     crypto.randomBytes(30, (err, buff) => {
@@ -28,6 +33,7 @@ generateRandomByte = () => {
   });
 };
 
+// Send error with code 404
 handleNotFound = (req, res) => {
   this.sendError(res, "Not found", 404);
 };
@@ -52,9 +58,10 @@ const login = () => {
 // user sign in
 const signIn = (models) => {
   return async (req, res, next) => {
+    // get user's data
     const { email: {data}, password, userType } = req.body;
 
-    // userType === "landlord" indicates the landlord is requesting to signin else user is requesting to signin
+    // Check if the email existes in database
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findOne({ 'email': data });
@@ -63,9 +70,11 @@ const signIn = (models) => {
     }
     if (!user) return sendError(res, "Email does not exist!");
     
+    // Check if the password matches the credential in database
     const matched = await user.comparePassword(password);
     if (!matched) return sendError(res, "Email/Password mismatch!");
-  
+
+    // Return user's credential and JWT token by concatenating userId and env JWT code
     const { _id, name, isVerified } = user;
     const jwtToken = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
   
@@ -78,9 +87,10 @@ const signIn = (models) => {
 // create a user on sign up
 const create = (models) => {
   return async (req, res, next) => {
+    // get user's data
     const { name, email: {data}, password, userType } = req.body;
 
-    // userType === "landlord" indicates the landlord is requesting to create new landlord else user is requesting to create new user
+    // Check if the email existes in database
     let oldUser;
     if(userType === "landlord") {
       oldUser = await models.landlord.findOne({ 'email': data });
@@ -89,6 +99,7 @@ const create = (models) => {
     }
     if (oldUser) return sendError(res, "This email is already in use");
   
+    // Create a new user to database when it is a new email
     let newUser;
     if(userType === "landlord") {
       newUser = new models.landlord({ name, email: data, password });
@@ -97,6 +108,7 @@ const create = (models) => {
     }
     await newUser.save();
   
+    // Generate the OTP
     let OTP = generateOTP();
     const newEmailVerificationToken = new models.emailVerificationToken({
       owner: newUser._id,
@@ -105,8 +117,10 @@ const create = (models) => {
 
     console.log("newEmailVerificationToken--------", newEmailVerificationToken);
   
+    // Save the user's id and OTP token to databse
     await newEmailVerificationToken.save();
 
+    // Send actual email with otp to user by emailjs
     var templateParams = {
       to_name: newUser.name,
       to_email: userType === "landlord" ? newUser.email : newUser.email.data,
@@ -139,9 +153,11 @@ const create = (models) => {
 // Verify the email for user
 const verifyEmail = (models) => {
   return async (req, res, next) => {
+    // get user's data
     const { userId, OTP, userType } = req.body;
+
+    // Validate the user's credentials
     if (!isValidObjectId(userId)) return sendError(res, "Invalid user");
-    // userType === "landlord" indicates the landlord is requesting to verify its email else user is requesting to verify its email
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findById(userId);
@@ -151,6 +167,7 @@ const verifyEmail = (models) => {
     if (!user) return sendError(res, "user not found!", 404);
     if (user.isVerified) return sendError(res, "user is already verified");
   
+    // Check is the OTP mathches the token in database
     const token = await models.emailVerificationToken.findOne({ owner: userId });
     if (!token) return sendError(res, "token not found!");
   
@@ -162,6 +179,7 @@ const verifyEmail = (models) => {
   
     await models.emailVerificationToken.findByIdAndDelete(token._id);
   
+    // Send actual email by emailjs after verifying email
     var templateParams = {
       to_name: user.name,
       to_email: userType === "landlord" ? user.email : user.email.data,
@@ -180,7 +198,8 @@ const verifyEmail = (models) => {
         console.log('FAILED...', err);
       },
     );
-  
+
+    // Return user's credential and JWT token by concatenating userId and env JWT code
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     res.json({
       user: {
@@ -199,14 +218,18 @@ const verifyEmail = (models) => {
 // resendEmailVerificationToken for user
 const resendEmailVerificationToken = (models) => {
   return async (req, res, next) => {
+    // get user's id
     const { userId } = req.body;
 
+    // Check if the user id in datacase
     const user = await models.user.findById(userId);
     if (!user) return sendError(res, "user not found");
   
+    // Check if the user id is verified
     if (user.isVerified)
       return sendError(res, "This email id is already verified");
   
+    // Check if the verification email is sent
     const alreadyHasToken = await models.emailVerificationToken.findOne({
       owner: userId,
     });
@@ -218,6 +241,7 @@ const resendEmailVerificationToken = (models) => {
   
     let OTP = generateOTP();
   
+    // Save user id and otp to database
     const newEmailVerificationToken = new models.emailVerificationToken({
       owner: user._id,
       token: OTP,
@@ -225,6 +249,7 @@ const resendEmailVerificationToken = (models) => {
   
     await newEmailVerificationToken.save();
   
+    // Send actual email with otp to user by emailjs
     var templateParams = {
       to_name: user.name,
       to_email: userType === "landlord" ? user.email : user.email.data,
@@ -253,11 +278,13 @@ const resendEmailVerificationToken = (models) => {
 // forget password for user
 const forgetPassword = (models) => {
   return async (req, res, next) => {
+    // Get user data 
     const { email, userType } = req.body;
 
+    // Check if there is email input
     if (!email) return sendError(res, "Email is missing!");
 
-    // userType === "landlord" indicates the landlord is requesting forget password else user is requesting forget password
+    // CHeck if the user's email in database
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findOne({ 'email': email });
@@ -267,6 +294,7 @@ const forgetPassword = (models) => {
   
     if (!user) return sendError(res, "User not found!", 404);
   
+    // Check if a email is already sent
     const alreadyHasToken = await models.passwordResetToken.findOne({ owner: user._id });
     if (alreadyHasToken)
       return sendError(
@@ -274,6 +302,7 @@ const forgetPassword = (models) => {
         "Only after one hour you can request for another token"
       );
   
+    // Generate the token and save it with user id to database
     const token = await generateRandomByte();
     const newPasswordResetToken = await models.passwordResetToken({
       owner: user._id,
@@ -281,7 +310,7 @@ const forgetPassword = (models) => {
     });
     await newPasswordResetToken.save();
   
-    // might needed to be updated, just for now
+    // Generate reset passowrd url and send it to user
     let resetPasswordUrl;
     if(userType === "landlord") {
       resetPasswordUrl = `http://localhost:3000/auth/landlord/reset-password?token=${token}&id=${user._id}`;
@@ -316,9 +345,10 @@ const forgetPassword = (models) => {
 // reset password for user
 const resetPassword = (models) => {
   return async (req, res, next) => {
+    // Get user's data
     const { newPassword, userId, userType } = req.body;
     
-    // userType === "landlord" indicates the landlord is requesting to reset password else user is requesting to reset password
+    // Check if the user has a new password and update new password to database
     let user;
     if(userType === "landlord") {
       user = await models.landlord.findById(userId)
@@ -336,8 +366,10 @@ const resetPassword = (models) => {
     user.password = newPassword;
     await user.save();
   
+    // Delete the reset password request in database
     await models.passwordResetToken.findByIdAndDelete(req.resetToken._id);
   
+    // Send reset password status by emailjs
     var templateParams = {
       to_name: user.name,
       to_email: userType === "landlord" ? user.email : user.email.data,
@@ -366,6 +398,8 @@ const resetPassword = (models) => {
 // is-auth path
 const isAuth = (models) => {
   return async (req, res, next) => {
+
+      // Get user's token from header
       const token = req.headers?.authorization;
       const jwtToken = token.split("Bearer ")[1];
     
@@ -376,7 +410,6 @@ const isAuth = (models) => {
       const { userId } = decode;
     
       // Check if user is found
-      // userType === "landlord" indicates the landlord is requesting to check whether it is logged in else user is requesting to check whether it is logged in 
       let user;
       if(req.headers.usertype === "landlord") {
         user = await models.landlord.findById(userId);
@@ -394,6 +427,7 @@ const isAuth = (models) => {
 // Get if it is valid reset token
 const isValidPassResetToken = (models) => {
   return async (req, res, next) => {
+      // Get user's token from header
       const { token, userId } = req.body;
 
       // Request type error
