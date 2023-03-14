@@ -15,18 +15,24 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json());
 
+// morgan middleware
 app.use(morgan('combined'));
+
+// cors middleware
 app.use(cors());
 
 const startServer = async () => {
+    // import mongodb connection
     const models = await require('./models')({ $env });
     
-    app.get("/test", (req, res) => {
+    // health check routes
+    app.get("/", (req, res) => {
         return res.status(200).json({
             success: true
         })
     })
     
+    // Register routes
     app.use('/api/v1', require('./routes/v1')(models));
 
     // serving static files
@@ -41,6 +47,7 @@ const startServer = async () => {
         })
     }
     
+    // listen for connections
     app.listen(PORT, () => {
         console.log("Server listening on", PORT);
     })

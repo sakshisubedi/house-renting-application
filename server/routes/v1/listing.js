@@ -1,6 +1,9 @@
 const routes = require('express').Router({mergeParams: true});
 const listingController = require('../../controllers/listing');
 
+/**
+ * Routes to perform CRUD operations on listing
+ */
 module.exports = (models) => {
     routes.post('/', listingController.createListing(models));
     routes.put('/:id', listingController.updateListing(models));
