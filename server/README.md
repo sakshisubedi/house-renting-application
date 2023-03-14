@@ -45,9 +45,11 @@ Base route: `/api/v1`
     - Creates a new wishlist item and saves it to database.
 - **getWishlistByUserId**: GET `/wishlist/:id`
     - PARAMS: id
+    - Expects *pageNum* and *numListings* for query params.
     - Gets all wishlist items corresponding to the given user id.
 - **getInterestedPeopleByListingId**: GET `/wishlist/interested/:id`
     - PARAMS: id
+    - Expects *pageNum* and *numPeople* for query params.
     - Gets all wishlist items corresponding to the given listing id, i.e. the list of people interested in a listing.
 - **getIsWishlistedByUser**: GET `/wishlist/user/:userId/listing/:listingId`
     - PARAMS: userId, listingId
@@ -64,10 +66,11 @@ Base route: `/api/v1`
     - PARAMS: id
     - Update listing information for a given listing id.
 - **getListingByRating**: GET `/listing/recommendation`
+    - Expects *pageNum* and *numListings* for query params.
     - Gets all listings sorted by rating in descending order.
 - **getListingBySearchParameter**: GET `/listing/search`
+    - Expects *pageNum* and *numListings* for query params.
     - Gets all listings depending on a given search parameter.
-    - Currently supports only postalCode as a search parameter.
 - **getListingByLandlordId**: GET `/listing/landlord/:landlordId`
     - PARAMS: landlordId
     - Gets all listings associated with the given landlord id.
@@ -78,6 +81,7 @@ Base route: `/api/v1`
     - PARAMS: id
     - Gets the listing that corresponds to the given listing id.
 - **getListings**: GET `/listing`
+    - Expects *pageNum* and *numListings* for query params.
     - Gets all listings in the database.
 - **deleteListing**: DELETE `/listing/:id`
     - PARAMS: id

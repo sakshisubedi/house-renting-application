@@ -18,16 +18,20 @@ const createWishlistItem = (models) => {
 }
 
 // Get all wishlist items corresponding to a given user id
+// TODO: pagination
 const getWishlistByUserId = (models) => {
     return async (req, res, next) => {
         try {
             if (!req.params.id) {
                 throw new Error("User Id missing")
             }
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numListings = parseInt(req.query.numListings)
+            const offset = numListings * (pageNum - 1)
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.wishlist.find({ userId: req.params.id }).select({ __v: 0 })
+                data: await models.wishlist.find({ userId: req.params.id }).skip(offset).limit(numListings).select({ __v: 0 })
             })
         } catch (error) {
             return res.status(500).json({
@@ -39,16 +43,20 @@ const getWishlistByUserId = (models) => {
 }
 
 // Get all users who have added a listing to their wishlist given a listing id
+// TODO: pagination
 const getInterestedPeopleByListingId = (models) => {
     return async (req, res, next) => {
         try {
             if (!req.params.id) {
                 throw new Error("Listing Id missing")
             }
+            const pageNum = parseInt(req.query.pageNum) >= 1 ? parseInt(req.query.pageNum) : 1
+            const numPeople = parseInt(req.query.numPeople)
+            const offset = numPeople * (pageNum - 1)
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.wishlist.find({ listingId: req.params.id }).select({ __v: 0 })
+                data: await models.wishlist.find({ listingId: req.params.id }).skip(offset).limit(numPeople).select({ __v: 0 })
             })
         } catch (error) {
             return res.status(500).json({
