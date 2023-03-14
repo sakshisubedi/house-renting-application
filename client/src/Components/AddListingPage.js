@@ -198,7 +198,7 @@ function AddListingPage() {
               <FormLabel w={"100%"}>Images/Videos (Up to 10)</FormLabel>\
               <Box
                 w={"100%"}
-                h={200}
+                minh={"100px"}
                 border="2px"
                 borderColor="gray.300"
                 borderRadius={"2xl"}
