@@ -42,8 +42,10 @@ function FilterRow(props) {
     props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
   };
 
+  const windowSize = React.useRef([window.innerWidth, window.innerHeight]);
+
   return (
-    <Flex minWidth='max-content' justifyContent='space-between' alignItems='center' gap='2' margin="2% 3% 2% 5%">
+    <Flex w={windowSize.current[0]} justifyContent='space-between' alignItems='center' gap='2' margin="auto">
       <Input 
         placeholder='Search by postal code' 
         type="search"
@@ -53,24 +55,6 @@ function FilterRow(props) {
       />
 
       <Spacer />
-    <Box my={5}>
-      <Flex
-        minH={'75px'}
-        margin="auto">
-        <HStack spacing="20px">
-          <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} w={{ base: "600px", md: "700px", lg: "850px" }} h="75px" border="1px solid darkgray" borderRadius="15px">
-              <Input
-                id="search-input"
-                type="search"
-                placeholder="Location"
-                h="100%"
-                border="none"
-                fontSize="27px"
-                outline="none"
-                px={4}
-                onChange={handleInputChange}
-              />
-          </Flex>
 
       {/* Rent */}
       <Select 
@@ -94,31 +78,6 @@ function FilterRow(props) {
         <option value="<4000">&lt;4000</option>
         <option value="<5000">&lt;5000</option>
       </Select>
-          {/*rentPrice */}
-          <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} w="100%" maxW="160px">
-            <Select
-              placeholder="Rent"
-              h="75px"
-
-              defaultValue={rentPrice}
-              fontSize="25px"
-              border="1px solid #eaebef"
-              borderRadius="10px"
-              onChange={(e) => {
-                setRentPrice(e.target.value);
-
-                props.search(postalCode, e.target.value, rating, beds, baths, petPref);
-
-              }}
-              bg="#eaebef"
-            >
-              <option value="<1000">&lt;1000</option>
-              <option value="<2000">&lt;2000</option>
-              <option value="<3000">&lt;3000</option>
-              <option value="<4000">&lt;4000</option>
-              <option value="<5000">&lt;5000</option>
-            </Select>
-          </Flex>
 
       <Spacer />
 
@@ -216,32 +175,6 @@ function FilterRow(props) {
       </Select>
 
     </Flex>
-          {/*More*/}
-          <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} w="100%" maxW="160px">
-            <Select
-              placeholder="Pet Preferences"
-              h="75px"
-              defaultValue={petPref}
-              fontSize="25px"
-              border="1px solid #eaebef"
-              // w="max-content"
-              borderRadius="10px"
-              onChange={(e) => {
-                setPetPref(e.target.value);
-
-                props.search(postalCode, rentPrice, rating, beds, baths, e.target.value);
-              }}
-              bg="#eaebef"
-            >
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </Select>
-          </Flex>
-        </HStack>
-        {/* </Flex> */}
-      </Flex>
-
-    </Box>
   );
 }
 export default FilterRow;
