@@ -60,6 +60,7 @@ import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getInter
 function IndividualListingPage() {
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
+  const userType = localStorage.getItem("user-type");
 
   const [isWishlisted, setIsWishlisted] = useState(false); // INITIAL VALUE TO BE SET BASED ON VALUE FROM WISHLIST API
   const [currentRating, setCurrentRating] = useState(null); // INITIAL VALUE TO BE SET BASED ON VALUE FROM Rating API
@@ -320,7 +321,7 @@ function IndividualListingPage() {
                   {/* NEED TO GET CORRECT VALUE HERE */}
                   <Text>({reviewCount} reviews)</Text>
                 </HStack>
-                <IconButton
+                {userType!=="landlord" && <IconButton
                   bg={"white"}
                   style={{ backgroundColor: "transparent" }}
                   isDisabled={!isLoggedIn}
@@ -337,7 +338,7 @@ function IndividualListingPage() {
                     // CHANGING ICON SOURCE IMG
                     handleWishlist();
                   }}
-                />
+                />}
               </VStack>
             </Box>
           </HStack>
