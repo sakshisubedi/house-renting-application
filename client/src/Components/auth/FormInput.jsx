@@ -1,5 +1,6 @@
 import React from "react";
 
+// Input form style
 export default function FormInput({ name, label, placeholder, ...rest }) {
   return (
     <div className="flex flex-col-reverse w-30">
