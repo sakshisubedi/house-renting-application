@@ -13,22 +13,11 @@ import {
   Flex,
   Spacer,
 } from "@chakra-ui/react";
-import { FaChevronDown } from "react-icons/fa";
 import '../App.css'
 
-import React, { useState } from "react";
+import React from "react";
 
 function FilterRow(props) {
-  let tempData = {
-    name: "xyz",
-    email: "xyz@gmail.com",
-  };
-
-
-  const [selectedPriceOption, setSelectedPriceOption] = useState(null);
-  const handlePriceOptionSelect = (value) => {
-    setSelectedPriceOption(value);
-  };
   const [postalCode, setPostalCode] = React.useState("");
   const [rentPrice, setRentPrice] = React.useState("");
   const [rating, setRating] = React.useState("");
