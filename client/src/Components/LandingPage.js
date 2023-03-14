@@ -242,6 +242,7 @@ export default function LandingPage() {
                     src={{
                       ...listing,
                       img: house1,
+                      // img: listing.media[0],
                       userId: authInfo?.profile?.id,
                     }}
                   >
@@ -256,6 +257,7 @@ export default function LandingPage() {
           {currentListings && (
             <Flex justifyContent={"center"} margin="auto" mt={10}>
               <Box mt={10}>
+                {/* Display the pagination buttons */}
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                   (pageNumber) => (
                     <Button
