@@ -71,6 +71,7 @@ function IndividualListingPage() {
   // Fetching auth info of logged in user
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
+  const userType = localStorage.getItem("user-type");
 
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [currentRating, setCurrentRating] = useState(null);
@@ -330,7 +331,7 @@ function IndividualListingPage() {
                   </Text>
                   <Text>({reviewCount} reviews)</Text>
                 </HStack>
-                <IconButton
+                {userType!=="landlord" && <IconButton
                   bg={"white"}
                   style={{ backgroundColor: "transparent" }}
                   isDisabled={!isLoggedIn}
@@ -347,7 +348,7 @@ function IndividualListingPage() {
                     // CHANGING ICON SOURCE IMG
                     handleWishlist();
                   }}
-                />
+                />}
               </VStack>
             </Box>
           </HStack>
