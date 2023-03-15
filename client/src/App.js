@@ -23,7 +23,7 @@ import Signup from "./Components/auth/Signup";
 function App() {
   return (
     <>
-      {/* <LandingPage /> */}
+      {/* Declares the route for the front-end */}
       <Router basename='/'>
         <Routes>
           <Route path="/landing" element={<LandingPage />} />
@@ -49,27 +49,8 @@ function App() {
           <Route path="/auth/user/reset-password" element={<ConfirmPassword userType="customer" />} />
           <Route path="/auth/landlord/reset-password" element={<ConfirmPassword userType="landlord" />} />
           <Route path='*' element={<Navigate to='/landing' />} />
-
-          {/* Authentication part */}
-          
         </Routes>
       </Router>
-      {/* <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div> */}
     </>
   );
 }

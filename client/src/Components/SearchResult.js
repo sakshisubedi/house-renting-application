@@ -51,7 +51,13 @@ const SearchResult = ({ src }) => {
     getRecommendedListings();
   }, []);
 
-  // The handlePagination function is called to handle the pagination of the search results.
+
+  /**
+   * retrives listing for the current page
+   * @param {Object} listings Listings object
+   * @param {number} pageNo page number
+   */
+
   const handlePagination = (listings, pageNo) => {
     setCurrentListings(listings.data.slice((pageNo - 1) * listingsPerPage, pageNo * listingsPerPage));
   }

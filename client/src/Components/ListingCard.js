@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./auth/context/hookIndex";
 
 const ListingCard = ({ src, getWishlist }) => {
+  // fetches auth info for landlord or user based on the user type
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -39,9 +40,11 @@ const ListingCard = ({ src, getWishlist }) => {
   const userType = localStorage.getItem('user-type');
 
   // handle the situation when the user clicks the "like" button on listing card
+  // add or remove wishlist depending on whether user has wishlisted the listing or not
   const handleWishlist = async () => {
     // if previously not wishlisted, create the wishlist item and add to database
     if(!isWishlisted) {
+      // adds listing to user's wishlist if not already
       try {
         await createWishlistItem({
           listingId: src?._id,
@@ -57,7 +60,8 @@ const ListingCard = ({ src, getWishlist }) => {
         });
       }
     } else {
-    // if previously wishlisted, delete the wishlist in the database
+      // if previously wishlisted, delete the wishlist in the database
+      // removes listing from user's wishlist if it was wishlisted
       try {
         // filter the wishlist item of current listing
         const wishlist = wishlistInfo.filter(wishlist => wishlist.listingId === src?._id);
@@ -84,6 +88,9 @@ const ListingCard = ({ src, getWishlist }) => {
     setUserId(id);
 
     // get whether the listing is wishlited by the user
+    /**
+     * sets whether the listing has been wishlisted by the user or not
+     */
     async function isWishlistedByUser() {
       const response = await getIsWishlistedByUser(id, src?._id);
       if(!response.data) {
@@ -95,6 +102,9 @@ const ListingCard = ({ src, getWishlist }) => {
     isLoggedIn && isWishlistedByUser();
 
     // get the wishlist of current user (contains all wishlisted listings)
+    /**
+     * Fetches all the wishlist for the given user id
+     */
     async function getWishlist() {
       const response = await getWishlistByUserId(id);
       if(response?.data) {
@@ -142,6 +152,7 @@ const ListingCard = ({ src, getWishlist }) => {
           </Box>
 
           {/* show the "like" button only when the user is logged in and not a landlord */}
+          {/* Displays wishlist icon if the user is logged in and its user type equals customer */}
           {(isLoggedIn && userType !== "landlord") && <IconButton
             bg="#FFFFFF"
             icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}

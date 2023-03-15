@@ -105,7 +105,7 @@ const InterestedPeopleList = ({wishlistedPeople, l}) => {
 
                                                 </VStack>
                                                 <Spacer />
-                                                <DetailedProfile p={person}></DetailedProfile>
+                                                <DetailedProfile p={person} l={l}></DetailedProfile>
                                             </HStack>
                                         </Box>
                                         <Divider borderWidth={"2px"} />

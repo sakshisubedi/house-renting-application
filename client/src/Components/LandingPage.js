@@ -37,6 +37,9 @@ export default function LandingPage() {
   const [currentListings, setCurrentListings] = useState(null);
 
   useEffect(() => {
+    /**
+     * Gets recommened listings based on rating
+     */
     async function getRecommendedListings() {
       const response = await getListingsByRating();
       if (response?.data) {
@@ -48,20 +51,30 @@ export default function LandingPage() {
     getRecommendedListings();
   }, []);
 
+  /**
+   * retrives listing for the current page
+   * @param {Object} listings Listings object
+   * @param {number} pageNo page number
+   */
   const handlePagination = (listings, pageNo) => {
-    setCurrentListings(
-      listings.data.slice(
-        (pageNo - 1) * listingsPerPage,
-        pageNo * listingsPerPage
-      )
-    );
-  };
+
+    setCurrentListings(listings.data.slice((pageNo-1)*listingsPerPage, pageNo*listingsPerPage));
+  }
+
+  /**
+   * sets page numbers and retrives listing for the current page
+   * @param {number} pageNumber page number
+   */
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     handlePagination(recommendedListings, pageNumber);
   };
 
+  /**
+   * set recommended listings and handle pagination
+   * @param {string} postalCode postal code
+   */
   const handleSearch = async (postalCode) => {
     const response = await getListingBySearchParameter(postalCode);
     if (response?.data) {
@@ -72,7 +85,9 @@ export default function LandingPage() {
   };
   return (
 
+
     // Check if currentListings exists, and render the UI if it does
+
     currentListings && (
       <Box>
         {/* Render navigation bar */}
