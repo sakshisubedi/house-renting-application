@@ -47,6 +47,9 @@ const signInValidator = [
   check("password").trim().not().isEmpty().withMessage("Password is missing"),
 ];
 
+/**
+ * Routes to perform CRUD operations on landlord
+ */
 module.exports = (models) => {
     routes.post('/', landlordController.createLandlord(models));
     routes.put('/:id', landlordController.updateLandlord(models));

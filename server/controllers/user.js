@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// Create a new user upon account creation
+// Create a new user upon account creation and save the given data as a new entry in the database
 const createUser = (models) => {
     return async (req, res, next) => {
         try {
@@ -19,13 +19,15 @@ const createUser = (models) => {
     }
 }
 
-// Update user profile information
+// Update user profile information given a user id
 const updateUser = (models) => {
     return async (req, res, next) => {
         try {
+            // verify that a user id was given
             if (!req.params.id) {
                 throw new Error("User Id missing")
             }
+            // find the user object in the database by id, update with the given request body, and return the updated object data
             return res.status(200).json({
                 success: true,
                 message: 'success',
@@ -44,6 +46,7 @@ const updateUser = (models) => {
 const getUsers = (models) => {
     return async (req, res, next) => {
         try {
+            // returns all user objects in the database excluding the automatic version field and the password field.
             return res.status(200).json({
                 success: true,
                 message: 'success',
@@ -62,9 +65,12 @@ const getUsers = (models) => {
 const getUserAllInfoById = (models) => {
     return async (req, res, next) => {
         try {
+            // verify that a user id was given
             if (!req.params.id) {
                 throw new Error("User Id missing")
             }
+            // find the user object in the database by id and return the object data
+            // excludes the password field and automatic version field
             return res.status(200).json({
                 success: true,
                 message: 'success',
@@ -83,13 +89,18 @@ const getUserAllInfoById = (models) => {
 const getUserPublicInfoById = (models) => {
     return async (req, res, next) => {
         try {
+            // verify that a user id was given
             if (!req.params.id) {
                 throw new Error("User Id missing")
             }
+            // find the user object in the database by id and return the PUBLIC object data
+            // excludes the password field and automatic version field
+            // will exclude the age, occupation, and email fields if their respective isPublic field is false
             return res.status(200).json({
                 success: true,
                 message: 'success',
                 data: await models.user.aggregate([
+                    // Thanks Sakshi for helping write this query
                     {
                         '$match': {
                             '_id': mongoose.Types.ObjectId(req.params.id)
@@ -147,13 +158,15 @@ const getUserPublicInfoById = (models) => {
     }
 }
 
-// Gets only the user's profile picture for a given user id
+// Gets only the user's profile picture for a given user id. Used to get the profile picture icon that will be used in the navbar
 const getUserProfilePicById = (models) => {
     return async (req, res, next) => {
         try {
+            // verify that a user id was given
             if (!req.params.id) {
                 throw new Error("User Id missing")
             }
+            // find the user object in the database by user id and return only the profile picture from the object data
             return res.status(200).json({
                 success: true,
                 message: 'success',

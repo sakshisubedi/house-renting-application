@@ -1,6 +1,9 @@
 const routes = require('express').Router({mergeParams: true})
 const wishlistController = require("../../controllers/wishlist")
 
+/**
+ * Routes to perform CRUD operations on wishlist
+ */
 module.exports = (models) => {
     routes.post('/', wishlistController.createWishlistItem(models));
     routes.get('/:id', wishlistController.getWishlistByUserId(models));
