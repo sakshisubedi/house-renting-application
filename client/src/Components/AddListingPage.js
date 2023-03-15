@@ -75,6 +75,11 @@ function AddListingPage() {
   const [popup, setPopup] = React.useState(false);
 
   //Takes the uploaded image and converts it to base64 string format
+  /**
+   * 
+   * @param {Event Object} event event object
+   * Converts image to base64 string
+   */
   const onImageChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       let images = [];
@@ -83,12 +88,13 @@ function AddListingPage() {
         let reader = new FileReader();
         reader.readAsDataURL(img);
         reader.onload = () => {
-          images.push(reader.result);
+          images.push(reader.result.split("base64,")[1]);
           setSelectedImages(images);
         };
       }
     }
   };
+
   const uploadImages = () => {
     setMedia(selectedImages);
     setPopup(false);
@@ -104,6 +110,7 @@ function AddListingPage() {
 
   // Add new listing to DB
   const addListing = async (landlordId) => {
+    // contruct new listing object
     const newListing = {
       name: name,
       address: address,
@@ -119,6 +126,7 @@ function AddListingPage() {
     };
     // console.log("new listing = ", newListing);
 
+    // creates new listing and store it in db
     const response = await createListing(newListing);
     if (response?.error) {
       toast({
@@ -200,7 +208,7 @@ function AddListingPage() {
                 {/* {" renders the base64 string and converts it to image to display in the box "} */}
                 {media.map((image, index) => (
                   <Box key={index} mb={5}>
-                    <Image src={image} maxH={180} maxW={200} />
+                    <Image src={`data:image/jpeg;base64,${image}`} maxH={180} maxW={200} />
                   </Box>
                 ))}
                 {/* {media.length > 0 ? `${media.length} file(s) uploaded` : "  "} */}

@@ -42,6 +42,9 @@ const SearchResult = ({ src }) => {
 
   // The getRecommendedListings function is called to retrieve recommended listings.
   useEffect(() => {
+    /**
+     * Gets recommened listings based on rating
+     */
     async function getRecommendedListings() {
       const response = await getListingsByRating();
       setRecommendedListings(response);
@@ -65,19 +68,27 @@ const SearchResult = ({ src }) => {
 
 
   //this function is called when the user clicks on a page number.
+  /**
+   * sets page numbers and retrives listing for the current page
+   * @param {number} pageNumber page number
+   */
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     handlePagination(recommendedListings, pageNumber);
-  };
+  }
 
 
+  /**
+   * set recommended listings and handle pagination
+   * @param {string} postalCode postal code
+   */
   const handleSearch = async (postalCode, rentPrice, rating, beds, bathrooms, petPref) => {
     const recommendedListings = await getListingBySearchParameter(postalCode, rentPrice, rating, beds, bathrooms, petPref);
 
     setRecommendedListings(recommendedListings);
-    setTotalPages(Math.ceil(recommendedListings.data.length / listingsPerPage));
+    setTotalPages(Math.ceil(recommendedListings?.data?.length / listingsPerPage));
     handlePagination(recommendedListings, currentPage);
-  };
+  }
 
   // The component renders a nav bar, search bar and a grid of ListingCard components.
   return (

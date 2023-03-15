@@ -195,33 +195,34 @@ import {
   Box,
   Image,
   Text,
-  Divider,
   SimpleGrid,
   Flex,
   LinkBox,
-  LinkOverlay,
-  VStack,
   Button,
   IconButton,
-  HStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import heart from "../img/Union.svg";
 import star from "../img/rating_star.jpg";
 import delete1 from "../img/delete.jpg";
-import edit from "../img/edit.jpg";
 import { useNavigate } from "react-router-dom";
 import { deleteListing } from "../services/listingApis";
 import { getAverageRatingByListingId } from "../services/ratingApis";
+import house from "../img/house1.jpg";
 
 // LandlordViewCard component that takes in an object with information about a property listing
-const LandlordViewCard = ({ src }) => {
+const LandlordViewCard = ({ src , getListings}) => {
   const navigate = useNavigate();
   const [averageRating, setAverageRating] = useState(null);
-   // Async function that deletes the current listing
+
+  // Async function that deletes the current listing
+  /**
+   * delete listing and retrives all the listings added by given landlord
+   * @param {string} listing_id listing id
+   */
   async function deleteCurrentListing(listing_id){
 
     await deleteListing(listing_id);
+    await getListings(src?.landlordId);
   }
 
   /**
@@ -260,7 +261,7 @@ const LandlordViewCard = ({ src }) => {
         <Flex alignItems="center">
           {/* Image on the listing card */}
           <Box w="20%" h="10%" borderRadius={15} pr={4}>
-            <Image w="100%" src={src.img} alt="card image" borderRadius={15} />
+            <Image objectFit='fill' w="100%" h="100px" style={{borderRadius: '1rem'}} src={src.media.length>0 ? `data:image/jpeg;base64,${src.media[0]}` : house} alt="card image" />
           </Box>
           <Box w="80%" h="10%">
             <Flex

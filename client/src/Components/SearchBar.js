@@ -8,12 +8,15 @@ import React, { useEffect, useState } from "react";
 import { Input, IconButton, HStack, Image } from "@chakra-ui/react";
 import search from "../img/search.jpg";
 import { useNavigate } from "react-router-dom";
-import { getListingBySearchParameter } from "../services/listingApis";
 
 export default function SearchBar(props) {
   const navigate = useNavigate();
 
-  const handleInputChange = async (event) => {
+  /**
+   * search listing based on postal code changes
+   * @param {Object} event event object
+   */
+  const handlePostalCodeChange = async (event) => {
     props.search(event.target.value);
   };
 
@@ -40,7 +43,7 @@ export default function SearchBar(props) {
           borderRadius="20px"
           w="734.93px"
           h="83px"
-          onChange={handleInputChange}
+          onChange={handlePostalCodeChange}
         />
         {/*The handleInputChange function is called when the user types into the search input. It calls the search function passed down through props with the value of the input. */}
 

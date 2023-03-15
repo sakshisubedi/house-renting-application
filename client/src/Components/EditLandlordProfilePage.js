@@ -73,21 +73,19 @@ function EditLandlordProfilePage() {
     getLandlordInfo(id);
   }, [landlordId, location, authInfo]);
 
-  async function getListingMetadata(listingId) {
-    const response = await getAverageRatingByListingId(listingId);
-    if (response?.data && response.data.length>0) {
-      return response;
+  /**
+   * Retrieves listing for given landlord id
+   * @param {string} landlordId landlord id
+   */
+  async function getListingsInfo(landlordId) {
+    const response = await getListingByLandlordId(landlordId);
+    if(response?.data && response.data.length>0) {
+      setListingsInfo(response.data);
     }
   }
 
   useEffect(()=>{
     // Fetching all listings of current landlord
-    async function getListingsInfo(landlordId) {
-      const response = await getListingByLandlordId(landlordId);
-      if(response?.data && response.data.length>0) {
-        setListingsInfo(response.data);
-      }
-    }
     getListingsInfo(landlordId);
   }, [landlordId]);
 
@@ -249,7 +247,7 @@ function EditLandlordProfilePage() {
             <Box mt={10}>
               {listingsInfo?.map((listing, ind) => (
                 <Box key={ind}>
-                  <LandlordViewCard ard src={listing}>
+                  <LandlordViewCard ard src={listing} getListings={getListingsInfo}>
                     {" "}
                   </LandlordViewCard>
                   <br/>

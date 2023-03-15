@@ -35,7 +35,6 @@ function WishlistPage() {
 
     const [wishlistedListings, setwishlistedListings] = useState([]);
 
-    // Fetch wishlisted listings
     /**
      * get all wishlist items corresponding to a given user id
      * @param {string} userId user id

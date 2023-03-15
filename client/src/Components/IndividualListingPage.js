@@ -66,6 +66,7 @@ import {
 } from "../services/commentApis";
 import { getUserPublicInfoById } from "../services/userApis";
 import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getInterestedPeopleByListingId } from "../services/wishlistApis";
+import house from "../img/house1.jpg";
 
 function IndividualListingPage() {
   // Fetching auth info of logged in user
@@ -107,6 +108,11 @@ function IndividualListingPage() {
     setPopup(false);
   };
   //Takes the uploaded image and converts it to base64 string format 
+  /**
+   * 
+   * @param {Event Object} event event object
+   * Converts image to base64 string
+   */
   const onImageChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       let images = [];
@@ -115,13 +121,17 @@ function IndividualListingPage() {
         let reader = new FileReader();
         reader.readAsDataURL(img);
         reader.onload = () => {
-          images.push(reader.result);
+          images.push(reader.result.split("base64,")[1]);
           setSelectedImages(images);
         };
       }
     }
   };
 
+  /**
+   * Checks whether the listing is wishlisted by the user or  not
+   * @param {string} listingId listing id
+   */
   async function isWishlistedByUser(listingId) {
     const response = await getIsWishlistedByUser(userId, listingId);
     if (!response.data) {
@@ -133,32 +143,46 @@ function IndividualListingPage() {
     }
   }
 
+  /**
+   * Fetches average rating and review count for given listing
+   * @param {string} listingId listing id
+   */
+  async function getAverageRating(listingId) {
+    const response = await getAverageRatingByListingId(listingId);
+    if (response?.data && response.data.length > 0) {
+      setAverageRating(Math.round(response.data[0].averageRating * 10) / 10 || 0); // Round to one decimal place
+      setReviewCount(response.data[0].reviewCount);
+    }
+  }
+
   useEffect(() => {
     let listingId = location.pathname.split("/").pop();
 
+    /**
+     * Retrives listing by listing id
+     */
     async function getListing() {
       const response = await getListingById(listingId);
-      if (response?.data) {
+      if(response?.data) {
         setListingInfo(response.data);
         getLandlordInfo(response.data.landlordId);
       }
     }
 
-    async function getAverageRating() {
-      const response = await getAverageRatingByListingId(listingId);
-      if (response?.data && response.data.length > 0) {
-        setAverageRating(Math.round(response.data[0].averageRating * 10) / 10 || 0); // Round to one decimal place
-        setReviewCount(response.data[0].reviewCount);
-      }
-    }
-
+    /**
+     * Retrives landlord information by landlord id
+     * @param {string} landlordId landlord id
+     */
     async function getLandlordInfo(landlordId) {
       const response = await getLandlordInfoById(landlordId);
-      if (response?.data) {
+      if(response?.data) {
         setLandlordInfo(response.data);
       }
     }
 
+    /**
+     * Retrieves rating by user id
+     */
     async function getCurrentRating() {
       const response = await getRatingByUserId(userId, listingId);
       if (response?.data && response.data.length > 0) {
@@ -166,6 +190,9 @@ function IndividualListingPage() {
       }
     }
 
+    /**
+     * Retrieves interested people by listing id
+     */
     async function getInterestedPeople() {
       const response = await getInterestedPeopleByListingId(listingId);
       var people = []
@@ -181,20 +208,27 @@ function IndividualListingPage() {
     }
 
     getListing();
-    isLoggedIn && getAverageRating();
+    isLoggedIn && getAverageRating(listingId);
     isLoggedIn && getCurrentRating();
     getComments(listingId);
     isLoggedIn && isWishlistedByUser(listingId);
     getInterestedPeople();
   }, [location, userId, isLoggedIn])
 
+  /**
+   * Retrieves comments by listing id
+   * @param {string} listingId listing id
+   */
   const getComments = async (listingId) => {
     const response = await getCommentsByListingId(listingId);
-    if (response?.data && response.data.length > 0) {
+    if(response?.data && response.data.length > 0) {
       setCommentInfo(response.data);
     }
   };
 
+  /**
+   * Create or remove wishlist depending whether listing is wishlisted or not
+   */
   const handleWishlist = async () => {
     if (!isWishlisted) {
       try {
@@ -225,6 +259,9 @@ function IndividualListingPage() {
     await isWishlistedByUser(location.pathname.split("/").pop());
   };
 
+  /**
+   * Adds comment and retrives latest comments and average rating
+   */
   const handleComment = async () => {
     if (commentText.trim() !== "") {
       const listingId = location.pathname.split("/").pop();
@@ -235,7 +272,6 @@ function IndividualListingPage() {
       };
       console.log(comment);
       const response = await addComment(comment);
-      await getComments(listingId);
       if (response?.error) {
         toast({
           title: "Failed",
@@ -251,14 +287,19 @@ function IndividualListingPage() {
           position: "top-right",
         });
       }
+      
+      await getAverageRating(listingId);
+      await getComments(listingId);
     }
     setCommentText(null);
+    
   };
 
   // Delete comment from DB
   async function deleteComm(comm_id) {
     await deleteComment(comm_id);
     await getComments(location.pathname.split("/").pop());
+    await getAverageRating(location.pathname.split("/").pop());
   }
 
   // Update rating of current listing by current user
@@ -273,6 +314,7 @@ function IndividualListingPage() {
       const response = await addRating(rating);
       if (response?.data) {
         setCurrentRating(response.data);
+        await getAverageRating(location.pathname.split("/").pop());
       }
     } else {
       // update rating
@@ -282,6 +324,7 @@ function IndividualListingPage() {
       const response = await updateRating(currentRating._id, rating);
       if (response?.data) {
         setCurrentRating(response.data);
+        await getAverageRating(location.pathname.split("/").pop());
       }
     }
   };
@@ -358,6 +401,7 @@ function IndividualListingPage() {
             borderColor="gray.300"
             borderRadius={"2xl"}
           >
+            <Image w="100%" h="100%" style={{borderRadius: "1rem", objectFit: "cover"}} src={listingInfo.media.length>0 ? `data:image/jpeg;base64,${listingInfo.media[0]}` : house} alt="card image" />
           </Box>
           <HStack spacing={5} align={"top"}>
             <VStack spacing={5} w={"75%"}>
@@ -508,9 +552,9 @@ function IndividualListingPage() {
                     {commentInfo?.map((comment, ind) => (
                       <Box key={ind}>
                         <HStack spacing={2} px={3}>
-                          <Avatar name={comment.user.name} size={"sm"} />
+                          <Avatar name={comment?.user?.name} size={"sm"} />
                           <Text fontWeight={"bold"} fontSize={"2xl"}>
-                            {comment.user.name}
+                            {comment?.user?.name}
                           </Text>
                           <Spacer />
                           <BiLike
@@ -534,7 +578,7 @@ function IndividualListingPage() {
                           />
                         </HStack>
                         <Text ml={10} fontSize={"lg"}>
-                          {comment.comment}
+                          {comment?.comment}
                         </Text>
                         <Divider borderWidth={"3px"} my={2} />
                         {comment.reply.length > 0 &&
