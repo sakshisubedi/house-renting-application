@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./auth/context/hookIndex";
 
 const ListingCard = ({ src, getWishlist }) => {
+  // fetches auth info for landlord or user based on the user type
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -38,8 +39,12 @@ const ListingCard = ({ src, getWishlist }) => {
   const [userId, setUserId] = useState(src?.userId || authInfo?.profile?.id);
   const userType = localStorage.getItem('user-type');
 
+  /**
+   * add or remove wishlist depending on whether user has wishlisted the listing or not
+   */
   const handleWishlist = async () => {
     if(!isWishlisted) {
+      // adds listing to user's wishlist if not already
       try {
         await createWishlistItem({
           listingId: src?._id,
@@ -55,6 +60,7 @@ const ListingCard = ({ src, getWishlist }) => {
         });
       }
     } else {
+      // removes listing from user's wishlist if it was wishlisted
       try {
         const wishlist = wishlistInfo.filter(wishlist => wishlist.listingId === src?._id);
         if(wishlist.length>0) {
@@ -78,6 +84,9 @@ const ListingCard = ({ src, getWishlist }) => {
   useEffect(() => {
     const id = src?.userId || authInfo?.profile?.id;
     setUserId(id);
+    /**
+     * sets whether the listing has been wishlisted by the user or not
+     */
     async function isWishlistedByUser() {
       const response = await getIsWishlistedByUser(id, src?._id);
       if(!response.data) {
@@ -88,6 +97,9 @@ const ListingCard = ({ src, getWishlist }) => {
     }
     isLoggedIn && isWishlistedByUser();
 
+    /**
+     * Fetches all the wishlist for the given user id
+     */
     async function getWishlist() {
       const response = await getWishlistByUserId(id);
       if(response?.data) {
@@ -133,6 +145,7 @@ const ListingCard = ({ src, getWishlist }) => {
             </LinkOverlay>
 
           </Box>
+          {/* Displays wishlist icon if the user is logged in and its user type equals customer */}
           {(isLoggedIn && userType !== "landlord") && <IconButton
             bg="#FFFFFF"
             icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}

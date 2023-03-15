@@ -11,6 +11,7 @@ const PORT = $env.PORT || 4000;
 
 // body parser middleware
 app.use(bodyParser.urlencoded({
+    limit: '5000000mb',
     extended: true
 }))
 app.use(bodyParser.json());

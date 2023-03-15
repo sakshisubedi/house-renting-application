@@ -35,7 +35,10 @@ function WishlistPage() {
 
     const [wishlistedListings, setwishlistedListings] = useState([]);
 
-    // get all wishlist items corresponding to a given user id
+    /**
+     * get all wishlist items corresponding to a given user id
+     * @param {string} userId user id
+     */
     const getUserWishlist = async (userId) => {
         const response = await getWishlistByUserId(userId);
         var listings = [];

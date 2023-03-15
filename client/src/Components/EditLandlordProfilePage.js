@@ -97,7 +97,7 @@ function EditLandlordProfilePage() {
       }
     }
     getListingsInfo(landlordId);
-  }, [listingsInfo]);
+  }, [listingsInfo, landlordId]);
 
   // Updating info of current landlord
   const updateLandlordInfo = async () => {
