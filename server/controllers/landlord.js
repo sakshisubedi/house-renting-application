@@ -392,6 +392,7 @@ const sendResetPasswordTokenStatus = (models) => {
   }
 }
 
+// Creates a landlord object upon account creation and save the given data as a new entry in the database
 const createLandlord = (models) => {
     return async (req, res, next) => {
         try {
@@ -410,18 +411,19 @@ const createLandlord = (models) => {
     }
 }
 
-// Update landlord profile information
+// Update landlord profile information given a landlord id
 const updateLandlord = (models) => {
     return async (req, res, next) => {
         try {
+            // verify that a landlord id was given
             if (!req.params.id) {
                 throw new Error("Landlord Id missing")
             }
-            await models.landlord.findByIdAndUpdate(req.params.id, req.body, {new: true})
+            // find the landlord object in the database by id, update with the given request body, and return the updated object data
             return res.status(200).json({
                 success: true,
                 message: 'success',
-                data: await models.landlord.findById(req.params.id).select({ __v: 0, password: 0 })
+                data: await models.landlord.findByIdAndUpdate(req.params.id, req.body, {new: true})
             })
         } catch (error) {
             return res.status(500).json({
@@ -432,12 +434,16 @@ const updateLandlord = (models) => {
     }
 }
 
+// Gets the landlord profile information given a landlord id
 const getLandlordInfoById = (models) => {
     return async (req, res, next) => {
         try {
+            // verify that a landlord id was given
             if (!req.params.id) {
                 throw new Error("Landlord Id missing")
             }
+            // find the landlord object in the database by landlord id and return the data in that object excluding the
+            // automatic version field and the password field
             return res.status(200).json({
                 success: true,
                 message: 'success',
@@ -452,12 +458,15 @@ const getLandlordInfoById = (models) => {
     }
 }
 
+// Gets the landlord profile picture given a landlord id. Used to get the profile picture icon that will be used in the navbar
 const getLandlordProfilePicById = (models) => {
     return async (req, res, next) => {
         try {
+            // verify that a landlord id was given
             if (!req.params.id) {
-                throw new Error("User Id missing")
+                throw new Error("Landlord Id missing")
             }
+            // find the landlord object in the database by landlord id and return only the profile picture from the object data
             return res.status(200).json({
                 success: true,
                 message: 'success',
