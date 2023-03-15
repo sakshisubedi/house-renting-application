@@ -20,20 +20,37 @@ import {
   IconButton,
   HStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import heart from "../img/Union.svg";
 import star from "../img/rating_star.jpg";
 import delete1 from "../img/delete.jpg";
 import edit from "../img/edit.jpg";
 import { useNavigate } from "react-router-dom";
 import { deleteListing } from "../services/listingApis";
+import { getAverageRatingByListingId } from "../services/ratingApis";
 
 const LandlordViewCard = ({ src }) => {
   const navigate = useNavigate();
+  const [averageRating, setAverageRating] = useState(null);
   
   async function deleteCurrentListing(listing_id){
     await deleteListing(listing_id);
   }
+
+  /**
+   * sets average rating and review count
+   * @param {string} listingId listing id
+   */
+  async function getAverageRating(listingId) {
+    const response = await getAverageRatingByListingId(listingId);
+    if(response?.data && response.data.length > 0) {
+        setAverageRating(response.data[0]);
+    }
+  }
+  
+  useEffect(() => {
+    getAverageRating(src._id);
+  }, [src._id]);
 
   return (
     <LinkBox
@@ -93,10 +110,10 @@ const LandlordViewCard = ({ src }) => {
                   <Box>
                     <Flex justifyContent="space-evenly" alignItems="center">
                       <Box fontWeight={"Bold"} fontSize="xl">
-                        {src.rating}
+                        {Math.round(averageRating?.averageRating || 0)}
                       </Box>
                       <Box px={1}>
-                        <p>({src.reviewCount} reviews)</p>
+                        <p>({averageRating?.reviewCount || 0} reviews)</p>
                       </Box>
                     </Flex>
                   </Box>
@@ -105,7 +122,7 @@ const LandlordViewCard = ({ src }) => {
               {/*Delete Listing button*/}
               <Flex mx={5}>
                 <Box mx={3}>
-                  <IconButton
+                  {/* <IconButton
                     icon={
                       <Image
                         width="100%"
@@ -117,7 +134,7 @@ const LandlordViewCard = ({ src }) => {
                     onClick={(e) => {
                       // e.preventDefault();
                     }}
-                  />
+                  /> */}
                 </Box>
                 <Box>
                   <IconButton

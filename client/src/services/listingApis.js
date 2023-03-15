@@ -1,7 +1,18 @@
+/*
+ * Filename: listingApi.js
+ * 
+ * This file defines axios (http) call to listing APIs
+ */
+
 import axios from "axios";
 import env from "../environment";
 const BASE_URL = env.BASE_URL;
 
+/**
+ * Create new listing
+ * @param {Object} listing listing object
+ * @returns dreated listing if success else error
+ */
 export async function createListing(listing) {
   try {
     const { data } = await axios.post(`${BASE_URL}/api/v1/listing`, listing);
@@ -13,6 +24,10 @@ export async function createListing(listing) {
   }
 }
 
+/**
+ * get all listings sorted by rating in descending order
+ * @returns all listings sorted by rating in descending order if success else error
+ */
 export async function getListingsByRating() {
   try {
     const { data } = await axios.get(
@@ -26,6 +41,11 @@ export async function getListingsByRating() {
   }
 }
 
+/**
+ * delete listing for given listing id
+ * @param {string} listingId listing id
+ * @returns successful deletion response if success else error
+ */
 export async function deleteListing(listingId) {
   try {
     const { data } = await axios.delete(
@@ -39,6 +59,12 @@ export async function deleteListing(listingId) {
   }
 }
 
+/**
+ * update listing for given listing id
+ * @param {Object} listing listing object
+ * @param {string} listingId listing id
+ * @returns updated listing for given listing id if success else error
+ */
 export async function updateListing(listing, listingId) {
   try {
     const { data } = await axios.put(
@@ -53,6 +79,11 @@ export async function updateListing(listing, listingId) {
   }
 }
 
+/**
+ * get listing for given listing id
+ * @param {string} listingId listing id
+ * @returns listing for given listing id if success else error
+ */
 export async function getListingById(listingId) {
   try {
     const { data } = await axios.get(`${BASE_URL}/api/v1/listing/${listingId}`);
@@ -64,6 +95,11 @@ export async function getListingById(listingId) {
   }
 }
 
+/**
+ * get all listings that is posted by given landlord id
+ * @param {string} landlordId landlord id
+ * @returns all listings if success else error
+ */
 export async function getListingByLandlordId(landlordId) {
   try {
     const { data } = await axios.get(
@@ -77,6 +113,11 @@ export async function getListingByLandlordId(landlordId) {
   }
 }
 
+/**
+ * get average rating and review count for all the listings that are of given landlord id
+ * @param {string} landlordId landlord id
+ * @returns average rating and review count  if success else error
+ */
 export async function getListingRating(landlordId) {
   try {
     const { data } = await axios.get(
@@ -90,6 +131,16 @@ export async function getListingRating(landlordId) {
   }
 }
 
+/**
+ * get all listings depending on the search parameter
+ * @param {string} postalCode postal code
+ * @param {string} rentPrice rent
+ * @param {string} rating rating
+ * @param {string} beds beds
+ * @param {string} bathrooms bathrooms 
+ * @param {string} petPref pet preference
+ * @returns filtered listing  if success else error
+ */
 export async function getListingBySearchParameter(postalCode, rentPrice="", rating="", beds="", bathrooms="", petPref="") {
   try {
     const searchParams = new URLSearchParams();

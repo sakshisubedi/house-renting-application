@@ -119,6 +119,7 @@ const NavBar = ({ profileURL }) => {
                                 
                                 {/* User/Landlord Authentication */}
                                 { isLoggedIn ? (
+                                    // Hide the wishlist icon if the user is not logged in or userType equals landlord
                                     <div>
                                         {
                                             userType === "landlord" ? (

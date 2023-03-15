@@ -27,6 +27,7 @@ import { useAuth } from "./auth/context/hookIndex";
 import { useLocation } from "react-router-dom";
 
 function WishlistPage() {
+    // fetches auth info for landlord or user based on the user type
     const { authInfo } = useAuth();
     const { isLoggedIn } = authInfo;
     const location = useLocation();
@@ -35,6 +36,10 @@ function WishlistPage() {
     const [wishlistedListings, setwishlistedListings] = useState([]);
 
     // Fetch wishlisted listings
+    /**
+     * get all wishlist items corresponding to a given user id
+     * @param {string} userId user id
+     */
     const getUserWishlist = async (userId) => {
         const response = await getWishlistByUserId(userId);
         var listings = [];
@@ -61,6 +66,7 @@ function WishlistPage() {
         userId && <Box>
         <NavBar />
         <Box my={50} ml={200} mr={200}>
+            {/* if wishlist is empty then display EmptyWishlist Component else display all the wishlisted listing for given user */}
             {wishlistedListings.length == 0 ?
                 (
                     // If the user hasn't wishlited any listings, show empty wishlist page
