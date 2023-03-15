@@ -187,7 +187,7 @@ const getListingByRating = (models) => {
                 success: true,
                 message: 'success',
                 // data: await models.listing.find().sort('-rating').skip(offset).limit(numListings).select({ __v: 0 })
-                data: await models.listing.find().sort('-rating').select({ __v: 0 }).limit(10)
+                data: await models.listing.find().sort('-rating').select({ __v: 0 })
             })
         } catch (error) {
             return res.status(500).json({
