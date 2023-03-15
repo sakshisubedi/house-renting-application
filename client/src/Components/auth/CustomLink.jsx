@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+// Submit button style
 export default function CustomLink({ to, children }) {
   return (
     <Link

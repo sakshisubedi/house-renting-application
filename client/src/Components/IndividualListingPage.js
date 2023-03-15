@@ -149,7 +149,7 @@ function IndividualListingPage() {
     async function getAverageRating() {
       const response = await getAverageRatingByListingId(listingId);
       if (response?.data && response.data.length > 0) {
-        setAverageRating(response.data[0].averageRating);
+        setAverageRating(Math.round(response.data[0].averageRating * 10) / 10 || 0); // Round to one decimal place
         setReviewCount(response.data[0].reviewCount);
       }
     }
@@ -680,12 +680,6 @@ function IndividualListingPage() {
                           </Box>
                         ))}
                       </VStack>
-                      <Divider borderWidth={"3px"} />
-                      <Flex mt={2}>
-                        <Spacer />
-                        <InterestedPeopleList wishlistedPeople={interestedPeople} l={isLoggedIn}/>
-                        <Spacer />
-                      </Flex>
                     </Box>
                   )}
               <Divider borderWidth={"3px"} />

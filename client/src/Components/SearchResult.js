@@ -14,6 +14,7 @@ import {
   SimpleGrid,
   Flex,
   Button,
+
 } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import React from "react";
@@ -29,14 +30,14 @@ const SearchResult = ({ src }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [listingsPerPage, setListingsPerPage] = useState(8);
   const { authInfo } = useAuth();
-  const [ totalPages, setTotalPages ] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [currentListings, setCurrentListings] = useState(null);
 
   useEffect(() => {
     async function getRecommendedListings() {
       const response = await getListingsByRating();
       setRecommendedListings(response);
-      setTotalPages(Math.ceil(response.data.length/listingsPerPage));
+      setTotalPages(Math.ceil(response.data.length / listingsPerPage));
       handlePagination(response, currentPage);
     }
     getRecommendedListings();
@@ -48,7 +49,7 @@ const SearchResult = ({ src }) => {
    * @param {number} pageNo page number
    */
   const handlePagination = (listings, pageNo) => {
-    setCurrentListings(listings.data.slice((pageNo-1)*listingsPerPage, pageNo*listingsPerPage));
+    setCurrentListings(listings.data.slice((pageNo - 1) * listingsPerPage, pageNo * listingsPerPage));
   }
 
 
@@ -58,9 +59,9 @@ const SearchResult = ({ src }) => {
   };
 
   const handleSearch = async (postalCode, rentPrice, rating, beds, bathrooms, petPref) => {
-    const recommendedListings = await getListingBySearchParameter(postalCode,  rentPrice, rating, beds, bathrooms, petPref);
+    const recommendedListings = await getListingBySearchParameter(postalCode, rentPrice, rating, beds, bathrooms, petPref);
     setRecommendedListings(recommendedListings);
-    setTotalPages(Math.ceil(recommendedListings.data.length/listingsPerPage));
+    setTotalPages(Math.ceil(recommendedListings.data.length / listingsPerPage));
     handlePagination(recommendedListings, currentPage);
   };
 
@@ -71,7 +72,13 @@ const SearchResult = ({ src }) => {
         <Heading ml={8} mt={5} pl={10} pt={5} pr={5} textAlign="left">
           Showing results for “Location”...
         </Heading>
-        <FilterRow search={handleSearch} />
+        <Flex
+          pl={10}
+          pr={8}
+          pt={5}
+          ml={8}>
+          <FilterRow search={handleSearch} />
+        </Flex>
 
       </Box>
       <Box margin="auto" pt={3} pl={10}>
@@ -83,18 +90,20 @@ const SearchResult = ({ src }) => {
           ml={8}
           mr={8}
         >
-          <SimpleGrid
-            columns={{ base: 1, md: 4 }}
-            spacing={10}
-            mt={2}
+          <Flex justifyContent={"center"} margin="auto">
+            <SimpleGrid
+              columns={{ base: 1, md: 4 }}
+              spacing={10}
+              mt={2}
             // mx={10}
-          >
-            {currentListings.map((listing, idx) => (
-              <ListingCard key={idx} src={{ ...listing, img: house1, userId: authInfo?.profile?.id }}>
-                {" "}
-              </ListingCard>
-            ))}
-          </SimpleGrid>
+            >
+              {currentListings.map((listing, idx) => (
+                <ListingCard key={idx} src={{ ...listing, img: house1, userId: authInfo?.profile?.id }}>
+                  {" "}
+                </ListingCard>
+              ))}
+            </SimpleGrid>
+          </Flex>
         </VStack>
         <Flex justifyContent={"center"} margin="auto" mt={10}>
           <Box mt={10}>

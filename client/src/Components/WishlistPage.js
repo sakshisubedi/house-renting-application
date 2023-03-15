@@ -35,6 +35,7 @@ function WishlistPage() {
 
     const [wishlistedListings, setwishlistedListings] = useState([]);
 
+    // Fetch wishlisted listings
     /**
      * get all wishlist items corresponding to a given user id
      * @param {string} userId user id
@@ -68,12 +69,14 @@ function WishlistPage() {
             {/* if wishlist is empty then display EmptyWishlist Component else display all the wishlisted listing for given user */}
             {wishlistedListings.length == 0 ?
                 (
+                    // If the user hasn't wishlited any listings, show empty wishlist page
                     <Center>
                         <EmptyWishlist></EmptyWishlist>
                     </Center>
                 )
                 :
                 (
+                    // If the user has wishlisted listings, display the listings as listing cards in a gridded format
                     <VStack align="left" spacing={30}>
                         <Heading>Your Wishlist</Heading>
                         <Center>

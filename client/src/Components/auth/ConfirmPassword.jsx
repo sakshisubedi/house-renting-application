@@ -6,6 +6,7 @@ import Submit from "./Submit";
 import { resetPassword, verifyPasswordResetToken } from "./auth";
 import { useNotification } from "./context/hookIndex";
 
+// Thanks to Sakshi for adding the userType parameter to optimize the duplicated structure of landlord. 
 export default function ConfirmPassword({userType}) {
   const [password, setPassword] = useState({
     one: "",
@@ -13,6 +14,8 @@ export default function ConfirmPassword({userType}) {
   });
   const [isVerifying, setIsVerifying] = useState(false);
   const [isValid, setIsValid] = useState(false);
+
+  // Get the token and userId from url
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const id = searchParams.get("id");
@@ -20,7 +23,6 @@ export default function ConfirmPassword({userType}) {
   const { updateNotification } = useNotification();
   const navigate = useNavigate();
 
-  // isValid, !isValid
   useEffect(() => {
     isValidToken();
   }, []);
@@ -28,16 +30,20 @@ export default function ConfirmPassword({userType}) {
   const isValidToken = async () => {
     const { error, valid } = await verifyPasswordResetToken(token, id);
     setIsVerifying(false);
+
+    // Not valid if any error occurs
     if (error) {
       navigate("/auth/reset-password", { replace: true });
       return updateNotification("error", error);
     }
 
+    // Not valid if the token is in valid
     if (!valid) {
       setIsValid(false);
       return navigate("/auth/reset-password", { replace: true });
     }
 
+    // If no error occurs and the token is valid, user is able to reset password
     setIsValid(true);
   };
 
@@ -46,6 +52,7 @@ export default function ConfirmPassword({userType}) {
     setPassword({ ...password, [name]: value });
   };
 
+  // Validate password format, use resetPassword API handling the credentials, and redirect to signin if no error
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -71,6 +78,7 @@ export default function ConfirmPassword({userType}) {
     navigate("/auth/signin", { replace: true });
   };
 
+  // Page of the token is still verifying
   if (isVerifying)
     return (
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
@@ -83,6 +91,7 @@ export default function ConfirmPassword({userType}) {
       </div>
     );
 
+  // Page of isValidToken is not proceed
   if (isValid)
     return (
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
@@ -92,12 +101,19 @@ export default function ConfirmPassword({userType}) {
       </div>
     );
 
+  // Page of the token is validated and user is allowed to reset password
   return (
+
+    // Background color and position of Reset Password card
     <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
+
+        {/* Reset Password Card */}
         <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
           <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
             Enter New Password
           </h1>
+
+          {/* User's expected new password */}
           <FormInput
             value={password.one}
             onChange={handleChange}
@@ -106,6 +122,8 @@ export default function ConfirmPassword({userType}) {
             name="one"
             type="password"
           />
+
+          {/* Double check the password is same of user expected */}
           <FormInput
             value={password.two}
             onChange={handleChange}
@@ -114,6 +132,8 @@ export default function ConfirmPassword({userType}) {
             name="two"
             type="password"
           />
+
+          {/* Submit button */}
           <Submit value="Confirm Password" />
         </form>
     </div>

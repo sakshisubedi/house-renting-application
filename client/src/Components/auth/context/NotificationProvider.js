@@ -10,6 +10,7 @@ export default function NotificationProvider({ children }) {
   const updateNotification = (type, value) => {
     if (timeoutId) clearTimeout(timeoutId);
 
+    // Set background color of the notofication
     switch (type) {
       case "error":
         setClasses("bg-red-500");
@@ -25,6 +26,7 @@ export default function NotificationProvider({ children }) {
     }
     setNotification(value);
 
+    // Set time for notification window
     timeoutId = setTimeout(() => {
       setNotification("");
     }, 3000);

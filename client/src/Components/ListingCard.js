@@ -39,10 +39,10 @@ const ListingCard = ({ src, getWishlist }) => {
   const [userId, setUserId] = useState(src?.userId || authInfo?.profile?.id);
   const userType = localStorage.getItem('user-type');
 
-  /**
-   * add or remove wishlist depending on whether user has wishlisted the listing or not
-   */
+  // handle the situation when the user clicks the "like" button on listing card
+  // add or remove wishlist depending on whether user has wishlisted the listing or not
   const handleWishlist = async () => {
+    // if previously not wishlisted, create the wishlist item and add to database
     if(!isWishlisted) {
       // adds listing to user's wishlist if not already
       try {
@@ -60,8 +60,10 @@ const ListingCard = ({ src, getWishlist }) => {
         });
       }
     } else {
+      // if previously wishlisted, delete the wishlist in the database
       // removes listing from user's wishlist if it was wishlisted
       try {
+        // filter the wishlist item of current listing
         const wishlist = wishlistInfo.filter(wishlist => wishlist.listingId === src?._id);
         if(wishlist.length>0) {
           await deleteWishlistItem(wishlist[0]._id);
@@ -84,6 +86,8 @@ const ListingCard = ({ src, getWishlist }) => {
   useEffect(() => {
     const id = src?.userId || authInfo?.profile?.id;
     setUserId(id);
+
+    // get whether the listing is wishlited by the user
     /**
      * sets whether the listing has been wishlisted by the user or not
      */
@@ -97,6 +101,7 @@ const ListingCard = ({ src, getWishlist }) => {
     }
     isLoggedIn && isWishlistedByUser();
 
+    // get the wishlist of current user (contains all wishlisted listings)
     /**
      * Fetches all the wishlist for the given user id
      */
@@ -110,7 +115,7 @@ const ListingCard = ({ src, getWishlist }) => {
   }, [userId, isLoggedIn, authInfo?.profile?.id, src?.userId, src?._id]);
 
   return (
-    <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
+    <LinkBox maxW='lg' borderWidth='1px' borderRadius={20} overflow='hidden'>
       <Image objectFit='fill' w="100%" src={house} alt="card image" />
       <Box p='4'>
         <HStack>
@@ -145,12 +150,13 @@ const ListingCard = ({ src, getWishlist }) => {
             </LinkOverlay>
 
           </Box>
+
+          {/* show the "like" button only when the user is logged in and not a landlord */}
           {/* Displays wishlist icon if the user is logged in and its user type equals customer */}
           {(isLoggedIn && userType !== "landlord") && <IconButton
             bg="#FFFFFF"
             icon={<Image src={isWishlisted ? heart : emptyHeart} boxSize={30} alt="heart" />}
             onClick={(e) => {
-              // cancel wishlist
               e.preventDefault();
               handleWishlist();
             }}
