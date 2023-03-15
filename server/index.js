@@ -27,7 +27,7 @@ const startServer = async () => {
     const models = await require('./models')({ $env });
     
     // health check routes
-    app.get("/", (req, res) => {
+    app.get("/test", (req, res) => {
         return res.status(200).json({
             success: true
         })
