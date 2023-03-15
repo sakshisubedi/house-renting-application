@@ -71,8 +71,6 @@ export default function LandingPage() {
     handlePagination(response, currentPage);
   };
   return (
-    // Commented out line to access user profile ID
-    // && authInfo?.profile?.id
 
     // Check if currentListings exists, and render the UI if it does
     currentListings && (
