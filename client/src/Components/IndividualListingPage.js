@@ -679,12 +679,6 @@ function IndividualListingPage() {
                           </Box>
                         ))}
                       </VStack>
-                      <Divider borderWidth={"3px"} />
-                      <Flex mt={2}>
-                        <Spacer />
-                        <InterestedPeopleList wishlistedPeople={interestedPeople} l={isLoggedIn}/>
-                        <Spacer />
-                      </Flex>
                     </Box>
                   )}
             </Box>
