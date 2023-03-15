@@ -1,3 +1,9 @@
+/*
+ * Filename: userApis.js
+ *
+ * This file defines the set of axios (http) calls to user APIs.
+ */
+
 import axios from "axios";
 import env from "../environment";
 const BASE_URL = env.BASE_URL;
@@ -68,7 +74,7 @@ export async function getUserPublicInfoById(userId) {
 }
 
 // Sends a GET request to the user API with the given `userId` param as part of the request params.
-// If successful, returns the  from the object corresponding to the userId
+// If successful, returns the profile picture from the object corresponding to the userId
 export async function getUserProfilePicById(userId) {
     try {
         const { data } = await axios.get(`${BASE_URL}/api/v1/user/profilepic/${userId}`);

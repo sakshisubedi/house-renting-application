@@ -1,8 +1,8 @@
 /*
  * Filename: FilterRow.js
- * 
- * This file defines the postal code input section and the dropdown menus on the search page 
- * that give users the option to filter the search results. Users can filter their search 
+ *
+ * This file defines the postal code input section and the dropdown menus on the search page
+ * that give users the option to filter the search results. Users can filter their search
  * results by inputting a postal code, or by choosing ranges of rent price, rating, bedrooms,
  * bathrooms, and pet preference from the defined dropdowns.
  */
@@ -25,7 +25,7 @@ function FilterRow(props) {
   const [baths, setBaths] = React.useState("");
   const [petPref, setPetPref] = React.useState("");
 
-
+  // Function to handle changes to the search input
   /**
    * handles postal code change, sets postal code and search the listing based on selected search param
    * @param {Object} event event object

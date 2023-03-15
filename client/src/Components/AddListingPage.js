@@ -3,7 +3,7 @@
  *
  * This file defines the frontend component AddListingPage(), which an authenticated
  * landlord will use to create a new listing. It defines a page that has multiple fields
- * to fill out, and upon clicking "Submit" will create the new listing and send a 
+ * to fill out, and upon clicking "Submit" will create the new listing and send a
  * request to the server to save this new data into the listing database.
  */
 
@@ -74,6 +74,7 @@ function AddListingPage() {
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [popup, setPopup] = React.useState(false);
 
+  //Takes the uploaded image and converts it to base64 string format
   /**
    * 
    * @param {Event Object} event event object
@@ -204,7 +205,7 @@ function AddListingPage() {
                 display="flex"
                 flexWrap="wrap"
               >
-                {" "}
+                {/* {" renders the base64 string and converts it to image to display in the box "} */}
                 {media.map((image, index) => (
                   <Box key={index} mb={5}>
                     <Image src={`data:image/jpeg;base64,${image}`} maxH={180} maxW={200} />

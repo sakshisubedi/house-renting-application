@@ -1,11 +1,10 @@
 /*
  * Filename: SearchBar.js
- * 
+ *
  * This file defines the search bar used in the landing page. It includes a text
  * input section and an icon to indicate a search field.
  */
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Input, IconButton, HStack, Image } from "@chakra-ui/react";
 import search from "../img/search.jpg";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +22,7 @@ export default function SearchBar(props) {
 
   return (
     <>
+      {/* used Horizontal alignment since we have a search bar and a search icon */}
       <HStack
         borderRadius="20px"
         borderWidth="2px"
@@ -45,14 +45,17 @@ export default function SearchBar(props) {
           h="83px"
           onChange={handlePostalCodeChange}
         />
+        {/*The handleInputChange function is called when the user types into the search input. It calls the search function passed down through props with the value of the input. */}
+
         <IconButton
           width="50px"
           icon={
             <Image width="50px" objectFit="cover" src={search} alt="logo" />
           }
+          //When the user clicks the button, it navigates to the search page using the useNavigate hook from React Router.
           onClick={(e) => {
             navigate("/search");
-        }}
+          }}
         />
       </HStack>
     </>

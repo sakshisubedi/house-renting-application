@@ -107,7 +107,7 @@ function IndividualListingPage() {
   const closePopup = () => {
     setPopup(false);
   };
-
+  //Takes the uploaded image and converts it to base64 string format 
   /**
    * 
    * @param {Event Object} event event object
