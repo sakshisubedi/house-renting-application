@@ -73,31 +73,23 @@ function EditLandlordProfilePage() {
     getLandlordInfo(id);
   }, [landlordId, location, authInfo]);
 
-  useEffect(()=>{
-    async function getListingMetadata(listingId) {
-      const response = await getAverageRatingByListingId(listingId);
-      if (response?.data && response.data.length>0) {
-        return response;
-      }
+  async function getListingMetadata(listingId) {
+    const response = await getAverageRatingByListingId(listingId);
+    if (response?.data && response.data.length>0) {
+      return response;
     }
+  }
 
+  useEffect(()=>{
     // Fetching all listings of current landlord
     async function getListingsInfo(landlordId) {
       const response = await getListingByLandlordId(landlordId);
-      // console.log(response.data);
       if(response?.data && response.data.length>0) {
-        response.data.forEach(async listing => {
-          const response1 = await getListingMetadata(listing._id);
-          if (response1) {
-            listing["rating"] = response1.data[0].averageRating ?? 0;
-            listing["reviewCount"] = response1.data[0].reviewCount ?? 0;
-          }
-        });
         setListingsInfo(response.data);
       }
     }
     getListingsInfo(landlordId);
-  }, [listingsInfo, landlordId]);
+  }, [landlordId]);
 
   // Updating info of current landlord
   const updateLandlordInfo = async () => {
