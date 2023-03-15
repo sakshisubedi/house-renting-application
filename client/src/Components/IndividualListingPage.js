@@ -135,6 +135,13 @@ function IndividualListingPage() {
       setWishlistInfo(response.data);
     }
   }
+  async function getAverageRating(listingId) {
+    const response = await getAverageRatingByListingId(listingId);
+    if (response?.data && response.data.length > 0) {
+      setAverageRating(Math.round(response.data[0].averageRating * 10) / 10 || 0); // Round to one decimal place
+      setReviewCount(response.data[0].reviewCount);
+    }
+  }
 
   useEffect(() => {
     let listingId = location.pathname.split("/").pop();
@@ -144,14 +151,6 @@ function IndividualListingPage() {
       if (response?.data) {
         setListingInfo(response.data);
         getLandlordInfo(response.data.landlordId);
-      }
-    }
-
-    async function getAverageRating() {
-      const response = await getAverageRatingByListingId(listingId);
-      if (response?.data && response.data.length > 0) {
-        setAverageRating(Math.round(response.data[0].averageRating * 10) / 10 || 0); // Round to one decimal place
-        setReviewCount(response.data[0].reviewCount);
       }
     }
 
@@ -184,7 +183,7 @@ function IndividualListingPage() {
     }
 
     getListing();
-    isLoggedIn && getAverageRating();
+    isLoggedIn && getAverageRating(listingId);
     isLoggedIn && getCurrentRating();
     getComments(listingId);
     isLoggedIn && isWishlistedByUser(listingId);
@@ -238,6 +237,7 @@ function IndividualListingPage() {
       };
       console.log(comment);
       const response = await addComment(comment);
+      await getAverageRating(location.pathname.split("/").pop());
       await getComments(listingId);
       if (response?.error) {
         toast({
@@ -262,6 +262,7 @@ function IndividualListingPage() {
   async function deleteComm(comm_id) {
     await deleteComment(comm_id);
     await getComments(location.pathname.split("/").pop());
+    await getAverageRating(location.pathname.split("/").pop());
   }
 
   // Update rating of current listing by current user
@@ -276,6 +277,7 @@ function IndividualListingPage() {
       const response = await addRating(rating);
       if (response?.data) {
         setCurrentRating(response.data);
+        await getAverageRating(location.pathname.split("/").pop());
       }
     } else {
       // update rating
@@ -285,6 +287,7 @@ function IndividualListingPage() {
       const response = await updateRating(currentRating._id, rating);
       if (response?.data) {
         setCurrentRating(response.data);
+        await getAverageRating(location.pathname.split("/").pop());
       }
     }
   };
