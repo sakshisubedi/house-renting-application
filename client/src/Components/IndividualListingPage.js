@@ -149,7 +149,7 @@ function IndividualListingPage() {
     async function getAverageRating() {
       const response = await getAverageRatingByListingId(listingId);
       if (response?.data && response.data.length > 0) {
-        setAverageRating(response.data[0].averageRating);
+        setAverageRating(Math.round(response.data[0].averageRating * 10) / 10 || 0); // Round to one decimal place
         setReviewCount(response.data[0].reviewCount);
       }
     }
