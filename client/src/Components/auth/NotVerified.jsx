@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./context/hookIndex";
 
+// handle if user is signed up and try to sign in without verification
 export default function NotVerified() {
   const { authInfo } = useAuth();
   const { isLoggedIn } = authInfo;

@@ -6,12 +6,14 @@ import FormInput from "./FormInput";
 import Submit from "./Submit";
 import NavBar from "../NavBar"
 
+// Check if the format of email input is valid
 export const isValidEmail = (email) => {
   const isValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
   return isValid.test(email);
 };
 
+// Check if the format of user's credential input is valid
 const validateUserInfo = ({ email, password }) => {
   if (!email.data.trim()) return { ok: false, error: "Email is missing!" };
   if (!isValidEmail(email.data)) return { ok: false, error: "Invalid email!" };
@@ -23,6 +25,7 @@ const validateUserInfo = ({ email, password }) => {
   return { ok: true };
 };
 
+// Thanks to Sakshi for adding the userType parameter to optimize the duplicated structure of landlord. 
 export default function Signin({userType}) {
   const [userInfo, setUserInfo] = useState({
     email: {
@@ -53,6 +56,7 @@ export default function Signin({userType}) {
     }
   };
 
+  // First validate user's credential format, then use handleLogin API to send use's credential and user-type to server on submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
@@ -69,12 +73,16 @@ export default function Signin({userType}) {
     <div>
       <NavBar />
       
+      {/* Background color and position of Signin card */}
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
-          {/* Card size */}
+
+          {/* Signin card style */}
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
             <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
               {userType === "customer" ? "USER" : "LANDLORD"} LOGIN
             </h1>
+
+            {/* Signin card input */}
             <FormInput
               value={userInfo.email.data}
               onChange={handleChange}
@@ -91,11 +99,13 @@ export default function Signin({userType}) {
               type="password"
             />
 
+            {/* Additional routers */}
             <div className="flex justify-end"
                   style={{margin: "2px"}}>
               <CustomLink to={userType === "customer" ? "/auth/user/forget-password" : "/auth/landlord/forget-password"}>Forget password?</CustomLink>
             </div>
 
+            {/* Signin card button */}
             <Submit value="LOGIN" busy={isPending} />
 
             <div className="flex justify-center"
