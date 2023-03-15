@@ -199,7 +199,7 @@ function AddListingPage() {
                 {" "}
                 {media.map((image, index) => (
                   <Box key={index} mb={5}>
-                    <Image src={image} maxH={180} maxW={200} />
+                    <Image src={`data:image/jpeg;base64,${image}`} maxH={180} maxW={200} />
                   </Box>
                 ))}
                 {/* {media.length > 0 ? `${media.length} file(s) uploaded` : "  "} */}
