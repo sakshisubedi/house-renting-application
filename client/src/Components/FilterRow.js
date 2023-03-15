@@ -13,22 +13,11 @@ import {
   Flex,
   Spacer,
 } from "@chakra-ui/react";
-import { FaChevronDown } from "react-icons/fa";
 import '../App.css'
 
-import React, { useState } from "react";
+import React from "react";
 
 function FilterRow(props) {
-  let tempData = {
-    name: "xyz",
-    email: "xyz@gmail.com",
-  };
-
-
-  const [selectedPriceOption, setSelectedPriceOption] = useState(null);
-  const handlePriceOptionSelect = (value) => {
-    setSelectedPriceOption(value);
-  };
   const [postalCode, setPostalCode] = React.useState("");
   const [rentPrice, setRentPrice] = React.useState("");
   const [rating, setRating] = React.useState("");
@@ -37,9 +26,13 @@ function FilterRow(props) {
   const [petPref, setPetPref] = React.useState("");
 
 
-  const handleInputChange = async (event) => {
-    setPostalCode(event.target.value);
-    props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
+  /**
+   * handles postal code change, sets postal code and search the listing based on selected search param
+   * @param {Object} event event object
+   */
+  const handlePostalCode = async (event) => {
+      setPostalCode(event.target.value);
+      props.search(event.target.value, rentPrice, rating, beds, baths, petPref);
   };
 
   const windowSize = React.useRef([window.innerWidth, window.innerHeight]);
@@ -49,7 +42,7 @@ function FilterRow(props) {
       <Input 
         placeholder='Search by postal code' 
         type="search"
-        onChange={handleInputChange}
+        onChange={handlePostalCode}
         size='lg'
         width={"50%"}
       />

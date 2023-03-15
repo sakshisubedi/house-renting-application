@@ -74,6 +74,11 @@ function AddListingPage() {
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [popup, setPopup] = React.useState(false);
 
+  /**
+   * 
+   * @param {Event Object} event event object
+   * Converts image to base64 string
+   */
   const onImageChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       let images = [];
@@ -88,6 +93,7 @@ function AddListingPage() {
       }
     }
   };
+
   const uploadImages = () => {
     setMedia(selectedImages);
     setPopup(false);
@@ -103,6 +109,7 @@ function AddListingPage() {
 
   // Add new listing to DB
   const addListing = async (landlordId) => {
+    // contruct new listing object
     const newListing = {
       name: name,
       address: address,
@@ -118,6 +125,7 @@ function AddListingPage() {
     };
     // console.log("new listing = ", newListing);
 
+    // creates new listing and store it in db
     const response = await createListing(newListing);
     if (response?.error) {
       toast({

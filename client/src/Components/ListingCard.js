@@ -87,7 +87,6 @@ const ListingCard = ({ src, getWishlist }) => {
     const id = src?.userId || authInfo?.profile?.id;
     setUserId(id);
 
-    // get whether the listing is wishlited by the user
     /**
      * sets whether the listing has been wishlisted by the user or not
      */
@@ -101,7 +100,6 @@ const ListingCard = ({ src, getWishlist }) => {
     }
     isLoggedIn && isWishlistedByUser();
 
-    // get the wishlist of current user (contains all wishlisted listings)
     /**
      * Fetches all the wishlist for the given user id
      */

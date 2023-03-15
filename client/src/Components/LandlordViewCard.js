@@ -10,21 +10,15 @@ import {
   Box,
   Image,
   Text,
-  Divider,
   SimpleGrid,
   Flex,
   LinkBox,
-  LinkOverlay,
-  VStack,
   Button,
   IconButton,
-  HStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import heart from "../img/Union.svg";
 import star from "../img/rating_star.jpg";
 import delete1 from "../img/delete.jpg";
-import edit from "../img/edit.jpg";
 import { useNavigate } from "react-router-dom";
 import { deleteListing } from "../services/listingApis";
 import { getAverageRatingByListingId } from "../services/ratingApis";
@@ -34,6 +28,10 @@ const LandlordViewCard = ({ src , getListings}) => {
   const navigate = useNavigate();
   const [averageRating, setAverageRating] = useState(null);
   
+  /**
+   * delete listing and retrives all the listings added by given landlord
+   * @param {string} listing_id listing id
+   */
   async function deleteCurrentListing(listing_id){
     await deleteListing(listing_id);
     await getListings(src?.landlordId);

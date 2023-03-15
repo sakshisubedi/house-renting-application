@@ -107,6 +107,12 @@ function IndividualListingPage() {
   const closePopup = () => {
     setPopup(false);
   };
+
+  /**
+   * 
+   * @param {Event Object} event event object
+   * Converts image to base64 string
+   */
   const onImageChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       let images = [];
@@ -116,15 +122,16 @@ function IndividualListingPage() {
         reader.readAsDataURL(img);
         reader.onload = () => {
           images.push(reader.result.split("base64,")[1]);
-          // this.setState({
-          //   images: images,
-          // });
           setSelectedImages(images);
         };
       }
     }
   };
 
+  /**
+   * Checks whether the listing is wishlisted by the user or  not
+   * @param {string} listingId listing id
+   */
   async function isWishlistedByUser(listingId) {
     const response = await getIsWishlistedByUser(userId, listingId);
     if (!response.data) {
@@ -135,6 +142,11 @@ function IndividualListingPage() {
       setWishlistInfo(response.data);
     }
   }
+
+  /**
+   * Fetches average rating and review count for given listing
+   * @param {string} listingId listing id
+   */
   async function getAverageRating(listingId) {
     const response = await getAverageRatingByListingId(listingId);
     if (response?.data && response.data.length > 0) {
@@ -146,21 +158,31 @@ function IndividualListingPage() {
   useEffect(() => {
     let listingId = location.pathname.split("/").pop();
 
+    /**
+     * Retrives listing by listing id
+     */
     async function getListing() {
       const response = await getListingById(listingId);
-      if (response?.data) {
+      if(response?.data) {
         setListingInfo(response.data);
         getLandlordInfo(response.data.landlordId);
       }
     }
 
+    /**
+     * Retrives landlord information by landlord id
+     * @param {string} landlordId landlord id
+     */
     async function getLandlordInfo(landlordId) {
       const response = await getLandlordInfoById(landlordId);
-      if (response?.data) {
+      if(response?.data) {
         setLandlordInfo(response.data);
       }
     }
 
+    /**
+     * Retrieves rating by user id
+     */
     async function getCurrentRating() {
       const response = await getRatingByUserId(userId, listingId);
       if (response?.data && response.data.length > 0) {
@@ -168,6 +190,9 @@ function IndividualListingPage() {
       }
     }
 
+    /**
+     * Retrieves interested people by listing id
+     */
     async function getInterestedPeople() {
       const response = await getInterestedPeopleByListingId(listingId);
       var people = []
@@ -190,13 +215,20 @@ function IndividualListingPage() {
     getInterestedPeople();
   }, [location, userId, isLoggedIn])
 
+  /**
+   * Retrieves comments by listing id
+   * @param {string} listingId listing id
+   */
   const getComments = async (listingId) => {
     const response = await getCommentsByListingId(listingId);
-    if (response?.data && response.data.length > 0) {
+    if(response?.data && response.data.length > 0) {
       setCommentInfo(response.data);
     }
   };
 
+  /**
+   * Create or remove wishlist depending whether listing is wishlisted or not
+   */
   const handleWishlist = async () => {
     if (!isWishlisted) {
       try {
@@ -227,6 +259,9 @@ function IndividualListingPage() {
     await isWishlistedByUser(location.pathname.split("/").pop());
   };
 
+  /**
+   * Adds comment and retrives latest comments and average rating
+   */
   const handleComment = async () => {
     if (commentText.trim() !== "") {
       const listingId = location.pathname.split("/").pop();

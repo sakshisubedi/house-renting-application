@@ -38,10 +38,10 @@ export default function IndividualListingPage() {
      */
     async function getRecommendedListings() {
       const response = await getListingsByRating();
-      if (response?.data) {
-        setRecommendedListings(response);
-        setTotalPages(Math.ceil(response.data.length/listingsPerPage));
-        handlePagination(response, currentPage);
+      if(response?.data){
+          setRecommendedListings(response);
+          setTotalPages(Math.ceil(response.data.length/listingsPerPage));
+          handlePagination(response, currentPage);
       }
     }
     getRecommendedListings();
@@ -63,7 +63,7 @@ export default function IndividualListingPage() {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     handlePagination(recommendedListings, pageNumber);
-  };
+  }
 
   /**
    * set recommended listings and handle pagination
@@ -76,7 +76,7 @@ export default function IndividualListingPage() {
     }
     setTotalPages(Math.ceil(response.data.length/listingsPerPage));
     handlePagination(response, currentPage);
-  };
+  }
 
   return (
     currentListings && (
