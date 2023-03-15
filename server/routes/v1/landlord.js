@@ -7,6 +7,7 @@ const errorHandler = (err, req, res, next) => {
     res.status(500).json({ error: err.message || err })
 }
 
+// Validate user's credential format on sign-up
 const userValidtor = [
   check("name").trim().not().isEmpty().withMessage("Name is missing"),
   check("email").normalizeEmail().isEmail().withMessage("Email is invalid"),
@@ -19,6 +20,7 @@ const userValidtor = [
       .withMessage("Password must be 8 to 20 characters long"),
 ];
 
+// Validate user's credential format
 const validate = (req, res, next) => {
   const error = validationResult(req).array();
   if (error.length) {
@@ -28,6 +30,7 @@ const validate = (req, res, next) => {
   next();
 };
 
+// Validate user's credential format on reset password
 const validatePassword = [
   check("newPassword")
       .trim()
@@ -38,11 +41,15 @@ const validatePassword = [
       .withMessage("Password must be 8 to 20 characters long"),
 ];
 
+// Validate user's credential format on sign-in
 const signInValidator = [
   check("email").normalizeEmail().isEmail().withMessage("Email is invalid"),
   check("password").trim().not().isEmpty().withMessage("Password is missing"),
 ];
 
+/**
+ * Routes to perform CRUD operations on landlord
+ */
 module.exports = (models) => {
     routes.post('/', landlordController.createLandlord(models));
     routes.put('/:id', landlordController.updateLandlord(models));

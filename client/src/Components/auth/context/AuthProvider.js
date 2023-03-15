@@ -11,6 +11,7 @@ const defaultAuthInfo = {
   error: ""
 };
 
+// Thanks to Sakshi for adding the userType parameter to optimize the duplicated structure of landlord. 
 export default function AuthProvider({ children }) {
   const [authInfo, setAuthInfo] = useState({ ...defaultAuthInfo });
   const { updateNotification } = useNotification();
@@ -34,12 +35,14 @@ export default function AuthProvider({ children }) {
     localStorage.setItem("user-type", userType);
   };
 
+  // Get user's token and user-type from local storage
   const isAuth = async () => {
     const token = localStorage.getItem("auth-token");
     if (!token) return;
     const userType = localStorage.getItem("user-type");
     if (!token) return;
 
+    // Get authorized user's stauts via getIsAuth API
     setAuthInfo({ ...authInfo, isPending: true });
     const { error, user } = await getIsAuth(token, userType);
     if (error) {
@@ -55,6 +58,7 @@ export default function AuthProvider({ children }) {
     });
   };
 
+  // Remove the data when user is logged out
   const handleLogout = () => {
     localStorage.removeItem("auth-token");
     localStorage.removeItem("user-type");

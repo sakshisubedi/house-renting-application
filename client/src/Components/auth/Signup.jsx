@@ -8,12 +8,14 @@ import Submit from "./Submit";
 import NavBar from "../NavBar"
 import { useToast } from "@chakra-ui/react";
 
+// Check if the format of email input is valid
 export const isValidEmail = (email) => {
   const isValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
   return isValid.test(email);
 };
 
+// Check if the format of user's credential input is valid
 const validateUserInfo = ({ name, email, password }) => {
   const isValidName = /^[a-z A-Z]+$/;
 
@@ -30,6 +32,7 @@ const validateUserInfo = ({ name, email, password }) => {
   return { ok: true };
 };
 
+// Thanks to Sakshi for adding the userType parameter to optimize the duplicated structure of landlord. 
 export default function Signup({userType}) {
   const [userInfo, setUserInfo] = useState({
     name: "",
@@ -63,6 +66,7 @@ export default function Signup({userType}) {
     }
   };
 
+  // First validate user's credential format, then use newUser API to send use's credential and user-type to server on submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
@@ -89,11 +93,17 @@ export default function Signup({userType}) {
   return (
     <div>
       <NavBar />
+
+      {/* Background color and position of Signup card */}
       <div className="fixed inset-0 bg-gray-200 -z-10 flex justify-center items-center">
+
+          {/* Signup card style */}
           <form onSubmit={handleSubmit} className={"bg-white drop-shadow-lg rounded p-6 space-y-6 w-96"}>
             <h1 style={{ color: '#505050', fontSize: "18px", fontWeight: "600", fontStyle: "normal", fontFamily: "Inter"}}>
               {userType === "customer" ? "USER" : "LANDLORD"} SIGN UP
             </h1>
+
+            {/* Signin card input */}
             <FormInput
               value={name}
               onChange={handleChange}
@@ -116,8 +126,11 @@ export default function Signup({userType}) {
               name="password"
               type="password"
             />
+
+            {/* Signin card button */}
             <Submit value="SIGN UP" />
 
+            {/* Additional routers based on user-type */}
             <div className="flex justify-center"
                 style={{fontSize: "12px", fontWeight: "400"}}>
               <p className="pr-1"

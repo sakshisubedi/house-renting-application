@@ -35,22 +35,30 @@ import React, { useEffect } from "react";
 import { createListing } from "../services/listingApis";
 import NavBar from "./NavBar";
 import { getLandlordInfoById } from "../services/landlordApis";
+import { useAuth } from "../Components/auth/context/hookIndex";
 
 function AddListingPage() {
   const toast = useToast();
 
-  const landlordId = landlordInfo.profile?.id;
+  // Fetching auth info of logged in landlord
+  const { authInfo } = useAuth();
+  const [landlordId, setLandlordId] = React.useState(authInfo?.profile?.id);
+
   const [landlordInfo, setLandlordInfo] = React.useState(null);
 
   useEffect(() => {
+    const id = authInfo?.profile?.id;
+    setLandlordId(id);
+
+    // Fetching all info of current landlord
     async function getLandlordInfo(landlordId) {
       const response = await getLandlordInfoById(landlordId);
       if (response?.data) {
         setLandlordInfo(response.data);
       }
     }
-    getLandlordInfo(landlordId);
-  }, [landlordId]);
+    getLandlordInfo(id);
+  }, [landlordId, authInfo]);
 
   const [name, setName] = React.useState();
   const [price, setPrice] = React.useState();
@@ -94,12 +102,12 @@ function AddListingPage() {
     setPopup(false);
   };
 
+  // Add new listing to DB
   const addListing = async (landlordId) => {
     const newListing = {
       name: name,
       address: address,
       rent: parseInt(price),
-      // landlordId: "63f19a80aa15f4fb60ffc14f", //default id, need to change later
       landlordId: landlordId,
       description: desc,
       media: media,
@@ -109,7 +117,6 @@ function AddListingPage() {
       hasPet: pets ? pets === "true" : false,
       postalCode: zipcode,
     };
-
     // console.log("new listing = ", newListing);
 
     const response = await createListing(newListing);
@@ -143,12 +150,6 @@ function AddListingPage() {
               e.preventDefault();
               try {
                 addListing(landlordInfo._id);
-                toast({
-                  title: "Success",
-                  description: "Changes Saved",
-                  status: "success",
-                  position: "top-right",
-                });
               } catch (error) {
                 toast({
                   title: "Failed",
@@ -247,7 +248,6 @@ function AddListingPage() {
               </FormLabel>
               <Box
                 w={"100%"}
-                // h={200}
                 border="2px"
                 borderColor="gray.300"
                 borderRadius={"2xl"}
