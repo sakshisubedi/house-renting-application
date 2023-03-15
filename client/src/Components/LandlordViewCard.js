@@ -30,12 +30,13 @@ import { deleteListing } from "../services/listingApis";
 import { getAverageRatingByListingId } from "../services/ratingApis";
 import house from "../img/house1.jpg";
 
-const LandlordViewCard = ({ src }) => {
+const LandlordViewCard = ({ src , getListings}) => {
   const navigate = useNavigate();
   const [averageRating, setAverageRating] = useState(null);
   
   async function deleteCurrentListing(listing_id){
     await deleteListing(listing_id);
+    await getListings(src?.landlordId);
   }
 
   /**
