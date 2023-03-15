@@ -122,7 +122,8 @@ const SearchResult = ({ src }) => {
                   key={idx}
                   src={{
                     ...listing,
-                    img: house1,
+                    img: listing.media[0],
+                    // img: house1,
                     userId: authInfo?.profile?.id,
                   }}
                 >
