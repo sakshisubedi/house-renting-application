@@ -43,37 +43,50 @@ const getCommentsByListingId = (models) => {
                 success: true,
                 message: 'success',
                 data: await models.comment.aggregate([
-                  { // comment performs self-join where parentId equals comment id in comment collection
-                    '$lookup': {
+                  {
+                    '$lookup': { // comment performs self-join where parentId equals comment id in comment collection
                       'from': 'comments', 
                       'localField': '_id', 
                       'foreignField': 'parentId', 
                       'as': 'reply'
                     }
-                  }, { // select the comments where parentId equals null
-                    '$match': {
+                  }, {
+                    '$match': { // select the comments where parentId equals null and listingId equals req.params.listingId
                       'parentId': null, 
                       'listingId': mongoose.Types.ObjectId(req.params.listingId)
                     }
-                  }, { // outputs a new reply for each document in reply array
-                    '$unwind': {
+                  }, {
+                    '$unwind': { // outputs a new reply for each document in reply array
                       'path': '$reply', 
                       'preserveNullAndEmptyArrays': true
                     }
-                  }, { // comment performs join with user where userId in comment equals user id in user collection
-                    '$lookup': {
+                  }, {
+                    '$lookup': { // comment performs join with user where userId in comment equals user id in user collection
                       'from': 'users', 
                       'localField': 'userId', 
                       'foreignField': '_id', 
-                      'as': 'user'
+                      'as': 'users'
                     }
-                  }, { 
-                    '$unwind': {  // outputs a new user for each document in user array
+                  }, {
+                    '$lookup': { // comment performs join with landlord where userId in comment equals landlord id in landlord collection
+                      'from': 'landlords', 
+                      'localField': 'userId', 
+                      'foreignField': '_id', 
+                      'as': 'landlords'
+                    }
+                  }, {
+                    '$set': { // merges users and landlords in user array
+                      'user': {
+                        '$setUnion': [
+                          '$users', '$landlords'
+                        ]
+                      }
+                    }
+                  }, {
+                    '$unwind': { // outputs a new user for each document in user array
                       'path': '$user', 
                       'preserveNullAndEmptyArrays': true
                     }
-                  }, { // exclude userId
-                    '$unset': 'userId'
                   }, {
                     '$lookup': { // comment performs join with user where reply.userId in comment equals user id in user collection
                       'from': 'users', 
@@ -82,14 +95,12 @@ const getCommentsByListingId = (models) => {
                       'as': 'reply.user'
                     }
                   }, {
-                    '$unwind': {  // outputs a new reply.user for each document in reply.user array
+                    '$unwind': { // outputs a new reply.user for each document in reply.user array
                       'path': '$reply.user', 
                       'preserveNullAndEmptyArrays': true
                     }
-                  }, { // exclude reply.userId
-                    '$unset': 'reply.userId'
                   }, {
-                    '$lookup': { // comment performs join with listing where listingId in comment equals listing id in listing collection
+                    '$lookup': { // comment performs join with listing where reply.listingId in comment equals listing id in listing collection
                       'from': 'listings', 
                       'localField': 'listingId', 
                       'foreignField': '_id', 
@@ -100,8 +111,6 @@ const getCommentsByListingId = (models) => {
                       'path': '$listing', 
                       'preserveNullAndEmptyArrays': true
                     }
-                  }, { // exclude listingId
-                    '$unset': 'listingId'
                   }, {
                     '$lookup': { // comment performs join with listing where reply.listingId in comment equals listing id in listing collection
                       'from': 'listings', 
@@ -110,14 +119,12 @@ const getCommentsByListingId = (models) => {
                       'as': 'reply.listing'
                     }
                   }, {
-                    '$unwind': {  // outputs a new reply.listing for each document in reply.listing array
+                    '$unwind': { // outputs a new reply.listing for each document in reply.listing array
                       'path': '$reply.listing', 
                       'preserveNullAndEmptyArrays': true
                     }
-                  }, { // exclude reply.listingId
-                    '$unset': 'reply.listingId'
-                  }, {
-                    '$group': { // Group documents by listing id
+                  }, { // Group documents by listing id
+                    '$group': {
                       '_id': '$_id', 
                       'reply': {
                         '$push': '$reply'
