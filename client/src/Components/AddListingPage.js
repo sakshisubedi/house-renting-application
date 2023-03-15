@@ -82,7 +82,7 @@ function AddListingPage() {
         let reader = new FileReader();
         reader.readAsDataURL(img);
         reader.onload = () => {
-          images.push(reader.result);
+          images.push(reader.result.split("base64,")[1]);
           setSelectedImages(images);
         };
       }

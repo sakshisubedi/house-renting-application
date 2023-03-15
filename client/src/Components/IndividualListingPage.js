@@ -115,7 +115,7 @@ function IndividualListingPage() {
         let reader = new FileReader();
         reader.readAsDataURL(img);
         reader.onload = () => {
-          images.push(reader.result);
+          images.push(reader.result.split("base64,")[1]);
           // this.setState({
           //   images: images,
           // });
@@ -237,8 +237,6 @@ function IndividualListingPage() {
       };
       console.log(comment);
       const response = await addComment(comment);
-      await getAverageRating(location.pathname.split("/").pop());
-      await getComments(listingId);
       if (response?.error) {
         toast({
           title: "Failed",
@@ -254,8 +252,12 @@ function IndividualListingPage() {
           position: "top-right",
         });
       }
+      
+      await getAverageRating(listingId);
+      await getComments(listingId);
     }
     setCommentText(null);
+    
   };
 
   // Delete comment from DB
@@ -515,9 +517,9 @@ function IndividualListingPage() {
                     {commentInfo?.map((comment, ind) => (
                       <Box key={ind}>
                         <HStack spacing={2} px={3}>
-                          <Avatar name={comment.user.name} size={"sm"} />
+                          <Avatar name={comment?.user?.name} size={"sm"} />
                           <Text fontWeight={"bold"} fontSize={"2xl"}>
-                            {comment.user.name}
+                            {comment?.user?.name}
                           </Text>
                           <Spacer />
                           <BiLike
@@ -541,7 +543,7 @@ function IndividualListingPage() {
                           />
                         </HStack>
                         <Text ml={10} fontSize={"lg"}>
-                          {comment.comment}
+                          {comment?.comment}
                         </Text>
                         <Divider borderWidth={"3px"} my={2} />
                         {comment.reply.length > 0 &&
