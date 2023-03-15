@@ -66,6 +66,7 @@ import {
 } from "../services/commentApis";
 import { getUserPublicInfoById } from "../services/userApis";
 import { createWishlistItem, deleteWishlistItem, getIsWishlistedByUser, getInterestedPeopleByListingId } from "../services/wishlistApis";
+import house from "../img/house1.jpg";
 
 function IndividualListingPage() {
   // Fetching auth info of logged in user
@@ -360,6 +361,7 @@ function IndividualListingPage() {
             borderColor="gray.300"
             borderRadius={"2xl"}
           >
+            <Image w="100%" h="100%" style={{borderRadius: "1rem", objectFit: "cover"}} src={listingInfo.media.length>0 ? `data:image/jpeg;base64,${listingInfo.media[0]}` : house} alt="card image" />
           </Box>
           <HStack spacing={5} align={"top"}>
             <VStack spacing={5} w={"75%"}>

@@ -115,8 +115,8 @@ const ListingCard = ({ src, getWishlist }) => {
   }, [userId, isLoggedIn, authInfo?.profile?.id, src?.userId, src?._id]);
 
   return (
-    <LinkBox maxW='lg' borderWidth='1px' borderRadius={20} overflow='hidden'>
-      <Image objectFit='fill' w="100%" src={house} alt="card image" />
+    <LinkBox maxW='sm' borderWidth='1px' borderRadius={20} overflow='hidden'>
+      <Image objectFit='fill' w="100%" h="180px" src={src.media.length>0 ? `data:image/jpeg;base64,${src.media[0]}` : house} alt="card image" />
       <Box p='4'>
         <HStack>
           <Box

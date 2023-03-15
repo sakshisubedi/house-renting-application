@@ -28,6 +28,7 @@ import edit from "../img/edit.jpg";
 import { useNavigate } from "react-router-dom";
 import { deleteListing } from "../services/listingApis";
 import { getAverageRatingByListingId } from "../services/ratingApis";
+import house from "../img/house1.jpg";
 
 const LandlordViewCard = ({ src }) => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const LandlordViewCard = ({ src }) => {
         <Flex alignItems="center">
           {/*Image on Listing Card */}
           <Box w="20%" h="10%" borderRadius={15} pr={4}>
-            <Image w="100%" src={src.img} alt="card image" borderRadius={15} />
+            <Image objectFit='fill' w="100%" h="100px" style={{borderRadius: '1rem'}} src={src.media.length>0 ? `data:image/jpeg;base64,${src.media[0]}` : house} alt="card image" />
           </Box>
           <Box w="80%" h="10%">
             <Flex
