@@ -1,7 +1,0 @@
-    "input_variables": [
-        "test question"
-    ],
-    "output_parser": null,
-    "template": "Test Question: {question}\n\nAnswer: Let's think step by step.",
-    "template_format": "f-string"
-}
