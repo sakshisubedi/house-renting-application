@@ -43,7 +43,7 @@ function App() {
           <Route path="/auth/user/signup" element={<Signup userType="customer" />} />
           <Route path="/auth/landlord/signin" element={<Signin userType="landlord" />} />
           <Route path="/auth/landlord/signup" element={<Signup userType="landlord" />} />
-          <Route path="/auth/verification" element={<EmailVerification />} />
+          {/* <Route path="/auth/verification" element={<EmailVerification />} /> */}
           <Route path="/auth/user/forget-password" element={<ForgetPassword userType="customer" />} />
           <Route path="/auth/landlord/forget-password" element={<ForgetPassword userType="landlord" />} />
           <Route path="/auth/user/reset-password" element={<ConfirmPassword userType="customer" />} />

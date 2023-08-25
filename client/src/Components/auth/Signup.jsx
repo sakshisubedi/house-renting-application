@@ -45,7 +45,7 @@ export default function Signup({userType}) {
   });
 
   const navigate = useNavigate();
-  const { authInfo } = useAuth();
+  const { authInfo, isAuth } = useAuth();
   const { isLoggedIn } = authInfo;
 
   const { updateNotification } = useNotification();
@@ -78,7 +78,16 @@ export default function Signup({userType}) {
       return updateNotification("error", response.error);
     }
 
-    navigate("/auth/verification", {
+    localStorage.setItem("auth-token", response.user.token);
+    localStorage.setItem("user-type", response.user.userType);
+    isAuth();
+
+    // navigate("/auth/verification", {
+    //   state: { user: response.user, userType },
+    //   replace: true,
+    // });
+
+    navigate("/landing", {
       state: { user: response.user, userType },
       replace: true,
     });

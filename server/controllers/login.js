@@ -79,7 +79,7 @@ const signIn = (models) => {
     const jwtToken = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
   
     res.json({
-      user: { id: _id, name, data, token: jwtToken, isVerified },
+      user: { id: _id, name, data, token: jwtToken, isVerified, userType },
     });
   }
 }
@@ -107,44 +107,50 @@ const create = (models) => {
       newUser = new models.user({ name, email: {data}, password });
     }
     await newUser.save();
+
+    const jwtToken = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
   
     // Generate the OTP
-    let OTP = generateOTP();
-    const newEmailVerificationToken = new models.emailVerificationToken({
-      owner: newUser._id,
-      token: OTP,
-    });
+    // let OTP = generateOTP();
+    // const newEmailVerificationToken = new models.emailVerificationToken({
+    //   owner: newUser._id,
+    //   token: OTP,
+    // });
 
-    console.log("newEmailVerificationToken--------", newEmailVerificationToken);
+    // console.log("newEmailVerificationToken--------", newEmailVerificationToken);
   
-    // Save the user's id and OTP token to databse
-    await newEmailVerificationToken.save();
+    // // Save the user's id and OTP token to databse
+    // await newEmailVerificationToken.save();
 
-    // Send actual email with otp to user by emailjs
-    var templateParams = {
-      to_name: newUser.name,
-      to_email: userType === "landlord" ? newUser.email : newUser.email.data,
-      message: "You verification code: " + OTP,
-    };
-    emailjs
-    .send('service_ihvcg7o', 'template_zck1flj', templateParams, {
-      publicKey: 'A123nkzSrVLiFfq4B',
-      privateKey: '_lEZmCaDezKB8zmpSYvEn',
-    })
-    .then(
-      function (response) {
-        console.log('SUCCESS!', response.status, response.text);
-      },
-      function (err) {
-        console.log('FAILED...', err);
-      },
-    );
+    // // Send actual email with otp to user by emailjs
+    // var templateParams = {
+    //   to_name: newUser.name,
+    //   to_email: userType === "landlord" ? newUser.email : newUser.email.data,
+    //   message: "You verification code: " + OTP,
+    // };
+    // emailjs
+    // .send('service_ihvcg7o', 'template_zck1flj', templateParams, {
+    //   publicKey: 'A123nkzSrVLiFfq4B',
+    //   privateKey: '_lEZmCaDezKB8zmpSYvEn',
+    // })
+    // .then(
+    //   function (response) {
+    //     console.log('SUCCESS!', response.status, response.text);
+    //   },
+    //   function (err) {
+    //     console.log('FAILED...', err);
+    //   },
+    // );
+
+    console.log("----", jwtToken);
   
     res.status(201).json({
       user: {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email,
+        token: jwtToken,
+        userType
       },
     });
   }
