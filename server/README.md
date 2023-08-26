@@ -1,10 +1,46 @@
 # Server
+This is the backend code of the House Renting Application written in [Node.js](https://nodejs.org/en). Additionally, it uses [Express.js](https://expressjs.com/) as a web framework for Node.js.
 
-To make a request to these APIs, run the server with `node index.js` at the server/ directory, which runs on port 4000.
+## Getting Started
 
-Make a request to the url: "localhost:4000" + base route + API route (as listed below)
+### Requirements
+This folder depends on `npm`, `docker`, and `docker-compose`. You may also want to separately install `MongoDB`, although this is not required it can be pulled by docker.
 
-Example: To get a user's info with id 123456789, make a GET request to `localhost:4000/api/v1/user/123456789` with the necessary fields in the request body.
+You will also want to create `.env` file while copying these keys and providing the values
+
+```
+DB_NAME=<database_name>
+DB_URL=<mongodb_url>
+PORT=<port>
+NODE_ENV=<development/production>
+JWT_SECRET=<jwt_secret_key>
+```
+### Setup
+- Run `nvm use` to temporarily set a specific version of Node.js.
+- Run `npm install` to install dependencies.
+
+### Running the dev server
+Run the docker compose file to start the MongoDB server. This can either be done in the foreground to see logs:
+
+```docker-compose up```
+
+Or in the background (detached):
+
+```docker-compose up -d```
+
+Run the dev server: 
+
+```node index.js```
+
+The application will be accessible at PORT which is provided in `.env` file.
+
+## Project Structure
+This project uses the [Node.js](https://nodejs.org/en) and [Express.js](https://expressjs.com/) framework/stack and so the directory structure follows the general Node.js and Express.js project structure. Some notable subdirectories of `server` include:
+- `controllers/`: It includes business logic for the exposed endpoints. It acts as an intermediary, handling user input, processing requests, and orchestrating interactions between the Model and View components.
+- `models/`: Has the application's data, logic, and rules, managing data integrity, operations, and communication with the database. It also has logic to making `MongoDB` database connection.
+- `routes/v1/`: It exposes the API endpoints for the requests.
+
+Generated directories include `node_modules`
 
 ## Routes
 Base route: `/api/v1`
