@@ -1,5 +1,4 @@
 node_modules
-docker-compose.yaml
 data
 .DS_Store
 .env
